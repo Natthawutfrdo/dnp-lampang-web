@@ -176,21 +176,46 @@
       bodyRow.innerHTML = data.map((item, idx) => {
         const uniqueKey = currentActiveTab + "_" + item.id;
 
-        // วาดขอบแผนที่และปักหมุดพร้อมแนบจำนวนผู้ต้องหาเข้าไปใน Popup บนแผนที่
+        // 💡 ปรับปรุงส่วนการดึงพิกัดแผนที่: รองรับทั้งก้อน Object (แบบเก่า) และ ลิงก์ URL ไฟล์ .json (แบบใหม่)
         if (item.geojson_data) {
-          try {
-            let bColor = item.is_finished ? "#10b981" : "#f97316";
-            let fColor = (item.location || '').includes("อุทยาน") || (item.location || '').includes("อนุรักษ์") ? "#064e3b" : "#84cc16";
-            
-            let mapLayer = L.geoJSON(item.geojson_data, {
-              style: { color: bColor, weight: 3, fillColor: fColor, fillOpacity: 0.5 },
-              onEachFeature: (f, layer) => {
-                layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
-              }
-            }).addTo(mapInstance);
-            loadedMapLayers.push(mapLayer);
-            window.mapLayersRegistry[uniqueKey] = mapLayer;
-          } catch(e){}
+          let bColor = item.is_finished ? "#10b981" : "#f97316";
+          let fColor = (item.location || '').includes("อุทยาน") || (item.location || '').includes("อนุรักษ์") ? "#064e3b" : "#84cc16";
+          
+          // ตรวจสอบว่าเป็นลิงก์ URL ของระบบ Hybrid Storage หรือไม่
+          if (typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
+            fetch(item.geojson_data)
+              .then(response => response.json())
+              .then(geojsonData => {
+                let mapLayer = L.geoJSON(geojsonData, {
+                  style: { color: bColor, weight: 3, fillColor: fColor, fillOpacity: 0.5 },
+                  onEachFeature: (f, layer) => {
+                    layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
+                  }
+                }).addTo(mapInstance);
+                loadedMapLayers.push(mapLayer);
+                window.mapLayersRegistry[uniqueKey] = mapLayer;
+                
+                // สั่งจัดขนาดกล่องแผนที่ให้พอดีเมื่อโหลดครบทุกส่วน
+                if (idx === data.length - 1 && loadedMapLayers.length > 0) {
+                  let g = new L.featureGroup(loadedMapLayers);
+                  mapInstance.fitBounds(g.getBounds(), {padding:[20,20]});
+                }
+              })
+              .catch(e => console.error("โหลดไฟล์ GeoJSON ไม่สำเร็จ:", e));
+          } else {
+            // โหมดดึงข้อมูลกรณีเป็นคดีเก่าที่เป็น Object ก้อนฝังอยู่ในตาราง
+            try {
+              let parsedGeo = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data;
+              let mapLayer = L.geoJSON(parsedGeo, {
+                style: { color: bColor, weight: 3, fillColor: fColor, fillOpacity: 0.5 },
+                onEachFeature: (f, layer) => {
+                  layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
+                }
+              }).addTo(mapInstance);
+              loadedMapLayers.push(mapLayer);
+              window.mapLayersRegistry[uniqueKey] = mapLayer;
+            } catch(e){}
+          }
         }
 
         // การจำกัดจำนวนตัวอักษรของสถานะคดีในตารางเหลือ 40 ตัวอักษรพร้อมแนบ Title Tooltip ยามเอาเมาส์ชี้ส่อง
@@ -235,10 +260,28 @@
         }
       }).join('');
 
-      if(loadedMapLayers.length > 0) { let g = new L.featureGroup(loadedMapLayers); mapInstance.fitBounds(g.getBounds(), {padding:[20,20]}); }
+      setTimeout(() => {
+        if(loadedMapLayers.length > 0) { 
+          let g = new L.featureGroup(loadedMapLayers); 
+          mapInstance.fitBounds(g.getBounds(), {padding:[20,20]}); 
+        }
+      }, 500);
     }
 
-    function zoomToCaseLayer(k) { if(window.mapLayersRegistry && window.mapLayersRegistry[k]) { let l = window.mapLayersRegistry[k]; document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); if(l.getBounds) { mapInstance.fitBounds(l.getBounds(), {maxZoom:16}); } else { mapInstance.setView(l.getLatLng(),16); } setTimeout(()=> l.openPopup(), 600); } }
+    function zoomToCaseLayer(k) { 
+      if(window.mapLayersRegistry && window.mapLayersRegistry[k]) { 
+        let l = window.mapLayersRegistry[k]; 
+        document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
+        if(l.getBounds) { 
+          mapInstance.fitBounds(l.getBounds(), {maxZoom:16}); 
+        } else { 
+          mapInstance.setView(l.getLatLng(),16); 
+        } 
+        setTimeout(()=> l.openPopup(), 600); 
+      } else {
+        alert("กำลังโหลดพิกัดแผนที่จากเซิร์ฟเวอร์คลาวด์ กรุณาลองกดส่องอีกครั้งใน 1-2 วินาทีครับ");
+      }
+    }
 
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
