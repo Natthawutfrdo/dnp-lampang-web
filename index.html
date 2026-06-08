@@ -6,12 +6,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
     .nav-active { border-bottom: 4px solid #059669; color: #059669; }
+    .tab-wildlife.nav-active { border-bottom: 4px solid #7c3aed; color: #7c3aed; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -30,15 +30,27 @@
   </nav>
 
   <main class="max-w-7xl mx-auto p-4 md:p-8 w-full flex-1 flex flex-col">
-    <div class="flex space-x-8 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-      <button onclick="switchTab('encroachment')" id="tab-enc" class="pb-2 font-bold text-lg nav-active"><i class="fa-solid fa-person-trespassing mr-2"></i> คดีบุกรุกพื้นที่ป่า</button>
-      <button onclick="switchTab('timber')" id="tab-timber" class="pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600"><i class="fa-solid fa-cubes-wood mr-2"></i> คดีไม้ผิดกฎหมาย</button>
+
+    <!-- แถบ Tab -->
+    <div class="flex space-x-6 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <button onclick="switchTab('encroachment')" id="tab-enc" class="pb-2 font-bold text-lg nav-active">
+        <i class="fa-solid fa-person-trespassing mr-2"></i> คดีบุกรุกพื้นที่ป่า
+      </button>
+      <button onclick="switchTab('timber')" id="tab-timber" class="pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600">
+        <i class="fa-solid fa-cubes-wood mr-2"></i> คดีไม้ผิดกฎหมาย
+      </button>
+      <!-- ✅ NEW: แท็บคดีสัตว์ป่า -->
+      <button onclick="switchTab('wildlife')" id="tab-wildlife" class="pb-2 font-bold text-lg text-gray-400 hover:text-violet-600 tab-wildlife">
+        <i class="fa-solid fa-paw mr-2"></i> คดีสัตว์ป่า
+      </button>
     </div>
 
+    <!-- แผนที่ -->
     <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 h-[450px] mb-6" id="map"></div>
 
+    <!-- แถบปุ่มบันทึก + ช่องค้นหา -->
     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
-      <button onclick="openFormModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center">
+      <button onclick="openFormModal()" id="addCaseBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center">
         <i class="fa-solid fa-cloud-arrow-up mr-2 text-lg"></i> บันทึกคดีใหม่ด้วย Shapefile (.zip)
       </button>
       <div class="relative">
@@ -47,6 +59,7 @@
       </div>
     </div>
 
+    <!-- ตารางข้อมูล -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse" id="dataGrid">
@@ -59,6 +72,7 @@
     </div>
   </main>
 
+  <!-- ===================== MODAL: คดีบุกรุก + คดีไม้ (เดิม) ===================== -->
   <div id="formModal" style="z-index: 9999;" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden justify-center items-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
@@ -133,13 +147,74 @@
     </div>
   </div>
 
+  <!-- ===================== MODAL: คดีสัตว์ป่า (NEW) ===================== -->
+  <div id="wildlifeModal" style="z-index: 9999;" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden justify-center items-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h3 class="text-lg font-bold text-violet-800">
+          <i class="fa-solid fa-paw mr-2"></i> บันทึกคดีสัตว์ป่า
+        </h3>
+        <button onclick="closeWildlifeModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <form id="wildlifeForm" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">เลขคดีที่</label><input type="text" id="wl_caseNo" required placeholder="เช่น 5/2569" class="w-full border p-2.5 rounded-lg outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">วัน/เดือน/ปี เกิดเหตุ</label><input type="text" id="wl_caseDate" required placeholder="เช่น 04/06/2569" class="w-full border p-2.5 rounded-lg outline-none"></div>
+        </div>
+
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="wl_location" required placeholder="ระบุตําบล อำเภอ และชื่อป่าสงวน/ป่าอนุรักษ์" class="w-full border p-2.5 rounded-lg outline-none"></div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">ชนิดของสัตว์ป่า</label><input type="text" id="wl_wildlifeType" placeholder="เช่น เสือดาว, หมูป่า, นกแก้ว" class="w-full border p-2.5 rounded-lg outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">อุปกรณ์ในการกระทำผิด</label><input type="text" id="wl_equipment" placeholder="เช่น กับดัก, ปืน, ข่าย" class="w-full border p-2.5 rounded-lg outline-none"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">ผลการดำเนินคดี</label><select id="wl_status" class="w-full border p-2.5 rounded-lg bg-white outline-none"><option>อยู่ระหว่างคดี</option><option>คดีสิ้นสุด</option></select></div>
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="wl_suspectsCount" min="0" value="0" required class="w-full border p-2.5 rounded-lg outline-none"></div>
+        </div>
+
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">หน่วยงานที่ดำเนินการ</label><input type="text" id="wl_agency" required placeholder="เช่น สปป.3 (ภาคเหนือ)" class="w-full border p-2.5 rounded-lg outline-none"></div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้าขั้นตอนดำเนินคดี)</label>
+          <textarea id="wl_caseStatus" rows="3" required placeholder="รายละเอียดความคืบหน้าคดี..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea>
+        </div>
+
+        <!-- พิกัดจุดเกิดเหตุ (กรอกมือ หรือกดปักบนแผนที่) -->
+        <div class="bg-violet-50 border border-violet-200 rounded-xl p-3">
+          <label class="block text-xs font-bold text-violet-700 mb-2"><i class="fa-solid fa-location-crosshairs mr-1"></i> พิกัดจุดเกิดเหตุ (Latitude / Longitude)</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-xs text-gray-500">Latitude (ละติจูด)</label><input type="number" step="any" id="wl_lat" placeholder="เช่น 18.2897" class="w-full border p-2 rounded-lg outline-none text-sm"></div>
+            <div><label class="text-xs text-gray-500">Longitude (ลองจิจูด)</label><input type="number" step="any" id="wl_lon" placeholder="เช่น 99.5021" class="w-full border p-2 rounded-lg outline-none text-sm"></div>
+          </div>
+          <p class="text-xs text-violet-500 mt-1">* สามารถกรอกพิกัดจาก GPS หรือปล่อยว่างได้</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-600 mb-1">อัปโหลดไฟล์เอกสาร PDF (ถ้ามี)</label>
+          <input type="file" id="wl_pdfFile" accept=".pdf" class="w-full border p-2 rounded-lg bg-slate-50 outline-none text-sm">
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-4 border-t">
+          <button type="button" onclick="closeWildlifeModal()" class="px-4 py-2.5 border rounded-lg text-gray-500 hover:bg-gray-50">ยกเลิก</button>
+          <button type="submit" id="wl_submitBtn" class="px-5 py-2.5 bg-violet-600 text-white rounded-lg font-semibold shadow-md hover:bg-violet-700">
+            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกคดีสัตว์ป่า
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     let currentActiveTab = 'encroachment';
     let mapInstance;
-    let previewMarker = null; // ➕ ตัวแปรสำหรับปักหมุดพรีวิวตำแหน่งแปลงชั่วคราว
+    let previewMarker = null;
     
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
+    let wildlifeLayerGroup = L.layerGroup(); // ✅ NEW
     let conservationForestLayer = L.layerGroup();
     let reserveForestLayer = L.layerGroup();
     
@@ -147,7 +222,6 @@
     window.mapLayersRegistry = {};
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
-    // ลิงก์ชั้นข้อมูลแนวเขตป่าอ้างอิงบน Supabase Storage ของคุณ
     const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
     const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
 
@@ -160,6 +234,7 @@
       
       encroachmentLayerGroup.addTo(mapInstance);
       timberLayerGroup.addTo(mapInstance);
+      wildlifeLayerGroup.addTo(mapInstance); // ✅ NEW
       conservationForestLayer.addTo(mapInstance);
       reserveForestLayer.addTo(mapInstance);
 
@@ -167,6 +242,7 @@
       let overlayMaps = {
         "<span style='color: #ef4444; font-weight: bold;'><i class='fa-solid fa-person-trespassing mr-1'></i> แปลงคดีบุกรุกพื้นที่ป่า</span>": encroachmentLayerGroup,
         "<span style='color: #b45309; font-weight: bold;'><i class='fa-solid fa-cubes-wood mr-1'></i> แปลงคดีไม้ผิดกฎหมาย</span>": timberLayerGroup,
+        "<span style='color: #7c3aed; font-weight: bold;'><i class='fa-solid fa-paw mr-1'></i> จุดคดีสัตว์ป่า</span>": wildlifeLayerGroup, // ✅ NEW
         "<span style='color: #047857; font-weight: bold;'><i class='fa-solid fa-mountain mr-1'></i> แนวเขตป่าอนุรักษ์ / อุทยาน</span>": conservationForestLayer,
         "<span style='color: #ec4899; font-weight: bold;'><i class='fa-solid fa-tree mr-1'></i> แนวเขตป่าสงวนแห่งชาติ</span>": reserveForestLayer
       };
@@ -203,11 +279,18 @@
 
     function clearAllMapLayers() { 
       encroachmentLayerGroup.clearLayers(); 
-      timberLayerGroup.clearLayers(); 
+      timberLayerGroup.clearLayers();
+      wildlifeLayerGroup.clearLayers(); // ✅ NEW
       window.mapLayersRegistry = {};
     }
 
-    function openFormModal() { 
+    // ===================== openFormModal =====================
+    function openFormModal() {
+      if (currentActiveTab === 'wildlife') {
+        // เปิด modal คดีสัตว์ป่าแทน
+        document.getElementById('wildlifeModal').style.display = 'flex';
+        return;
+      }
       document.getElementById('formModal').style.display = 'flex'; 
       if (currentActiveTab === 'encroachment') { 
         document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่า'; 
@@ -225,10 +308,17 @@
       document.getElementById('unifiedForm').reset(); 
       document.getElementById('filenameDisplay').classList.add('hidden'); 
       document.getElementById('zipLabelText').classList.remove('hidden'); 
-      if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; } // ➕ คืนค่าหมุดส่อง
+      if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
     }
 
-    // 🛠️ [ปรับปรุงเพิ่ม] ฟังก์ชันแกะอ่านค่าเนื้อที่ดินอัตโนมัติและปักหมุดพรีวิวตำแหน่งแปลงทันทีเมื่อเลือกไฟล์ .zip
+    // ✅ NEW: เปิด/ปิด modal คดีสัตว์ป่า
+    function closeWildlifeModal() {
+      document.getElementById('wildlifeModal').style.display = 'none';
+      document.getElementById('wildlifeForm').reset();
+      if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
+    }
+
+    // ===================== analyze shapefile =====================
     async function displaySelectedFilename() { 
       const fileInput = document.getElementById('shpZipFile');
       const f = fileInput.files[0]; 
@@ -248,14 +338,12 @@
         if (res.ok && result.success) {
           document.getElementById('filenameDisplay').textContent = "ตรวจสอบไฟล์แผนที่สำเร็จ: " + f.name;
           
-          // นำเนื้อที่ดินส่งเข้าช่องพิมพ์อัตโนมัติ (เฉพาะเมนูคดีบุกรุก)
           if (currentActiveTab === 'encroachment') {
             document.getElementById('rai').value = result.rai || 0;
             document.getElementById('ngarn').value = result.ngarn || 0;
             document.getElementById('wa').value = result.wa || 0;
           }
 
-          // ปักหมุดจำลองตำแหน่งให้เจ้าหน้าที่ได้ส่องดูเบื้องต้นก่อนกดบันทึกจริง
           if (previewMarker) { mapInstance.removeLayer(previewMarker); }
           previewMarker = L.marker([result.lat, result.lon]).addTo(mapInstance)
             .bindPopup(`<b class="text-emerald-700">📍 จุดพิกัดศูนย์กลางแปลงคดี</b><br><span class="text-xs">จากการถอดรหัสไฟล์ Shapefile ชั่วคราว</span>`)
@@ -271,13 +359,33 @@
       }
     }
 
+    // ===================== switchTab =====================
     function switchTab(mode) {
       currentActiveTab = mode;
-      document.getElementById('tab-enc').className = mode === 'encroachment' ? 'pb-2 font-bold text-lg nav-active' : 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
-      document.getElementById('tab-timber').className = mode === 'timber' ? 'pb-2 font-bold text-lg nav-active' : 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
+
+      // รีเซ็ต style ทุก tab ก่อน
+      document.getElementById('tab-enc').className = 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
+      document.getElementById('tab-timber').className = 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
+      document.getElementById('tab-wildlife').className = 'pb-2 font-bold text-lg text-gray-400 hover:text-violet-600 tab-wildlife';
+
+      if (mode === 'encroachment') {
+        document.getElementById('tab-enc').className = 'pb-2 font-bold text-lg nav-active';
+        document.getElementById('addCaseBtn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2 text-lg"></i> บันทึกคดีใหม่ด้วย Shapefile (.zip)';
+        document.getElementById('addCaseBtn').className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center';
+      } else if (mode === 'timber') {
+        document.getElementById('tab-timber').className = 'pb-2 font-bold text-lg nav-active';
+        document.getElementById('addCaseBtn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2 text-lg"></i> บันทึกคดีใหม่ด้วย Shapefile (.zip)';
+        document.getElementById('addCaseBtn').className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center';
+      } else if (mode === 'wildlife') {
+        document.getElementById('tab-wildlife').className = 'pb-2 font-bold text-lg nav-active tab-wildlife';
+        document.getElementById('addCaseBtn').innerHTML = '<i class="fa-solid fa-paw mr-2 text-lg"></i> บันทึกคดีสัตว์ป่าใหม่';
+        document.getElementById('addCaseBtn').className = 'bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center';
+      }
+
       loadTableData();
     }
 
+    // ===================== loadTableData =====================
     async function loadTableData() {
       const headerRow = document.getElementById('table-header-row');
       const bodyRow = document.getElementById('table-body-row');
@@ -285,48 +393,69 @@
       clearAllMapLayers();
 
       if (currentActiveTab === 'encroachment') {
-        headerRow.innerHTML = `<th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-2 text-center">ไร่</th><th class="p-2 text-center">งาน</th><th class="p-2 text-center">ตร.ว.</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดแปลง</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
-      } else {
-        headerRow.innerHTML = `<th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-4">ชนิดไม้</th><th class="p-2 text-center">ท่อน (ลบ.ม.)</th><th class="p-2 text-center">แปรรูป (ลบ.ม)</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดหมุด</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
+        headerRow.innerHTML = `<th class="p-4">ลำดับ</th><th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-2 text-center">ไร่</th><th class="p-2 text-center">งาน</th><th class="p-2 text-center">ตร.ว.</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดแปลง</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
+      } else if (currentActiveTab === 'timber') {
+        headerRow.innerHTML = `<th class="p-4">ลำดับ</th><th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-4">ชนิดไม้</th><th class="p-2 text-center">กว้าง</th><th class="p-2 text-center">ยาว</th><th class="p-2 text-center">โต</th><th class="p-2 text-center">ท่อน (ลบ.ม.)</th><th class="p-2 text-center">แปรรูป (ลบ.ม)</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดหมุด</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
+      } else if (currentActiveTab === 'wildlife') {
+        // ✅ NEW: header คดีสัตว์ป่า
+        headerRow.innerHTML = `<th class="p-4">ลำดับ</th><th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-4">ชนิดสัตว์ป่า</th><th class="p-4">อุปกรณ์กระทำผิด</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดหมุด</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
       }
 
       try {
         const res = await fetch(`${API_BASE_URL}/get-cases/${currentActiveTab}`);
         const data = await res.json();
         renderGrid(data);
-      } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; }
+      } catch (err) { 
+        bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; 
+      }
     }
 
     function getCaseStyle(locationText, isFinished) {
       let text = locationText || '';
       let fillColor = "#f59e0b"; 
-      
       if (text.includes("อุทยาน") || text.includes("อนุรักษ์") || text.includes("สัตว์ป่า") || text.includes("เตรียมการ")) {
         fillColor = "#065f46"; 
       } else if (text.includes("ป่าสงวน") || text.includes("แห่งชาติ")) {
         fillColor = "#b11226"; 
       }
-
       let strokeColor = isFinished ? "#10b981" : "#ef4444"; 
-      
-      return {
-        color: strokeColor,
-        weight: 3.5,
-        fillColor: fillColor,
-        fillOpacity: 0.6
-      };
+      return { color: strokeColor, weight: 3.5, fillColor: fillColor, fillOpacity: 0.6 };
     }
 
+    // ===================== renderGrid =====================
     function renderGrid(data) {
       const bodyRow = document.getElementById('table-body-row');
-      if(!data || data.length === 0) { bodyRow.innerHTML = '<tr><td class="p-8 text-center text-gray-400">ไม่พบสารบบบันทึกคดีในระบบคลาวด์ขณะนี้</td></tr>'; return; }
+      if(!data || data.length === 0) { 
+        bodyRow.innerHTML = '<tr><td class="p-8 text-center text-gray-400" colspan="20">ไม่พบสารบบบันทึกคดีในระบบคลาวด์ขณะนี้</td></tr>'; 
+        return; 
+      }
       
-      let targetLayerGroup = (currentActiveTab === 'encroachment') ? encroachmentLayerGroup : timberLayerGroup;
+      let targetLayerGroup = currentActiveTab === 'encroachment' ? encroachmentLayerGroup 
+                           : currentActiveTab === 'timber' ? timberLayerGroup 
+                           : wildlifeLayerGroup;
       
       bodyRow.innerHTML = data.map((item, idx) => {
         const uniqueKey = currentActiveTab + "_" + item.id;
+        const rowNum = idx + 1;
 
-        if (item.geojson_data) {
+        // ✅ NEW: render จุดหมุดสัตว์ป่าบนแผนที่
+        if (currentActiveTab === 'wildlife' && item.coords && Array.isArray(item.coords) && item.coords.length === 2) {
+          let lat = item.coords[0], lon = item.coords[1];
+          if (lat !== 0 || lon !== 0) {
+            let wlMarker = L.circleMarker([lat, lon], {
+              radius: 8,
+              color: item.is_finished ? "#10b981" : "#7c3aed",
+              fillColor: "#7c3aed",
+              fillOpacity: 0.75,
+              weight: 2.5
+            }).addTo(wildlifeLayerGroup)
+              .bindPopup(`<div class='p-1'><b class='text-violet-700 text-sm'>🐾 เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ชนิดสัตว์ป่า:</b> ${item.wildlife_type || '-'}<br><b>อุปกรณ์:</b> ${item.equipment || '-'}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย</span></div>`);
+            window.mapLayersRegistry[uniqueKey] = wlMarker;
+          }
+        }
+
+        // render แปลง GIS สำหรับ encroachment + timber (เหมือนเดิม)
+        if ((currentActiveTab === 'encroachment' || currentActiveTab === 'timber') && item.geojson_data) {
           let currentStyle = getCaseStyle(item.location, item.is_finished);
           
           if (typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
@@ -339,7 +468,6 @@
                     layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
                   }
                 }).addTo(targetLayerGroup);
-                
                 window.mapLayersRegistry[uniqueKey] = mapLayer;
               })
               .catch(e => console.error("ดาวน์โหลดโครงสร้าง GeoJSON ของคดีพลาด:", e));
@@ -352,7 +480,6 @@
                   layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
                 }
               }).addTo(targetLayerGroup);
-              
               window.mapLayersRegistry[uniqueKey] = mapLayer;
             } catch(e){}
           }
@@ -361,6 +488,34 @@
         let rawStatusText = item.case_status || '-';
         let truncatedStatus = rawStatusText.length > 40 ? rawStatusText.substring(0, 40) + '...' : rawStatusText;
         let pdfButtonHtml = item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" class="text-red-500 hover:text-red-700 text-lg"><i class="fa-solid fa-file-pdf"></i></a>` : `<span class="text-gray-300">-</span>`;
+        
+        let zoomBtnColor = currentActiveTab === 'wildlife' ? 'text-violet-600' : 'text-emerald-600';
+        
+        // ✅ NEW: row คดีสัตว์ป่า
+        if (currentActiveTab === 'wildlife') {
+          let coordsText = (item.coords && item.coords[0]) ? `${parseFloat(item.coords[0]).toFixed(4)}, ${parseFloat(item.coords[1]).toFixed(4)}` : '-';
+          return `<tr class="hover:bg-violet-50/30 border-b">
+            <td class="p-4 text-center text-gray-500">${rowNum}</td>
+            <td class="p-4 font-bold text-violet-800">${item.case_no}</td>
+            <td class="p-4">${item.case_date}</td>
+            <td class="p-4 truncate max-w-xs">${item.location}</td>
+            <td class="p-4 font-semibold text-violet-700">${item.wildlife_type || '-'}</td>
+            <td class="p-4 text-sm text-gray-600">${item.equipment || '-'}</td>
+            <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
+            <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
+            <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
+            <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
+            <td class="p-4">
+              <button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-violet-600 hover:text-white text-xs px-2 py-1 rounded-md">
+                <i class="fa-solid fa-location-dot ${zoomBtnColor}"></i> ส่อง
+              </button>
+            </td>
+            <td class="p-4 text-center">${pdfButtonHtml}</td>
+            <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
+              <button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600" title="ลบคดี"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          </tr>`;
+        }
 
         let downloadShpBtnHtml = item.geojson_data && item.geojson_data.startsWith('http') 
           ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลดไฟล์พิกัดคดี (.json)" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
@@ -368,6 +523,7 @@
 
         if (currentActiveTab === 'encroachment') {
           return `<tr class="hover:bg-emerald-50/30 border-b">
+            <td class="p-4 text-center text-gray-500">${rowNum}</td>
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
             <td class="p-4">${item.case_date}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
@@ -387,10 +543,14 @@
           </tr>`;
         } else {
           return `<tr class="hover:bg-amber-50/30 border-b">
+            <td class="p-4 text-center text-gray-500">${rowNum}</td>
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
             <td class="p-4">${item.case_date}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
             <td class="p-4 font-semibold">${item.timber_type || '-'}</td>
+            <td class="p-2 text-center">${item.width || '-'}</td>
+            <td class="p-2 text-center">${item.length || '-'}</td>
+            <td class="p-2 text-center">${item.size || '-'}</td>
             <td class="p-2 text-center text-blue-800 font-bold">${item.vol_logs || 0}</td>
             <td class="p-2 text-center text-teal-800 font-bold">${item.vol_processed || 0}</td>
             <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
@@ -411,17 +571,13 @@
     async function downloadShapefile(fileUrl, caseNo) {
       if(!fileUrl) return;
       const safeCaseNo = caseNo.replace(/\//g, "-");
-      
       try {
         const response = await fetch(fileUrl);
         const geojsonData = await response.json();
-        
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojsonData, null, 2));
-        
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
         downloadAnchor.setAttribute("download", `คดีที่_${safeCaseNo}_พิกัดแปลงที่ดิน.json`);
-        
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         document.body.removeChild(downloadAnchor);
@@ -437,12 +593,13 @@
         document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
         
         if (k.startsWith('encroachment')) { mapInstance.addLayer(encroachmentLayerGroup); }
-        else { mapInstance.addLayer(timberLayerGroup); }
+        else if (k.startsWith('timber')) { mapInstance.addLayer(timberLayerGroup); }
+        else if (k.startsWith('wildlife')) { mapInstance.addLayer(wildlifeLayerGroup); }
 
         if(l.getBounds) { 
           mapInstance.fitBounds(l.getBounds(), {maxZoom:16}); 
         } else { 
-          mapInstance.setView(l.getLatLng(),16); 
+          mapInstance.setView(l.getLatLng(), 15); 
         } 
         setTimeout(()=> l.openPopup(), 600); 
       } else {
@@ -450,7 +607,7 @@
       }
     }
 
-    // 🛠️ [แก้ไขจุดบกพร่องตรงนี้] ระบบดักจับการแปลงข้อความเพื่อสยบบั๊กคำว่า undefined
+    // ===================== submit คดีบุกรุก + คดีไม้ (เดิม) =====================
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -486,16 +643,12 @@
 
       try {
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
-        
-        // 💡 แปลงค่า JSON Object เพื่อนำข้อมูล Error มาแจกแจงลงหน้าจออย่างถูกต้อง
         const result = await res.json();
-        
         if(res.ok && result.success) { 
           alert("🎉 บันทึกพิกัดและข้อมูลสารบบคดีลง Supabase สำเร็จแล้ว"); 
           closeFormModal(); 
           loadTableData(); 
         } else { 
-          // 💡 หากเกิดปัญหาดึงข้อมูลไม่เข้า จะนำรายละเอียดตรงๆ จาก Database มาแสดงแทนการแจ้งเตือนว่า undefined
           const errorDetail = result.error || result.detail || JSON.stringify(result);
           alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + errorDetail); 
         }
@@ -504,6 +657,48 @@
       } finally { 
         submitBtn.disabled = false; 
         submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; 
+      }
+    };
+
+    // ✅ NEW: submit คดีสัตว์ป่า
+    document.getElementById('wildlifeForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('wl_submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> กำลังบันทึกข้อมูล...`;
+
+      const fd = new FormData();
+      fd.append("case_no", document.getElementById('wl_caseNo').value);
+      fd.append("case_date", document.getElementById('wl_caseDate').value);
+      fd.append("location", document.getElementById('wl_location').value);
+      fd.append("status", document.getElementById('wl_status').value);
+      fd.append("case_status", document.getElementById('wl_caseStatus').value);
+      fd.append("agency", document.getElementById('wl_agency').value);
+      fd.append("suspects_count", document.getElementById('wl_suspectsCount').value);
+      fd.append("wildlife_type", document.getElementById('wl_wildlifeType').value);
+      fd.append("equipment", document.getElementById('wl_equipment').value);
+      fd.append("coords_lat", document.getElementById('wl_lat').value || "0");
+      fd.append("coords_lon", document.getElementById('wl_lon').value || "0");
+
+      const pdfFile = document.getElementById('wl_pdfFile').files[0];
+      if (pdfFile) { fd.append("pdf_file", pdfFile); }
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/process-wildlife/`, { method: "POST", body: fd });
+        const result = await res.json();
+        if(res.ok && result.success) { 
+          alert("🐾 บันทึกข้อมูลคดีสัตว์ป่าสำเร็จแล้ว"); 
+          closeWildlifeModal(); 
+          loadTableData(); 
+        } else { 
+          const errorDetail = result.error || result.detail || JSON.stringify(result);
+          alert("เกิดข้อผิดพลาด: " + errorDetail); 
+        }
+      } catch(err) { 
+        alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: " + err.message); 
+      } finally { 
+        submitBtn.disabled = false; 
+        submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกคดีสัตว์ป่า'; 
       }
     };
 
@@ -517,7 +712,13 @@
       }
     }
 
-    function filterDataGrid() { let q = document.getElementById("tableSearchInput").value.toLowerCase(); let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); for(let i=0; i<rows.length; i++) { rows[i].style.display = rows[i].textContent.toLowerCase().includes(q) ? "" : "none"; } }
+    function filterDataGrid() { 
+      let q = document.getElementById("tableSearchInput").value.toLowerCase(); 
+      let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); 
+      for(let i=0; i<rows.length; i++) { 
+        rows[i].style.display = rows[i].textContent.toLowerCase().includes(q) ? "" : "none"; 
+      } 
+    }
 
     window.onload = () => { setupMap(); switchTab('encroachment'); };
   </script>
