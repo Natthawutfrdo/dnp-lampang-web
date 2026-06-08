@@ -146,6 +146,7 @@
     window.mapLayersRegistry = {};
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
+    // ลิงก์ชั้นข้อมูลแนวเขตป่าอ้างอิงบน Supabase Storage ของคุณ
     const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
     const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
 
@@ -312,9 +313,9 @@
         let truncatedStatus = rawStatusText.length > 40 ? rawStatusText.substring(0, 40) + '...' : rawStatusText;
         let pdfButtonHtml = item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" class="text-red-500 hover:text-red-700 text-lg"><i class="fa-solid fa-file-pdf"></i></a>` : `<span class="text-gray-300">-</span>`;
 
-        // 💡 สร้างปุ่มดาวน์โหลดไฟล์ Shapefile ต้นฉบับ (.zip) หากพบลิงก์ในฐานข้อมูล
+        // 🛠️ ปุ่มดาวน์โหลด: หากข้อมูลพิกัดเป็นแบบ URL ลิงก์ จะส่งลิ้งก์เข้าฟังก์ชันดาวน์โหลดไฟล์ทันที
         let downloadShpBtnHtml = item.geojson_data && item.geojson_data.startsWith('http') 
-          ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลด Shapefile ตัวจริง" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
+          ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลดไฟล์พิกัดคดี (.json)" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
           : `<span class="text-gray-300" title="ไม่มีไฟล์ต้นฉบับ">-</span>`;
 
         if (currentActiveTab === 'encroachment') {
@@ -348,7 +349,7 @@
             <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
             <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
             <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
-            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-amber-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-amber-600"></i> ส่อง</button></td>
+            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-amber-600"></i> ส่อง</button></td>
             <td class="p-4 text-center">${pdfButtonHtml}</td>
             <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
               ${downloadShpBtnHtml}
@@ -359,19 +360,29 @@
       }).join('');
     }
 
-    // 💡 ฟังก์ชันสั่งดาวน์โหลดไฟล์พิกัดต้นฉบับออกมาจากคลาวด์โดยตรง
-    function downloadShapefile(fileUrl, caseNo) {
+    // 💡 ฟังก์ชันเวอร์ชันสมบูรณ์: บังคับดาวน์โหลดข้อมูลเป็นไฟล์พิกัดแผนที่ (.json) ลงเครื่องโดยตรง
+    async function downloadShapefile(fileUrl, caseNo) {
       if(!fileUrl) return;
-      // ทำการคลีนชื่อไฟล์ป้องกันการติดเว้นวรรคหรือเครื่องหมายทับ
       const safeCaseNo = caseNo.replace(/\//g, "-");
       
-      // สั่งเปิดดาวน์โหลดผ่านเบราว์เซอร์
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.setAttribute('download', `Shapefile_Case_${safeCaseNo}.zip`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        const response = await fetch(fileUrl);
+        const geojsonData = await response.json();
+        
+        // บังคับแปลงอ็อบเจกต์โครงสร้างข้อมูลแผนที่ให้กลายเป็นรูปแบบไฟล์สำหรับดาวน์โหลด
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojsonData, null, 2));
+        
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `คดีที่_${safeCaseNo}_พิกัดแปลงที่ดิน.json`);
+        
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการโหลดไฟล์:", error);
+        window.open(fileUrl, '_blank');
+      }
     }
 
     function zoomToCaseLayer(k) { 
