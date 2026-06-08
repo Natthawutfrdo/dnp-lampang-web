@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -20,7 +19,7 @@
   <nav class="bg-gradient-to-r from-emerald-800 to-slate-900 text-white shadow-md px-6 py-3 flex justify-between items-center">
     <div class="flex items-center space-x-3">
       <div class="bg-white p-1 rounded-full shadow-sm flex items-center justify-center w-12 h-12 overflow-hidden">
-        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png">
+        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B5%E0%B8%B2%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B  A%E0%B9%88%E0%B8%82%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B5_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B  A%E0%B8%A5%E0%B8%B5%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" onerror="this.src='https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=80&q=80'" alt="DNP Logo" class="w-10 h-10 object-contain">
       </div>
       <div>
         <h1 class="text-xl font-bold leading-none tracking-wide">DNP ระบบสารบบคดีเชิงพื้นที่ (Supabase)</h1>
@@ -36,7 +35,7 @@
       <button onclick="switchTab('timber')" id="tab-timber" class="pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600"><i class="fa-solid fa-cubes-wood mr-2"></i> คดีไม้ผิดกฎหมาย</button>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 h-[380px] mb-6" id="map"></div>
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 h-[450px] mb-6" id="map"></div>
 
     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
       <button onclick="openFormModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center">
@@ -94,9 +93,19 @@
           <div><label class="block text-xs font-bold text-gray-600 mb-1">หน่วยงานที่ดำเนินการ</label><input type="text" id="agency" required placeholder="เช่น สปป.3 (ภาคเหนือ)" class="w-full border p-2.5 rounded-lg outline-none"></div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1">จำนวนผู้ต้องหา (ราย)</label>
-          <input type="number" id="suspectsCount" min="0" value="0" required class="w-full border p-2.5 rounded-lg outline-none">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">จำนวนผู้ต้องหา (ราย)</label>
+            <input type="number" id="suspectsCount" min="0" value="0" required class="w-full border p-2.5 rounded-lg outline-none">
+          </div>
+          <div id="areaFieldsSection">
+            <label class="block text-xs font-bold text-gray-600 mb-1">พื้นที่บุกรุก (ไร่-งาน-ตร.ว.)</label>
+            <div class="grid grid-cols-3 gap-1">
+              <input type="number" id="rai" value="0" min="0" placeholder="ไร่" class="border p-2 rounded-lg text-center text-sm outline-none">
+              <input type="number" id="ngarn" value="0" min="0" max="3" placeholder="งาน" class="border p-2 rounded-lg text-center text-sm outline-none">
+              <input type="number" id="wa" value="0" min="0" max="99" placeholder="ตร.ว." class="border p-2 rounded-lg text-center text-sm outline-none">
+            </div>
+          </div>
         </div>
 
         <div>
@@ -128,32 +137,79 @@
     let currentActiveTab = 'encroachment';
     let mapInstance;
     
-    // 💡 สร้าง Layer Group แยกสำหรับแต่ละประเภทคดี เพื่อใช้สลับเปิด-ปิดเลเยอร์ใน Map
+    // 📂 เลเยอร์สำหรับกลุ่มข้อมูลคดีแปลงที่ดิน (Dynamic Data)
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
-    let layerControlInstance = null;
     
+    // ⛰️ เลเยอร์สำหรับแนวเขตป่าอ้างอิงทั้งจังหวัด (Static Reference Layers จากลิงก์ที่คุณส่งมา)
+    let conservationForestLayer = L.layerGroup();
+    let reserveForestLayer = L.layerGroup();
+    
+    let layerControlInstance = null;
     window.mapLayersRegistry = {};
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
+    // 🔗 ลิงก์ที่อัปโหลดแยกแนวเขตป่าสงวนและป่าอนุรักษ์บน Supabase Storage ตัวจริงของคุณ
+    const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
+    const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
+
     function setupMap() {
+      // ตั้งศูนย์กลางแผนที่ไปที่จังหวัดลำปางเป็นหลัก
       mapInstance = L.map('map').setView([18.29, 99.50], 9); 
       
-      // พื้นหลังแผนที่ฐาน (Base Layer)
-      let openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+      // ดึงแผนที่พื้นฐานภูมิประเทศ (Base Layer)
+      let openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(mapInstance);
       
-      // สั่งเปิดทำงานกลุ่มเลเยอร์ข้อมูลลงแผนที่หลัก
+      // สั่งให้เลเยอร์คดี และ เลเยอร์ป่าอ้างอิง วาดทำงานร่วมกับแผนที่พร้อมกัน
       encroachmentLayerGroup.addTo(mapInstance);
       timberLayerGroup.addTo(mapInstance);
+      conservationForestLayer.addTo(mapInstance);
+      reserveForestLayer.addTo(mapInstance);
 
-      // โครงสร้างกล่องควบคุมเลเยอร์เปิด-ปิดบริเวณมุมขวาบนของ Map
-      let baseMaps = { "แผนที่พื้นฐาน": openStreetMap };
+      // สร้างกล่องสวิตช์เปิด-ปิดเลเยอร์ภายใน Map (มุมขวาบน)
+      let baseMaps = { "แผนที่ภูมิประเทศ (OSM)": openStreetMap };
       let overlayMaps = {
-        "<span style='color: #065f46; font-weight: bold;'>⚠️ คดีบุกรุกพื้นที่ป่า</span>": encroachmentLayerGroup,
-        "<span style='color: #92400e; font-weight: bold;'>🪵 คดีไม้ผิดกฎหมาย</span>": timberLayerGroup
+        "<span style='color: #ef4444; font-weight: bold;'><i class='fa-solid fa-person-trespassing mr-1'></i> แปลงคดีบุกรุกพื้นที่ป่า</span>": encroachmentLayerGroup,
+        "<span style='color: #b45309; font-weight: bold;'><i class='fa-solid fa-cubes-wood mr-1'></i> แปลงคดีไม้ผิดกฎหมาย</span>": timberLayerGroup,
+        "<span style='color: #047857; font-weight: bold;'><i class='fa-solid fa-mountain mr-1'></i> แนวเขตป่าอนุรักษ์ / อุทยาน</span>": conservationForestLayer,
+        "<span style='color: #ec4899; font-weight: bold;'><i class='fa-solid fa-tree mr-1'></i> แนวเขตป่าสงวนแห่งชาติ</span>": reserveForestLayer
       };
 
       layerControlInstance = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(mapInstance);
+      
+      // เรียกโหลดไฟล์ขอบเขตป่าอ้างอิงมาเรนเดอร์ลงพื้นหลังแผนที่
+      loadReferenceForestLayers();
+    }
+
+    // ⛰️ ฟังก์ชันดึงแนวเขตป่าอ้างอิงทั้งจังหวัดจาก Supabase มาวาดแบบแยกเฉดสี
+    function loadReferenceForestLayers() {
+      // 1. โหลดข้อมูลป่าอนุรักษ์/อุทยาน (ถมสีเขียวพาสเทล ขอบเขียวเข้ม)
+      fetch(URL_CONSERVATION_FOREST)
+        .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+        .then(geojsonData => {
+          L.geoJSON(geojsonData, {
+            style: { color: "#047857", weight: 1.5, fillColor: "#a7f3d0", fillOpacity: 0.25 },
+            onEachFeature: (f, layer) => {
+              let pName = f.properties.NAME_TH || f.properties.name || f.properties.NAM_T || 'ไม่ระบุชื่อกลุ่มป่า';
+              layer.bindPopup(`<div class='p-1'><b class='text-emerald-800 text-sm'>⛰️ เขตป่าอนุรักษ์/อุทยานแห่งชาติ</b><br><span class='text-xs text-gray-600'><b>ชื่อพื้นที่:</b> ${pName}</span></div>`);
+            }
+          }).addTo(conservationForestLayer);
+        }).catch(e => console.error("ไม่สามารถเชื่อมต่อเลเยอร์ขอบเขตป่าอนุรักษ์ได้", e));
+
+      // 2. โหลดข้อมูลป่าสงวนแห่งชาติ (ถมสีชมพูพาสเทล ขอบชมพูเข้ม)
+      fetch(URL_RESERVE_FOREST)
+        .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+        .then(geojsonData => {
+          L.geoJSON(geojsonData, {
+            style: { color: "#db2777", weight: 1.5, fillColor: "#fbcfe8", fillOpacity: 0.25 },
+            onEachFeature: (f, layer) => {
+              let pName = f.properties.NAME_TH || f.properties.name || f.properties.NAM_T || 'ไม่ระบุชื่อกลุ่มป่า';
+              layer.bindPopup(`<div class='p-1'><b class='text-pink-800 text-sm'>🌳 เขตป่าสงวนแห่งชาติ</b><br><span class='text-xs text-gray-600'><b>ชื่อพื้นที่:</b> ${pName}</span></div>`);
+            }
+          }).addTo(reserveForestLayer);
+        }).catch(e => console.error("ไม่สามารถเชื่อมต่อเลเยอร์ขอบเขตป่าสงวนแห่งชาติได้", e));
     }
 
     function clearAllMapLayers() { 
@@ -162,7 +218,19 @@
       window.mapLayersRegistry = {};
     }
 
-    function openFormModal() { document.getElementById('formModal').style.display = 'flex'; if (currentActiveTab === 'encroachment') { document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่า'; document.getElementById('timberFieldsSection').classList.add('hidden'); } else { document.getElementById('modalTitle').textContent = 'บันทึกคดีไม้ผิดกฎหมาย'; document.getElementById('timberFieldsSection').classList.remove('hidden'); } }
+    function openFormModal() { 
+      document.getElementById('formModal').style.display = 'flex'; 
+      if (currentActiveTab === 'encroachment') { 
+        document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่า'; 
+        document.getElementById('timberFieldsSection').classList.add('hidden'); 
+        document.getElementById('areaFieldsSection').classList.remove('hidden');
+      } else { 
+        document.getElementById('modalTitle').textContent = 'บันทึกคดีไม้ผิดกฎหมาย'; 
+        document.getElementById('timberFieldsSection').classList.remove('hidden'); 
+        document.getElementById('areaFieldsSection').classList.add('hidden');
+      } 
+    }
+    
     function closeFormModal() { document.getElementById('formModal').style.display = 'none'; document.getElementById('unifiedForm').reset(); document.getElementById('filenameDisplay').classList.add('hidden'); document.getElementById('zipLabelText').classList.remove('hidden'); }
     function displaySelectedFilename() { const f = document.getElementById('shpZipFile').files[0]; if(f) { document.getElementById('filenameDisplay').textContent = "เลือกไฟล์แล้ว: " + f.name; document.getElementById('filenameDisplay').classList.remove('hidden'); document.getElementById('zipLabelText').classList.add('hidden'); } }
 
@@ -192,26 +260,25 @@
       } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; }
     }
 
-    // 💡 ฟังก์ชันคำนวณแยกโทนสีตามประเภทป่าและผลการดำเนินคดี
+    // 💡 ฟังก์ชันคำนวณแยกสีแปลงคดี (ขอบเส้นแบ่งตามสถานะคดี, สีถมพื้นหลังแบ่งตามประเภทพื้นที่คดีเพื่อความเด่นชัด)
     function getCaseStyle(locationText, isFinished) {
       let text = locationText || '';
-      // 1. แยกสีพื้นหลัง (Fill Color) ตามกฎพื้นที่ป่า
-      let fillColor = "#f59e0b"; // สีส้มเหลืองเริ่มต้น (กรณีคดีทั่วไปนอกเขต)
+      let fillColor = "#f59e0b"; // สีส้มเหลืองเริ่มต้น (กรณีระบุสถานที่ทั่วไป)
       
       if (text.includes("อุทยาน") || text.includes("อนุรักษ์") || text.includes("สัตว์ป่า") || text.includes("เตรียมการ")) {
-        fillColor = "#065f46"; // ป่าอนุรักษ์ธรรมชาติ = สีเขียวเข้ม
+        fillColor = "#065f46"; // แปลงคดีเกิดในเขตป่าอนุรักษ์ธรรมชาติ = ถมเข้มขึ้น
       } else if (text.includes("ป่าสงวน") || text.includes("แห่งชาติ")) {
-        fillColor = "#ec4899"; // ป่าสงวนแห่งชาติ = สีชมพู/แดงเข้ม
+        fillColor = "#b11226"; // แปลงคดีเกิดในเขตป่าสงวนแห่งชาติ = ถมแดงเข้มสว่าง
       }
 
-      // 2. แยกสีขอบเส้น (Border Color) ตามสถานะความคืบหน้าทางกฎหมาย
-      let strokeColor = isFinished ? "#10b981" : "#ef4444"; // คดีเสร็จสิ้น = ขอบเขียวสด, คดีค้างคา = ขอบแดงเตือนภัย
+      // เส้นขอบแปลงคดี: คดีเสร็จสิ้น = ขอบเขียวสด (#10b981), อยู่ระหว่างดำเนินคดี = ขอบแดงสดเตือนภัย (#ef4444)
+      let strokeColor = isFinished ? "#10b981" : "#ef4444"; 
       
       return {
         color: strokeColor,
         weight: 3.5,
         fillColor: fillColor,
-        fillOpacity: 0.45
+        fillOpacity: 0.6
       };
     }
 
@@ -219,14 +286,12 @@
       const bodyRow = document.getElementById('table-body-row');
       if(!data || data.length === 0) { bodyRow.innerHTML = '<tr><td class="p-8 text-center text-gray-400">ไม่พบสารบบบันทึกคดีในระบบคลาวด์ขณะนี้</td></tr>'; return; }
       
-      // เลือก Target กลุ่มเลเยอร์แผนที่ให้ตรงกับแท็บปัจจุบัน
       let targetLayerGroup = (currentActiveTab === 'encroachment') ? encroachmentLayerGroup : timberLayerGroup;
       
       bodyRow.innerHTML = data.map((item, idx) => {
         const uniqueKey = currentActiveTab + "_" + item.id;
 
         if (item.geojson_data) {
-          // คำนวณขอบเขตสไตล์แยกสีตามป่าสงวน/ป่าอนุรักษ์
           let currentStyle = getCaseStyle(item.location, item.is_finished);
           
           if (typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
@@ -238,14 +303,12 @@
                   onEachFeature: (f, layer) => {
                     layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
                   }
-                }).addTo(targetLayerGroup); // โยนเข้ากลุ่มเลเยอร์ย่อยเพื่อให้เปิด-ปิดได้ภายใน Map
+                }).addTo(targetLayerGroup);
                 
                 window.mapLayersRegistry[uniqueKey] = mapLayer;
-                autoFitMapBounds();
               })
-              .catch(e => console.error("ดาวน์โหลดโครงสร้าง GeoJSON พลาด:", e));
+              .catch(e => console.error("ดาวน์โหลดโครงสร้าง GeoJSON ของคดีพลาด:", e));
           } else {
-            // โหมดดึงข้อมูลคดีเก่าที่เซฟเป็นก้อนวัตถุในตารางพิกัด
             try {
               let parsedGeo = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data;
               let mapLayer = L.geoJSON(parsedGeo, {
@@ -269,9 +332,9 @@
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
             <td class="p-4">${item.case_date}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
-            <td class="p-2 text-center text-amber-800 font-bold">${item.rai}</td>
-            <td class="p-2 text-center">${item.ngarn}</td>
-            <td class="p-2 text-center">${item.wa}</td>
+            <td class="p-2 text-center text-amber-800 font-bold">${item.rai || 0}</td>
+            <td class="p-2 text-center">${item.ngarn || 0}</td>
+            <td class="p-2 text-center">${item.wa || 0}</td>
             <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
             <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
             <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
@@ -285,9 +348,9 @@
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
             <td class="p-4">${item.case_date}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
-            <td class="p-4 font-semibold">${item.timber_type}</td>
-            <td class="p-2 text-center text-blue-800 font-bold">${item.vol_logs}</td>
-            <td class="p-2 text-center text-teal-800 font-bold">${item.vol_processed}</td>
+            <td class="p-4 font-semibold">${item.timber_type || '-'}</td>
+            <td class="p-2 text-center text-blue-800 font-bold">${item.vol_logs || 0}</td>
+            <td class="p-2 text-center text-teal-800 font-bold">${item.vol_processed || 0}</td>
             <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
             <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
             <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
@@ -298,20 +361,6 @@
           </tr>`;
         }
       }).join('');
-
-      autoFitMapBounds();
-    }
-
-    function autoFitMapBounds() {
-      // รวมขอบเขตเลเยอร์ที่มีทั้งหมดเพื่อซูมแผนที่จับหน้าจอให้อยู่ตรงกลางแปลงที่ดินโดยอัตโนมัติ
-      let combinedFeatures = [];
-      encroachmentLayerGroup.eachLayer(l => combinedFeatures.push(l));
-      timberLayerGroup.eachLayer(l => combinedFeatures.push(l));
-      
-      if(combinedFeatures.length > 0) {
-        let g = new L.featureGroup(combinedFeatures);
-        mapInstance.fitBounds(g.getBounds(), { padding: [30, 30] });
-      }
     }
 
     function zoomToCaseLayer(k) { 
@@ -319,7 +368,6 @@
         let l = window.mapLayersRegistry[k]; 
         document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
         
-        // บังคับสั่งเปิดแสดงกลุ่มข้อมูลคดีนั้นๆ ทันทีหากผู้ใช้งานติ๊กปิดอยู่ก่อนหน้าในเมนูย่อย
         if (k.startsWith('encroachment')) { mapInstance.addLayer(encroachmentLayerGroup); }
         else { mapInstance.addLayer(timberLayerGroup); }
 
@@ -330,7 +378,7 @@
         } 
         setTimeout(()=> l.openPopup(), 600); 
       } else {
-        alert("แปลงพิกัดคดีกำลังประมวลผลดึงข้อมูล กรุณาลองกดส่องใหม่อีกครั้งใน 1 วินาทีครับ");
+        alert("แปลงพิกัดคดีกำลังเรนเดอร์ลงแผนที่หลัก กรุณาลองกดปุ่มส่องอีกครั้งใน 1 วินาทีครับ");
       }
     }
 
@@ -338,7 +386,7 @@
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> เซิร์ฟเวอร์กำลังประมวลผลข้อมูล GIS...`;
+      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังวิเคราะห์และแปลงค่า GIS...`;
 
       const fd = new FormData();
       fd.append("case_type", currentActiveTab);
@@ -354,7 +402,11 @@
       const pdfFileInput = document.getElementById('pdfFile').files[0];
       if (pdfFileInput) { fd.append("pdf_file", pdfFileInput); }
 
-      if (currentActiveTab === 'timber') {
+      if (currentActiveTab === 'encroachment') {
+        fd.append("rai", document.getElementById('rai').value);
+        fd.append("ngarn", document.getElementById('ngarn').value);
+        fd.append("wa", document.getElementById('wa').value);
+      } else if (currentActiveTab === 'timber') {
         fd.append("timber_type", document.getElementById('timberType').value);
         fd.append("width", document.getElementById('width').value);
         fd.append("length", document.getElementById('length').value);
@@ -366,14 +418,14 @@
       try {
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
         const result = await res.json();
-        if(result.success) { alert("🎉 ประมวลผลและเก็บบันทึกข้อมูลลงฐานข้อมูล Supabase สำเร็จแล้ว"); closeFormModal(); loadTableData(); } 
+        if(result.success) { alert("🎉 บันทึกพิกัดและข้อมูลสารบบคดีลง Supabase สำเร็จแล้ว"); closeFormModal(); loadTableData(); } 
         else { alert("เกิดข้อผิดพลาด: " + result.detail); }
-      } catch(err) { alert("ไม่สามารถติดต่อกับเซิร์ฟเวอร์หลักทางภูมิสารสนเทศได้"); } 
+      } catch(err) { alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ประมวลผล GIS หลังบ้านได้"); } 
       finally { submitBtn.disabled = false; submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; }
     };
 
     async function deleteCase(cNo) {
-      if(confirm(`ยืนยันการลบข้อมูลคดีรหัสเลขที่ ${cNo} ออกจากฐานข้อมูลส่วนกลางถาวรหรือไม่?`)) {
+      if(confirm(`คุณต้องการลบพิกัดและข้อมูลคดีเลขที่ ${cNo} ออกจากฐานข้อมูลถาวรใช่หรือไม่?`)) {
         try {
           const res = await fetch(`${API_BASE_URL}/delete-case/${currentActiveTab}/${cNo}`, { method: "DELETE" });
           const result = await res.json();
