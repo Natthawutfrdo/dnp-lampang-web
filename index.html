@@ -12,6 +12,8 @@
   <style>
     body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
     .nav-active { border-bottom: 4px solid #059669; color: #059669; }
+    /* ปรับแต่งกล่องควบคุมแผนที่ให้สวยงามเข้ากับเว็บ */
+    .leaflet-control-layers { font-family: 'Sarabun', sans-serif; border-radius: 12px !important; padding: 10px !important; border: none !important; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -38,7 +40,7 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 h-[450px] mb-6" id="map"></div>
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 h-[500px] mb-6" id="map"></div>
 
     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
       <button onclick="openFormModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition flex items-center">
@@ -114,7 +116,7 @@
           </div>
         </div>
 
-        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้า)</label><textarea id="caseStatus" rows="3" required placeholder="อธิบายรายละเอียดขั้นตอนความคืบหน้าของคดี..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea></div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้า)</label><textarea id="caseStatus" rows="3" required placeholder="รายละเอียดขั้นตอนความคืบหน้า..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea></div>
         <div><label class="block text-xs font-bold text-gray-600 mb-1">อัปโหลดไฟล์เอกสารสำนวน PDF (ถ้ามี)</label><input type="file" id="pdfFile" accept=".pdf" class="w-full border p-2 rounded-lg bg-slate-50 text-sm"></div>
 
         <div class="border-2 border-dashed border-emerald-300 bg-emerald-50/10 rounded-xl p-4 text-center relative group">
@@ -136,23 +138,128 @@
     let currentActiveTab = 'encroachment';
     let mapInstance;
     let previewMarker = null;
-    let encroachmentLayerGroup = L.layerGroup();
-    let timberLayerGroup = L.layerGroup();
+    let layerControl; // กล่องสำหรับเปิด-ปิดชั้นข้อมูลบนแผนที่
     
-    // 💡 ตั้งค่าที่อยู่ลิงก์ API หลังบ้านของคุณ (ห้ามมีเครื่องหมาย / ปิดท้ายตัวแปร)
+    // --- 🌍 1. ประกาศตัวแปรกลุ่มข้อมูลแผ่นที่ (Layers Group) ---
+    let nationalForestLayer = L.layerGroup();  // ป่าสงวนแห่งชาติ
+    let protectedForestLayer = L.layerGroup(); // ป่าอนุรักษ์ (อุทยาน/รักษาพันธุ์สัตว์ป่า)
+    let encroachmentCasesLayer = L.layerGroup(); // ชั้นข้อมูลหมุดคดีบุกรุก
+    let timberCasesLayer = L.layerGroup();       // ชั้นข้อมูลหมุดคดีป่าไม้
+
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
-    // เริ่มต้นระบบแผนที่ Leaflet ฐานพิกัดจังหวัดลำปาง
+    // --- 🌍 2. ฟังก์ชันเริ่มระบบแผนที่และผูกชั้นข้อมูลพร้อมปุ่มเปิด-ปิด ---
     function setupMap() {
+      // พิกัดศูนย์กลางจังหวัดลำปาง
       mapInstance = L.map('map').setView([18.29, 99.50], 9); 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+      
+      // แผนที่ฐาน (Base Map) จาก OpenStreetMap
+      let osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
         attribution: '&copy; OpenStreetMap contributors' 
       }).addTo(mapInstance);
-      encroachmentLayerGroup.addTo(mapInstance);
-      timberLayerGroup.addTo(mapInstance);
+
+      // เปิดให้ชั้นข้อมูลเริ่มต้นแสดงผลบนหน้าจอทันที
+      encroachmentCasesLayer.addTo(mapInstance);
+      timberCasesLayer.addTo(mapInstance);
+
+      // --- 💡 [ฟังก์ชันที่นำกลับมา] สร้างปุ่มตัวเลือกเปิด-ปิด ชั้นข้อมูล (Layers Control) ---
+      let baseMaps = {
+        "แผนที่เส้นทาง (OpenStreetMap)": osmBase
+      };
+
+      let overlayMaps = {
+        "<span class='text-emerald-700 font-bold'>🌲 พื้นที่ป่าสงวนแห่งชาติ</span>": nationalForestLayer,
+        "<span class='text-teal-700 font-bold'>🌳 พื้นที่ป่าอนุรักษ์ (สบอ.13)</span>": protectedForestLayer,
+        "<span class='text-red-600 font-bold'>📍 หมุดคดีบุกรุกพื้นที่ป่า</span>": encroachmentCasesLayer,
+        "<span class='text-amber-600 font-bold'>🪵 หมุดคดีป่าไม้/ไม้เถื่อน</span>": timberCasesLayer
+      };
+
+      layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(mapInstance);
+
+      // เรียกฟังก์ชันโหลดขอบเขตพื้นที่ป่าจำลองขึ้นแผนที่
+      loadForestBoundaries();
+      
+      // ดึงข้อมูลหมุดคดีจาก Supabase มากระจายปักลงแผนที่
+      fetchAllCasesToMap();
     }
 
-    // ฟังก์ชันเปิดหน้าต่างแบบฟอร์ม
+    // --- 🌲 3. ฟังก์ชันโหลดเส้นแนวเขตป่าไม้จำลอง (สามารถเปลี่ยนตัวแปร URL ไปเป็นไฟล์ GeoJSON จริงของหน่วยงานได้เลยครับ) ---
+    function loadForestBoundaries() {
+      // จำลองพื้นที่ป่าสงวนในเขตลำปาง (วาดเป็น Polygon สีเขียว)
+      L.polygon([
+        [18.45, 99.35], [18.55, 99.35], [18.55, 99.55], [18.45, 99.55]
+      ], { color: 'green', weight: 1, fillColor: '#22c55e', fillOpacity: 0.2 })
+      .bindPopup("<b>🌲 เขตป่าสงวนแห่งชาติ (พื้นที่จำลองตรวจสอบ)</b>")
+      .addTo(nationalForestLayer);
+
+      // จำลองพื้นที่อุทยาน/ป่าอนุรักษ์ในเขตลำปาง (วาดเป็น Polygon สีฟ้าเขียว)
+      L.polygon([
+        [18.15, 99.40], [18.28, 99.40], [18.28, 99.60], [18.15, 99.60]
+      ], { color: 'teal', weight: 1, fillColor: '#0d9488', fillOpacity: 0.25 })
+      .bindPopup("<b>🌳 เขตป่าอนุรักษ์/อุทยานแห่งชาติ (สบอ.13 ลำปาง)</b>")
+      .addTo(protectedForestLayer);
+    }
+
+    // --- 📍 4. ดึงข้อมูลพิกัดคดีทั้งหมดจากฐานข้อมูลมากระจายลงแผนที่พร้อมวาดแนวแปลงรูปปิด ---
+    async function fetchAllCasesToMap() {
+      encroachmentCasesLayer.clearLayers();
+      timberCasesLayer.clearLayers();
+
+      // ดึงข้อมูลฝั่งคดีบุกรุก
+      try {
+        const resEnc = await fetch(`${API_BASE_URL}/get-cases/encroachment`);
+        const encData = await resEnc.json();
+        encData.forEach(item => {
+          if (item.coords && item.coords.length === 2) {
+            // ปักหมุดวงกลมสีแดงสำหรับคดีบุกรุก
+            let marker = L.circleMarker([item.coords[0], item.coords[1]], {
+              radius: 8, fillColor: '#ef4444', color: '#b91c1c', weight: 2, fillOpacity: 0.8
+            }).bindPopup(`
+              <div class="text-sm font-sans">
+                <b class="text-red-600">🔴 คดีบุกรุกพื้นที่ป่า</b><br>
+                <b>เลขคดี:</b> ${item.case_no}<br>
+                <b>สถานที่:</b> ${item.location}<br>
+                <b>เนื้อที่:</b> ${item.rai} ไร่ ${item.ngarn} งาน ${item.wa} วา<br>
+                <a href="${item.geojson_data}" target="_blank" class="text-blue-500 underline text-xs block mt-1">📥 ดาวน์โหลดโครงร่างพิกัด GeoJSON</a>
+              </div>
+            `);
+            marker.addTo(encroachmentCasesLayer);
+            
+            // โหลดดึงผังแปลงจากถังเก็บมาวาดทับลงแผนที่จริงแบบ real-time
+            if (item.geojson_data) {
+              fetch(item.geojson_data).then(r => r.json()).then(geo => {
+                L.geoJSON(geo, { style: { color: '#ef4444', weight: 2, fillOpacity: 0.1 } }).addTo(encroachmentCasesLayer);
+              }).catch(e => console.log("ยังไม่มีไฟล์ผังแผนที่รูปปิด"));
+            }
+          }
+        });
+      } catch(e) { console.log("ดึงคดีบุกรุกลงแผนที่ติดขัด"); }
+
+      // ดึงข้อมูลฝั่งคดีป่าไม้
+      try {
+        const resTimber = await fetch(`${API_BASE_URL}/get-cases/timber`);
+        const timberData = await resTimber.json();
+        timberData.forEach(item => {
+          if (item.coords && item.coords.length === 2) {
+            // ปักหมุดวงกลมสีส้มเหลืองสำหรับคดีป่าไม้
+            let marker = L.circleMarker([item.coords[0], item.coords[1]], {
+              radius: 8, fillColor: '#f59e0b', color: '#d97706', weight: 2, fillOpacity: 0.8
+            }).bindPopup(`
+              <div class="text-sm font-sans">
+                <b class="text-amber-600">🪵 คดีไม้ผิดกฎหมาย</b><br>
+                <b>เลขคดี:</b> ${item.case_no}<br>
+                <b>ชนิดไม้:</b> ${item.timber_type || 'ไม่ระบุ'}<br>
+                <b>ของกลาง:</b> ปริมาตร ${item.vol_logs || 0} ลบ.ม.<br>
+                <b>สถานที่:</b> ${item.location}
+              </div>
+            `);
+            marker.addTo(timberCasesLayer);
+          }
+        });
+      } catch(e) { console.log("ดึงคดีไม้ลงแผนที่ติดขัด"); }
+    }
+
+    // --- 🛠️ 5. ฟังก์ชันบริหารจัดการระบบหน้าเว็บและแบบฟอร์ม ---
     function openFormModal() { 
       document.getElementById('formModal').style.display = 'flex'; 
       if (currentActiveTab === 'encroachment') { 
@@ -166,7 +273,6 @@
       } 
     }
     
-    // ฟังก์ชันปิดหน้าต่างแบบฟอร์มและคืนค่าสารตั้งต้น
     function closeFormModal() { 
       document.getElementById('formModal').style.display = 'none'; 
       document.getElementById('unifiedForm').reset(); 
@@ -175,7 +281,7 @@
       if(previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
     }
 
-    // ⚡ ฟังก์ชันแรก: ส่องแกะวิเคราะห์ค่าพิกัดพรีวิว และพื้นที่คำนวณอัตโนมัติจากเซิร์ฟเวอร์ทันทีที่เลือกไฟล์
+    // ฟังก์ชันแรกในการดึงพิกัดมาพรีวิวก่อนบันทึกจริง
     async function displaySelectedFilename() { 
       const fileInput = document.getElementById('shpZipFile');
       const f = fileInput.files[0]; 
@@ -195,14 +301,12 @@
         if (res.ok && result.success) {
           document.getElementById('filenameDisplay').textContent = "ดึงพิกัดแผนที่สำเร็จ: " + f.name;
           
-          // ส่งค่าเนื้อที่ดินเข้าหน้าแบบฟอร์ม (เฉพาะคดีบุกรุก)
           if (currentActiveTab === 'encroachment') {
             document.getElementById('rai').value = result.rai;
             document.getElementById('ngarn').value = result.ngarn;
             document.getElementById('wa').value = result.wa;
           }
 
-          // ปักหมุดชั่วคราวเพื่อรีวิวสถานที่จุดกึ่งกลางแปลงคดี
           if(previewMarker) { mapInstance.removeLayer(previewMarker); }
           previewMarker = L.marker([result.lat, result.lon]).addTo(mapInstance)
             .bindPopup(`<b class="text-emerald-700">📍 พิกัดศูนย์กลางคดีบุกรุก</b><br><span class="text-xs">จุดตรวจสอบเบื้องต้นจากแปลงในไฟล์ .zip</span>`)
@@ -211,8 +315,7 @@
           document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
           mapInstance.setView([result.lat, result.lon], 14);
         } else {
-          const errMsg = result.detail || "โครงสร้างไฟล์ .shp ไม่ถูกต้อง";
-          alert("อ่านไฟล์พิกัดไม่สำเร็จ: " + errMsg);
+          alert("อ่านไฟล์พิกัดไม่สำเร็จ: " + (result.detail || "โครงสร้างไฟล์ .shp มีปัญหา"));
           closeFormModal();
         }
       } catch (err) {
@@ -221,7 +324,6 @@
       }
     }
 
-    // ฟังก์ชันสลับแท็บสารบบข้อมูล
     function switchTab(mode) {
       currentActiveTab = mode;
       document.getElementById('tab-enc').className = mode === 'encroachment' ? 'pb-2 font-bold text-lg nav-active' : 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
@@ -229,7 +331,6 @@
       loadTableData();
     }
 
-    // ดึงข้อมูลรายชื่อคดีจากเซิร์ฟเวอร์
     async function loadTableData() {
       const bodyRow = document.getElementById('table-body-row');
       bodyRow.innerHTML = '<tr><td class="p-4 text-center text-gray-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังอัปเดตสารบบข้อมูล...</td></tr>';
@@ -238,11 +339,10 @@
         const data = await res.json();
         renderGrid(data);
       } catch (err) { 
-        bodyRow.innerHTML = '<tr><td class="p-4 text-red-500 text-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> ไม่สามารถเชื่อมต่อเรียกข้อมูลจากเซิร์ฟเวอร์ปลายทางได้</td></tr>'; 
+        bodyRow.innerHTML = '<tr><td class="p-4 text-red-500 text-center">ไม่สามารถเชื่อมต่อเรียกข้อมูลจากเซิร์ฟเวอร์ปลายทางได้</td></tr>'; 
       }
     }
 
-    // ประกอบโครงตารางข้อมูล
     function renderGrid(data) {
       const headerRow = document.getElementById('table-header-row');
       const bodyRow = document.getElementById('table-body-row');
@@ -264,7 +364,7 @@
       `).join('');
     }
 
-    // ⚡ ฟังก์ชันที่สอง: ส่งบันทึกข้อมูลและแนบไฟล์ขนาดยักษ์จัดทำโครงสร้าง Hybrid Storage ลงฐานข้อมูล
+    // บันทึกข้อมูลคดีส่งขึ้นระบบเซิร์ฟเวอร์
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -301,28 +401,25 @@
 
       try {
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
-        
-        // แปลงผลลัพธ์คำตอบเป็น Object ก่อนนำไปแกะข้อมูลตรวจสอบความถูกต้อง
         const result = await res.json();
         
         if (res.ok && result.success) { 
           alert("🎉 บันทึกคดีและจัดพิกัดลงถังเก็บข้อมูลเรียบร้อยแล้วครับ!"); 
           closeFormModal(); 
-          loadTableData(); 
+          loadTableData();
+          fetchAllCasesToMap(); // สั่งรีเฟรชหมุดคดีบนแผนที่ให้ปรากฏทันที
         } else { 
-          // แกะข้อความแจ้งเตือนความผิดพลาดจริงจาก Supabase/FastAPI ออกมาแสดงบนกล่องสยบบั๊ก undefined
           const errorMsg = result.error || result.detail || JSON.stringify(result);
           alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์ฐานข้อมูล: " + errorMsg); 
         }
       } catch(err) { 
-        alert("ไม่สามารถส่งแพ็กเก็ตข้อมูลหาเซิร์ฟเวอร์หลักได้สำเร็จ: " + err.message); 
+        alert("ไม่สามารถส่งข้อมูลหาเซิร์ฟเวอร์หลักได้สำเร็จ: " + err.message); 
       } finally { 
         submitBtn.disabled = false; 
         submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; 
       }
     };
 
-    // ฟังก์ชันค้นหากรองคำในตารางแบบเรียลไทม์
     function filterDataGrid() { 
       let q = document.getElementById("tableSearchInput").value.toLowerCase(); 
       let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); 
@@ -333,7 +430,6 @@
       } 
     }
 
-    // ฟังก์ชันลบข้อมูลคดีออกจากระบบ
     async function deleteCase(cNo) { 
       if(confirm(`ยืนยันการลบข้อมูลคดีเลขที่คดีที่ ${cNo} ออกจากฐานข้อมูลถาวร?`)) { 
         try {
@@ -341,16 +437,12 @@
           if(res.ok) {
             alert("ลบข้อมูลสำเร็จ");
             loadTableData(); 
-          } else {
-            alert("ไม่สามารถสั่งลบข้อมูลได้");
-          }
-        } catch(err) {
-          alert("เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อส่งคำสั่งลบ");
-        }
+            fetchAllCasesToMap();
+          } else { alert("ไม่สามารถสั่งลบข้อมูลได้"); }
+        } catch(err) { alert("เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อส่งคำสั่งลบ"); }
       } 
     }
 
-    // สั่งเปิดตัวระบบสารตั้งต้นเมื่อเปิดหน้าเว็บ
     window.onload = () => { setupMap(); switchTab('encroachment'); };
   </script>
 </body>
