@@ -69,15 +69,15 @@
           <div><label class="block text-xs font-bold text-gray-600 mb-1">เลขคดีที่</label><input type="text" id="caseNo" required placeholder="เช่น 14/2569" class="w-full border p-2.5 rounded-lg outline-none"></div>
           <div><label class="block text-xs font-bold text-gray-600 mb-1">วัน/เดือน/ปี เกิดเหตุ</label><input type="text" id="caseDate" placeholder="เช่น 04/06/2569" required class="w-full border p-2.5 rounded-lg outline-none"></div>
         </div>
-        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ระบุตําบล อำเภอ และอุทยาน/ป่าสงวน" class="w-full border p-2.5 rounded-lg outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ระบุตําบล อำเภอ" class="w-full border p-2.5 rounded-lg outline-none"></div>
         
         <div id="timberFieldsSection" class="hidden space-y-4 bg-amber-50/50 p-3 rounded-xl border border-amber-200">
           <div class="grid grid-cols-2 gap-2">
             <div><label class="text-xs font-bold text-gray-600">ชนิดไม้</label><input type="text" id="timberType" class="w-full border p-2 rounded-lg bg-white"></div>
             <div class="grid grid-cols-3 gap-1">
-              <div><label class="text-xs text-gray-500">กว้าง</label><input type="text" id="width" value="-" class="w-full border p-1 rounded-md text-center bg-white"></div>
-              <div><label class="text-xs text-gray-500">ยาว</label><input type="text" id="length" value="-" class="w-full border p-1 rounded-md text-center bg-white"></div>
-              <div><label class="text-xs text-gray-500">โต</label><input type="text" id="size" value="-" class="w-full border p-1 rounded-md text-center bg-white"></div>
+              <div><label class="text-xs text-gray-500">กว้าง</label><input type="text" id="width" value="0" class="w-full border p-1 rounded-md text-center bg-white"></div>
+              <div><label class="text-xs text-gray-500">ยาว</label><input type="text" id="length" value="0" class="w-full border p-1 rounded-md text-center bg-white"></div>
+              <div><label class="text-xs text-gray-500">โต</label><input type="text" id="size" value="0" class="w-full border p-1 rounded-md text-center bg-white"></div>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
@@ -103,7 +103,7 @@
           </div>
         </div>
 
-        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้าขั้นตอนดำเนินคดี)</label><textarea id="caseStatus" rows="3" required placeholder="รายละเอียดความคืบหน้า..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea></div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้า)</label><textarea id="caseStatus" rows="3" required placeholder="รายละเอียดขั้นตอน..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea></div>
         <div><label class="block text-xs font-bold text-gray-600 mb-1">อัปโหลดไฟล์เอกสาร PDF (ถ้ามี)</label><input type="file" id="pdfFile" accept=".pdf" class="w-full border p-2 rounded-lg bg-slate-50 text-sm"></div>
 
         <div class="border-2 border-dashed border-emerald-300 bg-emerald-50/10 rounded-xl p-4 text-center relative group">
@@ -127,7 +127,6 @@
     let previewMarker = null;
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
-    window.mapLayersRegistry = {};
     
     // ตั้งค่า URL หลังบ้านเดี่ยวตัวจริงของคุณ
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
@@ -160,7 +159,6 @@
       if(previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
     }
 
-    // ฟังก์ชันยิงไปถอดรหัส GIS พิกัดและพื้นที่มาพรีวิวลงฟอร์มอัตโนมัติ
     async function displaySelectedFilename() { 
       const fileInput = document.getElementById('shpZipFile');
       const f = fileInput.files[0]; 
@@ -188,11 +186,11 @@
 
           if(previewMarker) { mapInstance.removeLayer(previewMarker); }
           previewMarker = L.marker([result.lat, result.lon]).addTo(mapInstance)
-            .bindPopup(`<b class="text-emerald-700">📍 พิกัดศูนย์กลางคดี</b><br><span class="text-xs">ส่องตำแหน่งจากไฟล์: ${f.name}</span>`)
+            .bindPopup(`<b class="text-emerald-700">📍 พิกัดศูนย์กลางคดี</b><br><span class="text-xs">ไฟล์: ${f.name}</span>`)
             .openPopup();
           
           document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
-          mapInstance.setView([result.lat, result.lon], 15);
+          mapInstance.setView([result.lat, result.lon], 14);
         } else {
           alert("อ่านไฟล์ไม่สำเร็จ: " + result.detail);
         }
@@ -235,12 +233,11 @@
       `).join('');
     }
 
-    // 🛠️ ส่วนสำคัญ: แก้ไขลิงก์ส่งข้อมูลให้มีสแลชปิดท้าย ป้องกันปัญหาเด่ง 404 Not Found 
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังส่งข้อมูลคดีขึ้นฐานข้อมูล...`;
+      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังอัปโหลดและประมวลผลบนเซิร์ฟเวอร์...`;
 
       const fd = new FormData();
       fd.append("case_type", currentActiveTab);
@@ -263,20 +260,22 @@
         fd.append("wa", document.getElementById('wa').value);
       } else {
         fd.append("timber_type", document.getElementById('timberType').value);
+        fd.append("width", document.getElementById('width').value);
+        fd.append("length", document.getElementById('length').value);
+        fd.append("size", document.getElementById('size').value);
         fd.append("vol1", document.getElementById('vol1').value);
         fd.append("vol2", document.getElementById('vol2').value);
       }
 
       try {
-        // อัปเดตเติมตัวสแลช (/) ปิดท้ายเรียบร้อยให้แมตช์กับหลังบ้าน
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
         const result = await res.json();
         if(result.success) { 
-          alert("🎉 บันทึกคดีและแผนที่ลง Supabase บนคลาวด์สำเร็จแล้วครับ!"); 
+          alert("🎉 บันทึกคดีและพล็อตพิกัดเข้าถังเก็บเรียบร้อยแล้วครับ!"); 
           closeFormModal(); 
           loadTableData(); 
         } else { 
-          alert("เกิดข้อผิดพลาด: " + result.detail); 
+          alert("เกิดข้อผิดพลาดจากฐานข้อมูล: " + result.error); 
         }
       } catch(err) { 
         alert("ไม่สามารถส่งข้อมูลหาเซิร์ฟเวอร์หลักได้สำเร็จ"); 
