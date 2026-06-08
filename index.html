@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ระบบสารบบคดีเชิงพื้นที่ - สบอ.13 ลำปาง</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -19,10 +19,10 @@
   <nav class="bg-gradient-to-r from-emerald-800 to-slate-900 text-white shadow-md px-6 py-3 flex justify-between items-center">
     <div class="flex items-center space-x-3">
       <div class="bg-white p-1 rounded-full shadow-sm flex items-center justify-center w-12 h-12 overflow-hidden">
-        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png">
+        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B5%E0%B8%B2%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B  A%E0%B9%88%E0%B8%82%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B  A%E0%B8%A5%E0%B8%B5%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" onerror="this.src='https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=80&q=80'" alt="DNP Logo" class="w-10 h-10 object-contain">
       </div>
       <div>
-        <h1 class="text-xl font-bold leading-none tracking-wide">DNP ระบบสารบบคดีเชิงพื้นที่</h1>
+        <h1 class="text-xl font-bold leading-none tracking-wide">DNP ระบบสารบบคดีเชิงพื้นที่ (Supabase)</h1>
         <p class="text-xs opacity-75 mt-1">สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</p>
       </div>
     </div>
@@ -137,11 +137,8 @@
     let currentActiveTab = 'encroachment';
     let mapInstance;
     
-    // 📂 เลเยอร์สำหรับกลุ่มข้อมูลคดีแปลงที่ดิน (Dynamic Data)
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
-    
-    // ⛰️ เลเยอร์สำหรับแนวเขตป่าอ้างอิงทั้งจังหวัด (Static Reference Layers จากลิงก์ที่คุณส่งมา)
     let conservationForestLayer = L.layerGroup();
     let reserveForestLayer = L.layerGroup();
     
@@ -149,26 +146,21 @@
     window.mapLayersRegistry = {};
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
-    // 🔗 ลิงก์ที่อัปโหลดแยกแนวเขตป่าสงวนและป่าอนุรักษ์บน Supabase Storage ตัวจริงของคุณ
     const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
     const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
 
     function setupMap() {
-      // ตั้งศูนย์กลางแผนที่ไปที่จังหวัดลำปางเป็นหลัก
       mapInstance = L.map('map').setView([18.29, 99.50], 9); 
       
-      // ดึงแผนที่พื้นฐานภูมิประเทศ (Base Layer)
       let openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(mapInstance);
       
-      // สั่งให้เลเยอร์คดี และ เลเยอร์ป่าอ้างอิง วาดทำงานร่วมกับแผนที่พร้อมกัน
       encroachmentLayerGroup.addTo(mapInstance);
       timberLayerGroup.addTo(mapInstance);
       conservationForestLayer.addTo(mapInstance);
       reserveForestLayer.addTo(mapInstance);
 
-      // สร้างกล่องสวิตช์เปิด-ปิดเลเยอร์ภายใน Map (มุมขวาบน)
       let baseMaps = { "แผนที่ภูมิประเทศ (OSM)": openStreetMap };
       let overlayMaps = {
         "<span style='color: #ef4444; font-weight: bold;'><i class='fa-solid fa-person-trespassing mr-1'></i> แปลงคดีบุกรุกพื้นที่ป่า</span>": encroachmentLayerGroup,
@@ -178,14 +170,10 @@
       };
 
       layerControlInstance = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(mapInstance);
-      
-      // เรียกโหลดไฟล์ขอบเขตป่าอ้างอิงมาเรนเดอร์ลงพื้นหลังแผนที่
       loadReferenceForestLayers();
     }
 
-    // ⛰️ ฟังก์ชันดึงแนวเขตป่าอ้างอิงทั้งจังหวัดจาก Supabase มาวาดแบบแยกเฉดสี
     function loadReferenceForestLayers() {
-      // 1. โหลดข้อมูลป่าอนุรักษ์/อุทยาน (ถมสีเขียวพาสเทล ขอบเขียวเข้ม)
       fetch(URL_CONSERVATION_FOREST)
         .then(res => { if (!res.ok) throw new Error(); return res.json(); })
         .then(geojsonData => {
@@ -198,7 +186,6 @@
           }).addTo(conservationForestLayer);
         }).catch(e => console.error("ไม่สามารถเชื่อมต่อเลเยอร์ขอบเขตป่าอนุรักษ์ได้", e));
 
-      // 2. โหลดข้อมูลป่าสงวนแห่งชาติ (ถมสีชมพูพาสเทล ขอบชมพูเข้ม)
       fetch(URL_RESERVE_FOREST)
         .then(res => { if (!res.ok) throw new Error(); return res.json(); })
         .then(geojsonData => {
@@ -260,18 +247,16 @@
       } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; }
     }
 
-    // 💡 ฟังก์ชันคำนวณแยกสีแปลงคดี (ขอบเส้นแบ่งตามสถานะคดี, สีถมพื้นหลังแบ่งตามประเภทพื้นที่คดีเพื่อความเด่นชัด)
     function getCaseStyle(locationText, isFinished) {
       let text = locationText || '';
-      let fillColor = "#f59e0b"; // สีส้มเหลืองเริ่มต้น (กรณีระบุสถานที่ทั่วไป)
+      let fillColor = "#f59e0b"; 
       
       if (text.includes("อุทยาน") || text.includes("อนุรักษ์") || text.includes("สัตว์ป่า") || text.includes("เตรียมการ")) {
-        fillColor = "#065f46"; // แปลงคดีเกิดในเขตป่าอนุรักษ์ธรรมชาติ = ถมเข้มขึ้น
+        fillColor = "#065f46"; 
       } else if (text.includes("ป่าสงวน") || text.includes("แห่งชาติ")) {
-        fillColor = "#b11226"; // แปลงคดีเกิดในเขตป่าสงวนแห่งชาติ = ถมแดงเข้มสว่าง
+        fillColor = "#b11226"; 
       }
 
-      // เส้นขอบแปลงคดี: คดีเสร็จสิ้น = ขอบเขียวสด (#10b981), อยู่ระหว่างดำเนินคดี = ขอบแดงสดเตือนภัย (#ef4444)
       let strokeColor = isFinished ? "#10b981" : "#ef4444"; 
       
       return {
@@ -327,6 +312,11 @@
         let truncatedStatus = rawStatusText.length > 40 ? rawStatusText.substring(0, 40) + '...' : rawStatusText;
         let pdfButtonHtml = item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" class="text-red-500 hover:text-red-700 text-lg"><i class="fa-solid fa-file-pdf"></i></a>` : `<span class="text-gray-300">-</span>`;
 
+        // 💡 สร้างปุ่มดาวน์โหลดไฟล์ Shapefile ต้นฉบับ (.zip) หากพบลิงก์ในฐานข้อมูล
+        let downloadShpBtnHtml = item.geojson_data && item.geojson_data.startsWith('http') 
+          ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลด Shapefile ตัวจริง" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
+          : `<span class="text-gray-300" title="ไม่มีไฟล์ต้นฉบับ">-</span>`;
+
         if (currentActiveTab === 'encroachment') {
           return `<tr class="hover:bg-emerald-50/30 border-b">
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
@@ -341,7 +331,10 @@
             <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
             <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-emerald-600"></i> ส่อง</button></td>
             <td class="p-4 text-center">${pdfButtonHtml}</td>
-            <td class="p-4 text-center"><button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button></td>
+            <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
+              ${downloadShpBtnHtml}
+              <button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600" title="ลบคดี"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
           </tr>`;
         } else {
           return `<tr class="hover:bg-amber-50/30 border-b">
@@ -357,10 +350,28 @@
             <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
             <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-amber-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-amber-600"></i> ส่อง</button></td>
             <td class="p-4 text-center">${pdfButtonHtml}</td>
-            <td class="p-4 text-center"><button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button></td>
+            <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
+              ${downloadShpBtnHtml}
+              <button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600" title="ลบคดี"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
           </tr>`;
         }
       }).join('');
+    }
+
+    // 💡 ฟังก์ชันสั่งดาวน์โหลดไฟล์พิกัดต้นฉบับออกมาจากคลาวด์โดยตรง
+    function downloadShapefile(fileUrl, caseNo) {
+      if(!fileUrl) return;
+      // ทำการคลีนชื่อไฟล์ป้องกันการติดเว้นวรรคหรือเครื่องหมายทับ
+      const safeCaseNo = caseNo.replace(/\//g, "-");
+      
+      // สั่งเปิดดาวน์โหลดผ่านเบราว์เซอร์
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.setAttribute('download', `Shapefile_Case_${safeCaseNo}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function zoomToCaseLayer(k) { 
