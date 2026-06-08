@@ -19,7 +19,7 @@
   <nav class="bg-gradient-to-r from-emerald-800 to-slate-900 text-white shadow-md px-6 py-3 flex justify-between items-center">
     <div class="flex items-center space-x-3">
       <div class="bg-white p-1 rounded-full shadow-sm flex items-center justify-center w-12 h-12 overflow-hidden">
-        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png">
+        <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" alt="DNP Logo">
       </div>
       <div>
         <h1 class="text-xl font-bold leading-none tracking-wide">DNP ระบบสารบบคดีเชิงพื้นที่</h1>
@@ -69,7 +69,10 @@
       <form id="unifiedForm" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div><label class="block text-xs font-bold text-gray-600 mb-1">เลขคดีที่</label><input type="text" id="caseNo" required placeholder="เช่น 14/2569" class="w-full border p-2.5 rounded-lg outline-none"></div>
-          <div><label class="block text-xs font-bold text-gray-600 mb-1">วัน/เดือน/ปี เกิดเหตุ</label><input type="text" id="caseDate" placeholder="เช่น 04/06/2569" required class="w-full border p-2.5 rounded-lg outline-none"></div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">วัน/เดือน/ปี เกิดเหตุ</label>
+            <input type="date" id="caseDate" required class="w-full border p-2.5 rounded-lg outline-none text-sm">
+          </div>
         </div>
         <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ระบุตําบล อำเภอ และชื่อป่าป่าสงวน/ป่าอนุรักษ์" class="w-full border p-2.5 rounded-lg outline-none"></div>
         
@@ -83,8 +86,8 @@
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
-            <div><label class="text-xs font-bold text-gray-600">ปริมาตรไม้ท่อน (ลบ.ม.)</label><input type="text" id="vol1" value="0" class="w-full border p-2 rounded-lg bg-white"></div>
-            <div><label class="text-xs font-bold text-gray-600">ปริมาตรไม้แปรรูป (ลบ.ม)</label><input type="text" id="vol2" value="0" class="w-full border p-2 rounded-lg bg-white"></div>
+            <div><label class="text-xs font-bold text-gray-600">ปริมาตรไม้ท่อน (ลบ.ม.)</label><input type="number" step="any" id="vol1" value="0" class="w-full border p-2 rounded-lg bg-white"></div>
+            <div><label class="text-xs font-bold text-gray-600">ปริมาตรไม้แปรรูป (ลบ.ม)</label><input type="number" step="any" id="vol2" value="0" class="w-full border p-2 rounded-lg bg-white"></div>
           </div>
         </div>
 
@@ -136,6 +139,8 @@
   <script>
     let currentActiveTab = 'encroachment';
     let mapInstance;
+    let isSubmitting = false; // 🛡️ ป้องกัน Double Submit บน Frontend 
+    let tableFetchController; // 🛡️ บล็อก Request ซ้อนเวลากดสลับแท็บรัวๆ
     
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
@@ -146,7 +151,6 @@
     window.mapLayersRegistry = {};
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
 
-    // ลิงก์ชั้นข้อมูลแนวเขตป่าอ้างอิงบน Supabase Storage ของคุณ
     const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
     const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
 
@@ -172,6 +176,9 @@
 
       layerControlInstance = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(mapInstance);
       loadReferenceForestLayers();
+
+      // 🛡️ บังคับเช็คขนาดของ Map Container หลังโหลดหน้าเว็บลดปัญหา Layout เบี้ยว
+      setTimeout(() => { mapInstance.invalidateSize(); }, 500);
     }
 
     function loadReferenceForestLayers() {
@@ -219,10 +226,24 @@
       } 
     }
     
-    function closeFormModal() { document.getElementById('formModal').style.display = 'none'; document.getElementById('unifiedForm').reset(); document.getElementById('filenameDisplay').classList.add('hidden'); document.getElementById('zipLabelText').classList.remove('hidden'); }
-    function displaySelectedFilename() { const f = document.getElementById('shpZipFile').files[0]; if(f) { document.getElementById('filenameDisplay').textContent = "เลือกไฟล์แล้ว: " + f.name; document.getElementById('filenameDisplay').classList.remove('hidden'); document.getElementById('zipLabelText').classList.add('hidden'); } }
+    function closeFormModal() { 
+      document.getElementById('formModal').style.display = 'none'; 
+      document.getElementById('unifiedForm').reset(); 
+      document.getElementById('filenameDisplay').classList.add('hidden'); 
+      document.getElementById('zipLabelText').classList.remove('hidden'); 
+    }
+
+    function displaySelectedFilename() { 
+      const f = document.getElementById('shpZipFile').files[0]; 
+      if(f) { 
+        document.getElementById('filenameDisplay').textContent = "เลือกไฟล์แล้ว: " + f.name; 
+        document.getElementById('filenameDisplay').classList.remove('hidden'); 
+        document.getElementById('zipLabelText').classList.add('hidden'); 
+      } 
+    }
 
     function switchTab(mode) {
+      if (currentActiveTab === mode && Object.keys(window.mapLayersRegistry).length > 0) return;
       currentActiveTab = mode;
       document.getElementById('tab-enc').className = mode === 'encroachment' ? 'pb-2 font-bold text-lg nav-active' : 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
       document.getElementById('tab-timber').className = mode === 'timber' ? 'pb-2 font-bold text-lg nav-active' : 'pb-2 font-bold text-lg text-gray-400 hover:text-emerald-600';
@@ -230,6 +251,10 @@
     }
 
     async function loadTableData() {
+      // 🛡️ บล็อก Request เก่าที่ยังโหลดไม่เสร็จสิ้นเมื่อเปลี่ยนแท็บกระทันหัน
+      if (tableFetchController) { tableFetchController.abort(); }
+      tableFetchController = new AbortController();
+
       const headerRow = document.getElementById('table-header-row');
       const bodyRow = document.getElementById('table-body-row');
       bodyRow.innerHTML = '<tr><td class="p-12 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-xl text-emerald-600 mr-2"></i> กำลังอัปเดตข้อมูลจากระบบหลังบ้าน Supabase...</td></tr>';
@@ -242,10 +267,14 @@
       }
 
       try {
-        const res = await fetch(`${API_BASE_URL}/get-cases/${currentActiveTab}`);
+        const res = await fetch(`${API_BASE_URL}/get-cases/${currentActiveTab}`, { signal: tableFetchController.signal });
         const data = await res.json();
         renderGrid(data);
-      } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; }
+      } catch (err) { 
+        if (err.name !== 'AbortError') {
+          bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; 
+        }
+      }
     }
 
     function getCaseStyle(locationText, isFinished) {
@@ -259,13 +288,18 @@
       }
 
       let strokeColor = isFinished ? "#10b981" : "#ef4444"; 
-      
-      return {
-        color: strokeColor,
-        weight: 3.5,
-        fillColor: fillColor,
-        fillOpacity: 0.6
-      };
+      return { color: strokeColor, weight: 3.5, fillColor: fillColor, fillOpacity: 0.6 };
+    }
+
+    // 🛡️ ฟังก์ชันช่วยจัดรูปแบบแสดงผลวันที่ให้ดูง่ายขึ้นสไตล์ไทย
+    function formatThaiDate(dateString) {
+      if(!dateString) return '-';
+      if(dateString.includes('/')) return dateString; // ถ้า Backend ส่งเป็น String เก่ามาให้ใช้แบบเดิม
+      try {
+        const d = new Date(dateString);
+        if(isNaN(d.getTime())) return dateString;
+        return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth()+1).padStart(2, '0')}/${d.getFullYear() + 543}`;
+      } catch(e) { return dateString; }
     }
 
     function renderGrid(data) {
@@ -290,8 +324,11 @@
                     layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
                   }
                 }).addTo(targetLayerGroup);
-                
                 window.mapLayersRegistry[uniqueKey] = mapLayer;
+                
+                // ถอด Spinner ออกเมื่อชั้นข้อมูลพร้อมส่องแล้ว
+                const btn = document.getElementById(`zoom-btn-${uniqueKey}`);
+                if(btn) btn.innerHTML = `<i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> ส่อง`;
               })
               .catch(e => console.error("ดาวน์โหลดโครงสร้าง GeoJSON ของคดีพลาด:", e));
           } else {
@@ -303,7 +340,6 @@
                   layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
                 }
               }).addTo(targetLayerGroup);
-              
               window.mapLayersRegistry[uniqueKey] = mapLayer;
             } catch(e){}
           }
@@ -313,15 +349,16 @@
         let truncatedStatus = rawStatusText.length > 40 ? rawStatusText.substring(0, 40) + '...' : rawStatusText;
         let pdfButtonHtml = item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" class="text-red-500 hover:text-red-700 text-lg"><i class="fa-solid fa-file-pdf"></i></a>` : `<span class="text-gray-300">-</span>`;
 
-        // 🛠️ ปุ่มดาวน์โหลด: หากข้อมูลพิกัดเป็นแบบ URL ลิงก์ จะส่งลิ้งก์เข้าฟังก์ชันดาวน์โหลดไฟล์ทันที
         let downloadShpBtnHtml = item.geojson_data && item.geojson_data.startsWith('http') 
           ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลดไฟล์พิกัดคดี (.json)" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
           : `<span class="text-gray-300" title="ไม่มีไฟล์ต้นฉบับ">-</span>`;
 
+        const displayDate = formatThaiDate(item.case_date);
+
         if (currentActiveTab === 'encroachment') {
           return `<tr class="hover:bg-emerald-50/30 border-b">
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
-            <td class="p-4">${item.case_date}</td>
+            <td class="p-4">${displayDate}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
             <td class="p-2 text-center text-amber-800 font-bold">${item.rai || 0}</td>
             <td class="p-2 text-center">${item.ngarn || 0}</td>
@@ -330,7 +367,11 @@
             <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
             <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
             <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
-            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-emerald-600"></i> ส่อง</button></td>
+            <td class="p-4">
+              <button id="zoom-btn-${uniqueKey}" onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md transition min-w-[60px]">
+                <i class="fa-solid fa-circle-notch fa-spin text-emerald-600"></i> โหลด
+              </button>
+            </td>
             <td class="p-4 text-center">${pdfButtonHtml}</td>
             <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
               ${downloadShpBtnHtml}
@@ -340,7 +381,7 @@
         } else {
           return `<tr class="hover:bg-amber-50/30 border-b">
             <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
-            <td class="p-4">${item.case_date}</td>
+            <td class="p-4">${displayDate}</td>
             <td class="p-4 truncate max-w-xs">${item.location}</td>
             <td class="p-4 font-semibold">${item.timber_type || '-'}</td>
             <td class="p-2 text-center text-blue-800 font-bold">${item.vol_logs || 0}</td>
@@ -349,7 +390,11 @@
             <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
             <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
             <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
-            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-amber-600"></i> ส่อง</button></td>
+            <td class="p-4">
+              <button id="zoom-btn-${uniqueKey}" onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md transition min-w-[60px]">
+                <i class="fa-solid fa-circle-notch fa-spin text-amber-600"></i> โหลด
+              </button>
+            </td>
             <td class="p-4 text-center">${pdfButtonHtml}</td>
             <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
               ${downloadShpBtnHtml}
@@ -360,7 +405,6 @@
       }).join('');
     }
 
-    // 💡 ฟังก์ชันเวอร์ชันสมบูรณ์: บังคับดาวน์โหลดข้อมูลเป็นไฟล์พิกัดแผนที่ (.json) ลงเครื่องโดยตรง
     async function downloadShapefile(fileUrl, caseNo) {
       if(!fileUrl) return;
       const safeCaseNo = caseNo.replace(/\//g, "-");
@@ -368,8 +412,6 @@
       try {
         const response = await fetch(fileUrl);
         const geojsonData = await response.json();
-        
-        // บังคับแปลงอ็อบเจกต์โครงสร้างข้อมูลแผนที่ให้กลายเป็นรูปแบบไฟล์สำหรับดาวน์โหลด
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojsonData, null, 2));
         
         const downloadAnchor = document.createElement('a');
@@ -400,12 +442,15 @@
         } 
         setTimeout(()=> l.openPopup(), 600); 
       } else {
-        alert("แปลงพิกัดคดีกำลังเรนเดอร์ลงแผนที่หลัก กรุณาลองกดปุ่มส่องอีกครั้งใน 1 วินาทีครับ");
+        alert("แปลงพิกัดคดียังดาวน์โหลดไม่เสร็จสมบูรณ์ หรือโครงสร้าง GeoJSON ผิดพลาด กรุณารอสักครู่แล้วลองใหม่อีกครั้งครับ");
       }
     }
 
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
+      if(isSubmitting) return; // 🛡️ บล็อกไม่ให้ยิงขอบารมีซ้ำซ้อน
+      
+      isSubmitting = true;
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังวิเคราะห์และแปลงค่า GIS...`;
@@ -440,10 +485,20 @@
       try {
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
         const result = await res.json();
-        if(result.success) { alert("🎉 บันทึกพิกัดและข้อมูลสารบบคดีลง Supabase สำเร็จแล้ว"); closeFormModal(); loadTableData(); } 
-        else { alert("เกิดข้อผิดพลาด: " + result.detail); }
-      } catch(err) { alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ประมวลผล GIS หลังบ้านได้"); } 
-      finally { submitBtn.disabled = false; submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; }
+        if(result.success) { 
+          alert("🎉 บันทึกพิกัดและข้อมูลสารบบคดีลง Supabase สำเร็จแล้ว"); 
+          closeFormModal(); 
+          loadTableData(); 
+        } else { 
+          alert("เกิดข้อผิดพลาด: " + (result.detail || "ไม่สามารถอัปโหลดข้อมูลได้")); 
+        }
+      } catch(err) { 
+        alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ประมวลผล GIS หลังบ้านได้"); 
+      } finally { 
+        isSubmitting = false;
+        submitBtn.disabled = false; 
+        submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; 
+      }
     };
 
     async function deleteCase(cNo) {
@@ -451,12 +506,23 @@
         try {
           const res = await fetch(`${API_BASE_URL}/delete-case/${currentActiveTab}/${cNo}`, { method: "DELETE" });
           const result = await res.json();
-          alert(result.message); loadTableData();
-        } catch(e){ alert("เกิดข้อผิดพลาดในการสั่งลบข้อมูล"); }
+          alert(result.message || "ลบข้อมูลเรียบร้อยแล้ว"); 
+          loadTableData();
+        } catch(e){ 
+          alert("เกิดข้อผิดพลาดในการสั่งลบข้อมูล"); 
+        }
       }
     }
 
-    function filterDataGrid() { let q = document.getElementById("tableSearchInput").value.toLowerCase(); let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); for(let i=0; i<rows.length; i++) { rows[i].style.display = rows[i].textContent.toLowerCase().includes(q) ? "" : "none"; } }
+    function filterDataGrid() { 
+      let q = document.getElementById("tableSearchInput").value.toLowerCase(); 
+      let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); 
+      for(let i=0; i<rows.length; i++) { 
+        if(rows[i].getElementsByTagName("td").length > 1) { // เลี่ยงแถวที่เป็น Loading Spinner
+          rows[i].style.display = rows[i].textContent.toLowerCase().includes(q) ? "" : "none"; 
+        }
+      } 
+    }
 
     window.onload = () => { setupMap(); switchTab('encroachment'); };
   </script>
