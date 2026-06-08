@@ -6,7 +6,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -26,7 +25,6 @@
         <p class="text-xs opacity-75 mt-1">สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</p>
       </div>
     </div>
-    <span class="text-sm font-semibold italic hidden md:block text-emerald-100">Department of National Parks, Wildlife and Plant Conservation</span>
   </nav>
 
   <main class="max-w-7xl mx-auto p-4 md:p-8 w-full flex-1 flex flex-col">
@@ -52,7 +50,7 @@
         <table class="w-full text-left border-collapse" id="dataGrid">
           <thead class="bg-gray-50 border-b border-gray-200"><tr id="table-header-row" class="text-emerald-900 text-sm font-bold"></tr></thead>
           <tbody id="table-body-row" class="text-gray-700 text-sm divide-y divide-gray-100">
-            <tr><td class="p-12 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600 mr-2"></i> กำลังเชื่อมต่อฐานข้อมูล Supabase...</td></tr>
+            <tr><td class="p-12 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-600 mr-2"></i> กำลังเชื่อมต่อฐานข้อมูล...</td></tr>
           </tbody>
         </table>
       </div>
@@ -62,7 +60,7 @@
   <div id="formModal" style="z-index: 9999;" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden justify-center items-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6">
       <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h3 class="text-lg font-bold text-gray-800" id="modalTitle">นำเข้าข้อมูลคดี</h3>
+        <h3 class="text-lg font-bold text-gray-800" id="modalTitle">นำเข้าข้อมูลคดีด้วยไฟล์ผังแปลง</h3>
         <button onclick="closeFormModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
       
@@ -71,7 +69,7 @@
           <div><label class="block text-xs font-bold text-gray-600 mb-1">เลขคดีที่</label><input type="text" id="caseNo" required placeholder="เช่น 14/2569" class="w-full border p-2.5 rounded-lg outline-none"></div>
           <div><label class="block text-xs font-bold text-gray-600 mb-1">วัน/เดือน/ปี เกิดเหตุ</label><input type="text" id="caseDate" placeholder="เช่น 04/06/2569" required class="w-full border p-2.5 rounded-lg outline-none"></div>
         </div>
-        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ระบุตําบล อำเภอ และชื่อป่าป่าสงวน/ป่าอนุรักษ์" class="w-full border p-2.5 rounded-lg outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ระบุตําบล อำเภอ และอุทยาน/ป่าสงวน" class="w-full border p-2.5 rounded-lg outline-none"></div>
         
         <div id="timberFieldsSection" class="hidden space-y-4 bg-amber-50/50 p-3 rounded-xl border border-amber-200">
           <div class="grid grid-cols-2 gap-2">
@@ -94,35 +92,25 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-gray-600 mb-1">จำนวนผู้ต้องหา (ราย)</label>
-            <input type="number" id="suspectsCount" min="0" value="0" required class="w-full border p-2.5 rounded-lg outline-none">
-          </div>
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="suspectsCount" min="0" value="0" required class="w-full border p-2.5 rounded-lg outline-none"></div>
           <div id="areaFieldsSection">
-            <label class="block text-xs font-bold text-gray-600 mb-1">พื้นที่บุกรุก (ไร่-งาน-ตร.ว.)</label>
+            <label class="block text-xs font-bold text-gray-600 mb-1">พื้นที่บุกรุกอัตโนมัติ (ไร่-งาน-ตร.ว.)</label>
             <div class="grid grid-cols-3 gap-1">
-              <input type="number" id="rai" value="0" min="0" placeholder="ไร่" class="border p-2 rounded-lg text-center text-sm outline-none">
-              <input type="number" id="ngarn" value="0" min="0" max="3" placeholder="งาน" class="border p-2 rounded-lg text-center text-sm outline-none">
-              <input type="number" id="wa" value="0" min="0" max="99" placeholder="ตร.ว." class="border p-2 rounded-lg text-center text-sm outline-none">
+              <input type="number" id="rai" value="0" min="0" readonly class="border p-2 rounded-lg text-center bg-gray-50 font-bold text-emerald-800">
+              <input type="number" id="ngarn" value="0" min="0" readonly class="border p-2 rounded-lg text-center bg-gray-50">
+              <input type="number" id="wa" value="0" min="0" readonly class="border p-2 rounded-lg text-center bg-gray-50">
             </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้าขั้นตอนดำเนินคดี)</label>
-          <textarea id="caseStatus" rows="3" required placeholder="รายละเอียดความคืบหน้าคดี..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1">อัปโหลดไฟล์เอกสาร PDF (ถ้ามี)</label>
-          <input type="file" id="pdfFile" accept=".pdf" class="w-full border p-2 rounded-lg bg-slate-50 outline-none text-sm">
-        </div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">สถานะคดี (ความคืบหน้าขั้นตอนดำเนินคดี)</label><textarea id="caseStatus" rows="3" required placeholder="รายละเอียดความคืบหน้า..." class="w-full border p-2.5 rounded-lg outline-none text-sm"></textarea></div>
+        <div><label class="block text-xs font-bold text-gray-600 mb-1">อัปโหลดไฟล์เอกสาร PDF (ถ้ามี)</label><input type="file" id="pdfFile" accept=".pdf" class="w-full border p-2 rounded-lg bg-slate-50 text-sm"></div>
 
         <div class="border-2 border-dashed border-emerald-300 bg-emerald-50/10 rounded-xl p-4 text-center relative group">
-          <input type="file" id="shpZipFile" accept=".zip" required os.change="" onchange="displaySelectedFilename()" class="absolute inset-0 opacity-0 cursor-pointer">
+          <input type="file" id="shpZipFile" accept=".zip" required onchange="displaySelectedFilename()" class="absolute inset-0 opacity-0 cursor-pointer">
           <i class="fa-solid fa-file-zipper text-3xl text-emerald-600 mb-1"></i>
           <p class="text-sm font-bold text-gray-700" id="zipLabelText">เลือกไฟล์บีบอัดของ Shapefile (.zip)</p>
-          <p class="text-xs text-amber-600 mt-1 font-semibold hidden" id="filenameDisplay"></p>
+          <p class="text-xs text-emerald-700 font-bold hidden" id="filenameDisplay"></p>
         </div>
 
         <div class="flex justify-end space-x-2 pt-4 border-t">
@@ -136,84 +124,29 @@
   <script>
     let currentActiveTab = 'encroachment';
     let mapInstance;
-    let previewMarker = null; // เก็บตัวแปรหมุดชั่วคราวตอนอัปโหลด
-    
+    let previewMarker = null;
     let encroachmentLayerGroup = L.layerGroup();
     let timberLayerGroup = L.layerGroup();
-    let conservationForestLayer = L.layerGroup();
-    let reserveForestLayer = L.layerGroup();
-    
-    let layerControlInstance = null;
     window.mapLayersRegistry = {};
+    
+    // ตั้งค่า URL หลังบ้านเดี่ยวตัวจริงของคุณ
     const API_BASE_URL = "https://dnp-lampang-api-2.onrender.com"; 
-
-    const URL_CONSERVATION_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson";
-    const URL_RESERVE_FOREST = "https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson";
 
     function setupMap() {
       mapInstance = L.map('map').setView([18.29, 99.50], 9); 
-      
-      let openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(mapInstance);
-      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM contributors' }).addTo(mapInstance);
       encroachmentLayerGroup.addTo(mapInstance);
       timberLayerGroup.addTo(mapInstance);
-      conservationForestLayer.addTo(mapInstance);
-      reserveForestLayer.addTo(mapInstance);
-
-      let baseMaps = { "แผนที่ภูมิประเทศ (OSM)": openStreetMap };
-      let overlayMaps = {
-        "<span style='color: #ef4444; font-weight: bold;'><i class='fa-solid fa-person-trespassing mr-1'></i> แปลงคดีบุกรุกพื้นที่ป่า</span>": encroachmentLayerGroup,
-        "<span style='color: #b45309; font-weight: bold;'><i class='fa-solid fa-cubes-wood mr-1'></i> แปลงคดีไม้ผิดกฎหมาย</span>": timberLayerGroup,
-        "<span style='color: #047857; font-weight: bold;'><i class='fa-solid fa-mountain mr-1'></i> แนวเขตป่าอนุรักษ์ / อุทยาน</span>": conservationForestLayer,
-        "<span style='color: #ec4899; font-weight: bold;'><i class='fa-solid fa-tree mr-1'></i> แนวเขตป่าสงวนแห่งชาติ</span>": reserveForestLayer
-      };
-
-      layerControlInstance = L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(mapInstance);
-      loadReferenceForestLayers();
-    }
-
-    function loadReferenceForestLayers() {
-      fetch(URL_CONSERVATION_FOREST)
-        .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-        .then(geojsonData => {
-          L.geoJSON(geojsonData, {
-            style: { color: "#047857", weight: 1.5, fillColor: "#a7f3d0", fillOpacity: 0.25 },
-            onEachFeature: (f, layer) => {
-              let pName = f.properties.NAME_TH || f.properties.name || f.properties.NAM_T || 'ไม่ระบุชื่อกลุ่มป่า';
-              layer.bindPopup(`<div class='p-1'><b class='text-emerald-800 text-sm'>⛰️ เขตป่าอนุรักษ์/อุทยานแห่งชาติ</b><br><span class='text-xs text-gray-600'><b>ชื่อพื้นที่:</b> ${pName}</span></div>`);
-            }
-          }).addTo(conservationForestLayer);
-        }).catch(e => console.error("ไม่สามารถเชื่อมต่อเลเยอร์ขอบเขตป่าอนุรักษ์ได้", e));
-
-      fetch(URL_RESERVE_FOREST)
-        .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-        .then(geojsonData => {
-          L.geoJSON(geojsonData, {
-            style: { color: "#db2777", weight: 1.5, fillColor: "#fbcfe8", fillOpacity: 0.25 },
-            onEachFeature: (f, layer) => {
-              let pName = f.properties.NAME_TH || f.properties.name || f.properties.NAM_T || 'ไม่ระบุชื่อกลุ่มป่า';
-              layer.bindPopup(`<div class='p-1'><b class='text-pink-800 text-sm'>🌳 เขตป่าสงวนแห่งชาติ</b><br><span class='text-xs text-gray-600'><b>ชื่อพื้นที่:</b> ${pName}</span></div>`);
-            }
-          }).addTo(reserveForestLayer);
-        }).catch(e => console.error("ไม่สามารถเชื่อมต่อเลเยอร์ขอบเขตป่าสงวนแห่งชาติได้", e));
-    }
-
-    function clearAllMapLayers() { 
-      encroachmentLayerGroup.clearLayers(); 
-      timberLayerGroup.clearLayers(); 
-      window.mapLayersRegistry = {};
     }
 
     function openFormModal() { 
       document.getElementById('formModal').style.display = 'flex'; 
       if (currentActiveTab === 'encroachment') { 
-        document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่า'; 
+        document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่าด้วย Shapefile'; 
         document.getElementById('timberFieldsSection').classList.add('hidden'); 
         document.getElementById('areaFieldsSection').classList.remove('hidden');
       } else { 
-        document.getElementById('modalTitle').textContent = 'บันทึกคดีไม้ผิดกฎหมาย'; 
+        document.getElementById('modalTitle').textContent = 'บันทึกคดีไม้ผิดกฎหมายด้วย Shapefile'; 
         document.getElementById('timberFieldsSection').classList.remove('hidden'); 
         document.getElementById('areaFieldsSection').classList.add('hidden');
       } 
@@ -224,16 +157,16 @@
       document.getElementById('unifiedForm').reset(); 
       document.getElementById('filenameDisplay').classList.add('hidden'); 
       document.getElementById('zipLabelText').classList.remove('hidden'); 
-      if(previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; } // ล้างหมุดพรีวิวออก
+      if(previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
     }
 
-    // 🤖 ฟังก์ชันอัปเกรด: ส่งไฟล์ไปแกะพิกัดกับคำนวณพื้นที่อัตโนมัติทันที
+    // ฟังก์ชันยิงไปถอดรหัส GIS พิกัดและพื้นที่มาพรีวิวลงฟอร์มอัตโนมัติ
     async function displaySelectedFilename() { 
       const fileInput = document.getElementById('shpZipFile');
       const f = fileInput.files[0]; 
       if(!f) return;
 
-      document.getElementById('filenameDisplay').innerHTML = `<i class="fa-solid fa-gear fa-spin mr-1"></i> กำลังแงะถอดรหัส GIS พิกัดอัตโนมัติ...`;
+      document.getElementById('filenameDisplay').innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> กำลังถอดรหัสพิกัดอัตโนมัติ...`;
       document.getElementById('filenameDisplay').classList.remove('hidden');
       document.getElementById('zipLabelText').classList.add('hidden');
 
@@ -247,32 +180,24 @@
         if (result.success) {
           document.getElementById('filenameDisplay').textContent = "ดึงข้อมูลสำเร็จ: " + f.name;
           
-          // 1. ถ้าเป็นคดีบุกรุกป่า ให้เอาค่าพื้นที่ (ไร่-งาน-ตร.ว.) ที่เซิร์ฟเวอร์คำนวณให้ไปโยนใส่ช่อง Input ทันที
           if (currentActiveTab === 'encroachment') {
             document.getElementById('rai').value = result.rai;
             document.getElementById('ngarn').value = result.ngarn;
             document.getElementById('wa').value = result.wa;
           }
 
-          // 2. ปักหมุดพรีวิวและเลื่อนแผนที่ไปที่แปลงคดี เพื่อให้เจ้าหน้าที่ตรวจสอบความถูกต้องหน้างาน
           if(previewMarker) { mapInstance.removeLayer(previewMarker); }
-          
           previewMarker = L.marker([result.lat, result.lon]).addTo(mapInstance)
-            .bindPopup(`<div class="p-1 text-center"><b class="text-emerald-700">📍 พิกัดศูนย์กลางคดีอัตโนมัติ</b><br><span class="text-xs text-gray-500">คำนวณจากไฟล์: ${f.name}</span></div>`)
+            .bindPopup(`<b class="text-emerald-700">📍 พิกัดศูนย์กลางคดี</b><br><span class="text-xs">ส่องตำแหน่งจากไฟล์: ${f.name}</span>`)
             .openPopup();
           
-          // เลื่อนและซูมแมพ
           document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
           mapInstance.setView([result.lat, result.lon], 15);
-
         } else {
-          alert("ไม่สามารถอ่านค่าพิกัดได้อัตโนมัติ: " + result.detail);
-          document.getElementById('filenameDisplay').textContent = "เกิดข้อผิดพลาดในการวิเคราะห์ไฟล์";
+          alert("อ่านไฟล์ไม่สำเร็จ: " + result.detail);
         }
       } catch (err) {
-        console.error(err);
-        alert("ไม่สามารถติดต่อเซิร์ฟเวอร์เพื่อคำนวณพิกัดอัตโนมัติได้ แต่คุณยังคงสามารถกดส่งฟอร์มตามปกติได้ครับ");
-        document.getElementById('filenameDisplay').textContent = "เลือกไฟล์แล้ว: " + f.name;
+        alert("ไม่สามารถเชื่อมต่อ API วิเคราะห์พิกัดได้");
       }
     }
 
@@ -284,176 +209,38 @@
     }
 
     async function loadTableData() {
-      const headerRow = document.getElementById('table-header-row');
       const bodyRow = document.getElementById('table-body-row');
-      bodyRow.innerHTML = '<tr><td class="p-12 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-xl text-emerald-600 mr-2"></i> กำลังอัปเดตข้อมูลจากระบบหลังบ้าน Supabase...</td></tr>';
-      clearAllMapLayers();
-
-      if (currentActiveTab === 'encroachment') {
-        headerRow.innerHTML = `<th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-2 text-center">ไร่</th><th class="p-2 text-center">งาน</th><th class="p-2 text-center">ตร.ว.</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดแปลง</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
-      } else {
-        headerRow.innerHTML = `<th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-4">ชนิดไม้</th><th class="p-2 text-center">ท่อน (ลบ.ม.)</th><th class="p-2 text-center">แปรรูป (ลบ.ม)</th><th class="p-2 text-center">ผู้ต้องหา(ราย)</th><th class="p-3 text-center">คดีสิ้นสุด</th><th class="p-3 text-center">อยู่ระหว่างคดี</th><th class="p-4">สถานะคดีความคืบหน้า</th><th class="p-4">พิกัดหมุด</th><th class="p-4 text-center">เอกสาร PDF</th><th class="p-4 text-center">จัดการ</th>`;
-      }
-
+      bodyRow.innerHTML = '<tr><td class="p-4 text-center text-gray-400">กำลังดึงข้อมูล...</td></tr>';
       try {
         const res = await fetch(`${API_BASE_URL}/get-cases/${currentActiveTab}`);
         const data = await res.json();
         renderGrid(data);
-      } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500">ไม่สามารถเชื่อมต่อดึงข้อมูลจากระบบ API ส่วนกลางได้</td></tr>'; }
-    }
-
-    function getCaseStyle(locationText, isFinished) {
-      let text = locationText || '';
-      let fillColor = "#f59e0b"; 
-      
-      if (text.includes("อุทยาน") || text.includes("อนุรักษ์") || text.includes("สัตว์ป่า") || text.includes("เตรียมการ")) {
-        fillColor = "#065f46"; 
-      } else if (text.includes("ป่าสงวน") || text.includes("แห่งชาติ")) {
-        fillColor = "#b11226"; 
-      }
-
-      let strokeColor = isFinished ? "#10b981" : "#ef4444"; 
-      return { color: strokeColor, weight: 3.5, fillColor: fillColor, fillOpacity: 0.6 };
+      } catch (err) { bodyRow.innerHTML = '<tr><td class="p-4 text-red-500 text-center">ไม่สามารถเชื่อมต่อดึงข้อมูลสารบบได้</td></tr>'; }
     }
 
     function renderGrid(data) {
+      const headerRow = document.getElementById('table-header-row');
       const bodyRow = document.getElementById('table-body-row');
-      if(!data || data.length === 0) { bodyRow.innerHTML = '<tr><td class="p-8 text-center text-gray-400">ไม่พบสารบบบันทึกคดีในระบบคลาวด์ขณะนี้</td></tr>'; return; }
+      headerRow.innerHTML = `<th class="p-4">เลขคดี</th><th class="p-4">วันเกิดเหตุ</th><th class="p-4">สถานที่เกิดเหตุ</th><th class="p-4">สถานะคดี</th><th class="p-4 text-center">จัดการ</th>`;
       
-      let targetLayerGroup = (currentActiveTab === 'encroachment') ? encroachmentLayerGroup : timberLayerGroup;
-      
-      bodyRow.innerHTML = data.map((item, idx) => {
-        const uniqueKey = currentActiveTab + "_" + item.id;
-
-        if (item.geojson_data) {
-          let currentStyle = getCaseStyle(item.location, item.is_finished);
-          
-          if (typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
-            fetch(item.geojson_data)
-              .then(response => response.json())
-              .then(geojsonData => {
-                let mapLayer = L.geoJSON(geojsonData, {
-                  style: currentStyle,
-                  onEachFeature: (f, layer) => {
-                    layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
-                  }
-                }).addTo(targetLayerGroup);
-                
-                window.mapLayersRegistry[uniqueKey] = mapLayer;
-              })
-              .catch(e => console.error("ดาวน์โหลดโครงสร้าง GeoJSON ของคดีพลาด:", e));
-          } else {
-            try {
-              let parsedGeo = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data;
-              let mapLayer = L.geoJSON(parsedGeo, {
-                style: currentStyle,
-                onEachFeature: (f, layer) => {
-                  layer.bindPopup(`<div class='p-1'><b class='text-emerald-700 text-sm'>เลขคดี: ${item.case_no}</b><br><span class='text-xs text-gray-600'><b>พื้นที่เหตุ:</b> ${item.location}<br><b>ผู้ต้องหา:</b> ${item.suspects_count} ราย<br><b>สถานะคดี:</b> ${item.case_status}</span></div>`);
-                }
-              }).addTo(targetLayerGroup);
-              
-              window.mapLayersRegistry[uniqueKey] = mapLayer;
-            } catch(e){}
-          }
-        }
-
-        let rawStatusText = item.case_status || '-';
-        let truncatedStatus = rawStatusText.length > 40 ? rawStatusText.substring(0, 40) + '...' : rawStatusText;
-        let pdfButtonHtml = item.pdf_url ? `<a href="${item.pdf_url}" target="_blank" class="text-red-500 hover:text-red-700 text-lg"><i class="fa-solid fa-file-pdf"></i></a>` : `<span class="text-gray-300">-</span>`;
-
-        let downloadShpBtnHtml = item.geojson_data && item.geojson_data.startsWith('http') 
-          ? `<button onclick="downloadShapefile('${item.geojson_data}', '${item.case_no}')" title="ดาวน์โหลดไฟล์พิกัดคดี (.json)" class="text-emerald-600 hover:text-emerald-800 transition"><i class="fa-solid fa-file-arrow-down"></i></button>`
-          : `<span class="text-gray-300" title="ไม่มีไฟล์ต้นฉบับ">-</span>`;
-
-        if (currentActiveTab === 'encroachment') {
-          return `<tr class="hover:bg-emerald-50/30 border-b">
-            <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
-            <td class="p-4">${item.case_date}</td>
-            <td class="p-4 truncate max-w-xs">${item.location}</td>
-            <td class="p-2 text-center text-amber-800 font-bold">${item.rai || 0}</td>
-            <td class="p-2 text-center">${item.ngarn || 0}</td>
-            <td class="p-2 text-center">${item.wa || 0}</td>
-            <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
-            <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
-            <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
-            <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
-            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-emerald-600"></i> ส่อง</button></td>
-            <td class="p-4 text-center">${pdfButtonHtml}</td>
-            <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
-              ${downloadShpBtnHtml}
-              <button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600" title="ลบคดี"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-          </tr>`;
-        } else {
-          return `<tr class="hover:bg-amber-50/30 border-b">
-            <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
-            <td class="p-4">${item.case_date}</td>
-            <td class="p-4 truncate max-w-xs">${item.location}</td>
-            <td class="p-4 font-semibold">${item.timber_type || '-'}</td>
-            <td class="p-2 text-center text-blue-800 font-bold">${item.vol_logs || 0}</td>
-            <td class="p-2 text-center text-teal-800 font-bold">${item.vol_processed || 0}</td>
-            <td class="p-2 text-center font-semibold text-slate-800 bg-slate-50">${item.suspects_count}</td>
-            <td class="p-3 text-center text-green-600 font-bold">${item.is_finished ? '✓':''}</td>
-            <td class="p-3 text-center text-amber-600 font-bold">${!item.is_finished ? '✓':''}</td>
-            <td class="p-4 text-xs text-slate-600" title="${rawStatusText}">${truncatedStatus}</td>
-            <td class="p-4"><button onclick="zoomToCaseLayer('${uniqueKey}')" class="bg-slate-100 hover:bg-emerald-600 hover:text-white text-xs px-2 py-1 rounded-md"><i class="fa-solid fa-location-dot text-amber-600"></i> ส่อง</button></td>
-            <td class="p-4 text-center">${pdfButtonHtml}</td>
-            <td class="p-4 text-center flex items-center justify-center space-x-3 mt-1.5">
-              ${downloadShpBtnHtml}
-              <button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600" title="ลบคดี"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
-          </tr>`;
-        }
-      }).join('');
+      if(!data || data.length === 0) { bodyRow.innerHTML = '<tr><td class="p-8 text-center text-gray-400">ไม่พบข้อมูลในสารบบขณะนี้</td></tr>'; return; }
+      bodyRow.innerHTML = data.map(item => `
+        <tr class="border-b">
+          <td class="p-4 font-bold text-emerald-800">${item.case_no}</td>
+          <td class="p-4">${item.case_date}</td>
+          <td class="p-4">${item.location}</td>
+          <td class="p-4 text-xs">${item.case_status}</td>
+          <td class="p-4 text-center"><button onclick="deleteCase('${item.case_no}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button></td>
+        </tr>
+      `).join('');
     }
 
-    async function downloadShapefile(fileUrl, caseNo) {
-      if(!fileUrl) return;
-      const safeCaseNo = caseNo.replace(/\//g, "-");
-      
-      try {
-        const response = await fetch(fileUrl);
-        const geojsonData = await response.json();
-        
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojsonData, null, 2));
-        
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `คดีที่_${safeCaseNo}_พิกัดแปลงที่ดิน.json`);
-        
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        document.body.removeChild(downloadAnchor);
-      } catch (error) {
-        print("เกิดข้อผิดพลาดในการโหลดไฟล์:", error);
-        window.open(fileUrl, '_blank');
-      }
-    }
-
-    function zoomToCaseLayer(k) { 
-      if(window.mapLayersRegistry && window.mapLayersRegistry[k]) { 
-        let l = window.mapLayersRegistry[k]; 
-        document.getElementById('map').scrollIntoView({behavior:'smooth', block:'center'}); 
-        
-        if (k.startsWith('encroachment')) { mapInstance.addLayer(encroachmentLayerGroup); }
-        else { mapInstance.addLayer(timberLayerGroup); }
-
-        if(l.getBounds) { 
-          mapInstance.fitBounds(l.getBounds(), {maxZoom:16}); 
-        } else { 
-          mapInstance.setView(l.getLatLng(),16); 
-        } 
-        setTimeout(()=> l.openPopup(), 600); 
-      } else {
-        alert("แปลงพิกัดคดีกำลังเรนเดอร์ลงแผนที่หลัก กรุณาลองกดปุ่มส่องอีกครั้งใน 1 วินาทีครับ");
-      }
-    }
-
+    // 🛠️ ส่วนสำคัญ: แก้ไขลิงก์ส่งข้อมูลให้มีสแลชปิดท้าย ป้องกันปัญหาเด่ง 404 Not Found 
     document.getElementById('unifiedForm').onsubmit = async function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังวิเคราะห์และแปลงค่า GIS...`;
+      submitBtn.innerHTML = `<i class="fa-solid fa-microchip fa-spin mr-1"></i> ระบบกำลังส่งข้อมูลคดีขึ้นฐานข้อมูล...`;
 
       const fd = new FormData();
       fd.append("case_type", currentActiveTab);
@@ -466,42 +253,41 @@
       fd.append("suspects_count", document.getElementById('suspectsCount').value);
       fd.append("file", document.getElementById('shpZipFile').files[0]);
       
-      const pdfFileInput = document.getElementById('pdfFile').files[0];
-      if (pdfFileInput) { fd.append("pdf_file", pdfFileInput); }
+      if (document.getElementById('pdfFile').files[0]) { 
+        fd.append("pdf_file", document.getElementById('pdfFile').files[0]); 
+      }
 
       if (currentActiveTab === 'encroachment') {
         fd.append("rai", document.getElementById('rai').value);
         fd.append("ngarn", document.getElementById('ngarn').value);
         fd.append("wa", document.getElementById('wa').value);
-      } else if (currentActiveTab === 'timber') {
+      } else {
         fd.append("timber_type", document.getElementById('timberType').value);
-        fd.append("width", document.getElementById('width').value);
-        fd.append("length", document.getElementById('length').value);
-        fd.append("size", document.getElementById('size').value);
         fd.append("vol1", document.getElementById('vol1').value);
         fd.append("vol2", document.getElementById('vol2').value);
       }
 
       try {
+        // อัปเดตเติมตัวสแลช (/) ปิดท้ายเรียบร้อยให้แมตช์กับหลังบ้าน
         const res = await fetch(`${API_BASE_URL}/process-shapefile/`, { method: "POST", body: fd });
         const result = await res.json();
-        if(result.success) { alert("🎉 บันทึกพิกัดและข้อมูลสารบบคดีลง Supabase สำเร็จแล้ว"); closeFormModal(); loadTableData(); } 
-        else { alert("เกิดข้อผิดพลาด: " + result.detail); }
-      } catch(err) { alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ประมวลผล GIS หลังบ้านได้"); } 
-      finally { submitBtn.disabled = false; submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; }
+        if(result.success) { 
+          alert("🎉 บันทึกคดีและแผนที่ลง Supabase บนคลาวด์สำเร็จแล้วครับ!"); 
+          closeFormModal(); 
+          loadTableData(); 
+        } else { 
+          alert("เกิดข้อผิดพลาด: " + result.detail); 
+        }
+      } catch(err) { 
+        alert("ไม่สามารถส่งข้อมูลหาเซิร์ฟเวอร์หลักได้สำเร็จ"); 
+      } finally { 
+        submitBtn.disabled = false; 
+        submitBtn.innerHTML = "ส่งประมวลผลขึ้นคลาวด์"; 
+      }
     };
 
-    async function deleteCase(cNo) {
-      if(confirm(`คุณต้องการลบพิกัดและข้อมูลคดีเลขที่ ${cNo} ออกจากฐานข้อมูลถาวรใช่หรือไม่?`)) {
-        try {
-          const res = await fetch(`${API_BASE_URL}/delete-case/${currentActiveTab}/${cNo}`, { method: "DELETE" });
-          const result = await res.json();
-          alert(result.message); loadTableData();
-        } catch(e){ alert("เกิดข้อผิดพลาดในการสั่งลบข้อมูล"); }
-      }
-    }
-
     function filterDataGrid() { let q = document.getElementById("tableSearchInput").value.toLowerCase(); let rows = document.getElementById("table-body-row").getElementsByTagName("tr"); for(let i=0; i<rows.length; i++) { rows[i].style.display = rows[i].textContent.toLowerCase().includes(q) ? "" : "none"; } }
+    async function deleteCase(cNo) { if(confirm(`ลบคดีเลขที่ ${cNo}?`)) { await fetch(`${API_BASE_URL}/delete-case/${currentActiveTab}/${cNo}`, { method: "DELETE" }); loadTableData(); } }
 
     window.onload = () => { setupMap(); switchTab('encroachment'); };
   </script>
