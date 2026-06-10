@@ -4,333 +4,362 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบสารบบคดีเชิงพื้นที่ · DNP สบอ.13 ลำปาง</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --bg:       #0b0f1a;
-      --panel:    #111827;
-      --panel2:   #1a2235;
-      --border:   rgba(255,255,255,0.07);
-      --border2:  rgba(255,255,255,0.12);
-      --text:     #e2e8f0;
-      --muted:    #64748b;
-      --accent:   #10b981;
-      --accent2:  #34d399;
-      --amber:    #f59e0b;
-      --violet:   #8b5cf6;
-      --red:      #ef4444;
-      --blue:     #3b82f6;
+    
+    :root {
+      /* Luxury Light Palette */
+      --bg:           #f8f9fa;       /* พื้นหลังขาวนวล */
+      --panel:        #ffffff;       /* แผงควบคุมขาวบริสุทธิ์ */
+      --panel2:       #f1f3f5;       /* พื้นหลังช่องกรอกข้อมูล/การ์ดย่อย */
+      --border:       rgba(0, 0, 0, 0.06);
+      --border2:      rgba(0, 0, 0, 0.12);
+      --text:         #1a202c;       /* ตัวอักษรหลักเทาเข้มเกือบดำ */
+      --muted:        #718096;       /* ตัวอักษรรอง/คำอธิบาย */
+      
+      /* Premium Accents */
+      --accent:       #0f766e;       /* Deep Emerald Green (เขียวหรูหรา) */
+      --accent-light: rgba(15, 118, 110, 0.08);
+      --gold:         #b45309;       /* Amber Gold (ทองแชมเปญ/น้ำตาลทอง) */
+      --gold-light:   rgba(180, 83, 9, 0.08);
+      --violet:       #6d28d9;       /* Royal Violet */
+      --violet-light: rgba(109, 40, 217, 0.08);
+      --red:          #dc2626;       /* Ruby Red */
+      --blue:         #1d4ed8;       /* Sapphire Blue */
+      
+      --shadow-sm:    0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md:    0 10px 30px rgba(0,0,0,0.08);
+      --radius-sm:    8px;
+      --radius-md:    14px;
     }
-    html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
 
-    /* ── TOP NAV ── */
-    #topnav{
-      position:fixed;top:0;left:0;right:0;height:52px;
-      background:rgba(11,15,26,0.92);
-      border-bottom:1px solid var(--border2);
-      backdrop-filter:blur(12px);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 18px;z-index:900;
-      gap:12px;
+    html,body{
+      height:100%;
+      font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
-    .nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-    .nav-logo{
-      width:34px;height:34px;border-radius:50%;
-      background:rgba(16,185,129,0.15);
-      border:1px solid rgba(16,185,129,0.4);
-      display:flex;align-items:center;justify-content:center;overflow:hidden;
-    }
-    .nav-logo img{width:26px;height:26px;object-fit:contain;}
-    .nav-title{font-size:0.92rem;font-weight:700;color:#fff;letter-spacing:0.02em;white-space:nowrap;}
-    .nav-sub{font-size:0.68rem;color:var(--muted);margin-top:1px;}
 
-    /* tab pills in nav */
-    .nav-tabs{display:flex;gap:4px;flex:1;justify-content:center;}
-    .nav-tab{
-      padding:6px 16px;border-radius:6px;
-      font-size:0.8rem;font-weight:600;
-      color:var(--muted);border:none;background:transparent;
-      cursor:pointer;transition:all .15s;white-space:nowrap;
-      display:flex;align-items:center;gap:6px;
+    /* ── TOP NAV (Luxury Glassmorphism Light) ── */
+    #topnav {
+      position: fixed; top: 0; left: 0; right: 0; height: 64px;
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 900;
+      box-shadow: var(--shadow-sm);
     }
-    .nav-tab:hover{background:rgba(255,255,255,0.06);color:var(--text);}
-    .nav-tab.t-enc.active{background:rgba(16,185,129,0.15);color:var(--accent);border:1px solid rgba(16,185,129,0.3);}
-    .nav-tab.t-tim.active{background:rgba(245,158,11,0.15);color:var(--amber);border:1px solid rgba(245,158,11,0.3);}
-    .nav-tab.t-wl.active{background:rgba(139,92,246,0.15);color:var(--violet);border:1px solid rgba(139,92,246,0.3);}
+    .nav-brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .nav-logo {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .nav-logo img { width: 30px; height: 30px; object-fit: contain; }
+    .nav-title { font-size: 0.95rem; font-weight: 700; color: #111827; letter-spacing: 0.03em; }
+    .nav-sub { font-size: 0.72rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
 
-    .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-    .nav-time{font-size:0.72rem;color:var(--muted);white-space:nowrap;}
-    .btn-add{
-      padding:6px 14px;border-radius:6px;
-      font-size:0.78rem;font-weight:700;
-      color:#fff;border:none;cursor:pointer;
-      display:flex;align-items:center;gap:6px;
-      transition:all .15s;white-space:nowrap;
+    /* Nav Tabs Pills */
+    .nav-tabs { display: flex; gap: 8px; flex: 1; justify-content: center; }
+    .nav-tab {
+      padding: 8px 20px; border-radius: var(--radius-sm);
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--muted); border: 1px solid transparent; background: transparent;
+      cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
     }
-    .btn-add.enc{background:linear-gradient(135deg,#059669,#047857);}
-    .btn-add.enc:hover{background:linear-gradient(135deg,#047857,#065f46);box-shadow:0 0 12px rgba(5,150,105,0.4);}
-    .btn-add.wl{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
-    .btn-add.wl:hover{background:linear-gradient(135deg,#6d28d9,#5b21b6);box-shadow:0 0 12px rgba(124,58,237,0.4);}
+    .nav-tab:hover { background: #f1f3f5; color: var(--text); }
+    
+    .nav-tab.t-enc.active { background: var(--accent-light); color: var(--accent); border-color: rgba(15, 118, 110, 0.2); }
+    .nav-tab.t-tim.active { background: var(--gold-light); color: var(--gold); border-color: rgba(180, 83, 9, 0.2); }
+    .nav-tab.t-wl.active { background: var(--violet-light); color: var(--violet); border-color: rgba(109, 40, 217, 0.2); }
+
+    .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .nav-time { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+    
+    .btn-add {
+      padding: 10px 18px; border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.02em;
+      color: #fff; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s ease; white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .btn-add.enc { background: linear-gradient(135deg, #115e59, #0f766e); }
+    .btn-add.enc:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15, 118, 110, 0.25); }
+    .btn-add.wl { background: linear-gradient(135deg, #5b21b6, #6d28d9); }
+    .btn-add.wl:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(109, 40, 217, 0.25); }
 
     /* ── LAYOUT ── */
-    #app{display:flex;height:100vh;padding-top:52px;}
+    #app { display: flex; height: 100vh; padding-top: 64px; background: var(--bg); }
 
-    /* ── LEFT SIDEBAR ── */
-    #sidebar{
-      width:320px;flex-shrink:0;
-      background:var(--panel);
-      border-right:1px solid var(--border);
-      display:flex;flex-direction:column;
-      overflow:hidden;z-index:10;
+    /* ── SIDEBAR (Minimal Premium) ── */
+    #sidebar {
+      width: 350px; flex-shrink: 0;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow: hidden; z-index: 10;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.02);
     }
-    .sb-header{
-      padding:14px 16px 10px;
-      border-bottom:1px solid var(--border);
-      flex-shrink:0;
+    .sb-header { padding: 20px 20px 12px; flex-shrink: 0; }
+    .sb-title { font-size: 0.8rem; font-weight: 800; color: #111827; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Stat Cards */
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .sb-title{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+    .stat-card:hover { border-color: var(--border2); background: #fff; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+    .stat-card.highlight-enc { border-color: rgba(15, 118, 110, 0.3); }
+    .stat-card.highlight-tim { border-color: rgba(180, 83, 9, 0.3); }
+    .stat-card.highlight-wl { border-color: rgba(109, 40, 217, 0.3); }
+    
+    .stat-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-val { font-size: 1.5rem; font-weight: 700; line-height: 1.1; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
+    
+    .c-enc { color: var(--accent); }
+    .c-tim { color: var(--gold); }
+    .c-wl { color: var(--violet); }
+    .c-red { color: var(--red); }
+    .c-blue { color: var(--blue); }
 
-    /* stat cards */
-    .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .stat-card{
-      background:var(--panel2);
-      border:1px solid var(--border);
-      border-radius:10px;padding:10px 12px;
-      cursor:pointer;transition:border-color .15s;
+    /* Search */
+    .sb-search { padding: 14px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .search-wrap { position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 10px 14px 10px 38px;
+      background: var(--panel2); border: 1px solid transparent;
+      border-radius: var(--radius-sm); font-family: inherit;
+      font-size: 0.85rem; color: var(--text); outline: none;
+      transition: all 0.2s ease;
     }
-    .stat-card:hover{border-color:var(--border2);}
-    .stat-card.highlight-enc{border-color:rgba(16,185,129,0.4);}
-    .stat-card.highlight-tim{border-color:rgba(245,158,11,0.4);}
-    .stat-card.highlight-wl{border-color:rgba(139,92,246,0.4);}
-    .stat-label{font-size:0.68rem;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
-    .stat-val{font-size:1.4rem;font-weight:700;line-height:1;}
-    .stat-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;}
-    .c-enc{color:var(--accent);}
-    .c-tim{color:var(--amber);}
-    .c-wl{color:var(--violet);}
-    .c-red{color:var(--red);}
-    .c-blue{color:var(--blue);}
+    .search-wrap input::placeholder { color: #94a3b8; }
+    .search-wrap input:focus { border-color: rgba(0,0,0,0.1); background: #fff; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); }
+    .search-wrap .si { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem; }
 
-    /* search */
-    .sb-search{padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .search-wrap{position:relative;}
-    .search-wrap input{
-      width:100%;padding:8px 12px 8px 34px;
-      background:var(--panel2);border:1px solid var(--border2);
-      border-radius:8px;font-family:'Sarabun',sans-serif;
-      font-size:0.82rem;color:var(--text);outline:none;
-      transition:border-color .15s;
+    /* List Rows */
+    .sb-list { flex: 1; overflow-y: auto; padding: 10px 0; }
+    .sb-list::-webkit-scrollbar { width: 5px; }
+    .sb-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 3px; }
+
+    .case-row {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: all 0.2s ease;
+      display: flex; align-items: flex-start; gap: 14px;
     }
-    .search-wrap input::placeholder{color:var(--muted);}
-    .search-wrap input:focus{border-color:var(--accent);}
-    .search-wrap .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.75rem;}
-
-    /* table list */
-    .sb-list{flex:1;overflow-y:auto;padding:8px 0;}
-    .sb-list::-webkit-scrollbar{width:4px;}
-    .sb-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
-
-    .case-row{
-      padding:10px 16px;
-      border-bottom:1px solid var(--border);
-      cursor:pointer;transition:background .12s;
-      display:flex;align-items:flex-start;gap:10px;
+    .case-row:hover { background: #f8f9fa; }
+    .case-row.active { background: var(--accent-light); border-left: 4px solid var(--accent); }
+    
+    .case-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+    .case-dot.enc { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .case-dot.tim { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    .case-dot.wl { background: var(--violet); box-shadow: 0 0 8px var(--violet); }
+    .case-dot.done { background: #475569; }
+    
+    .case-info { flex: 1; min-width: 0; }
+    .case-no { font-size: 0.88rem; font-weight: 700; color: #111827; }
+    .case-loc { font-size: 0.78rem; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+    .case-meta { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
+    
+    .case-badge {
+      font-size: 0.65rem; font-weight: 700; padding: 3px 8px;
+      border-radius: 4px; flex-shrink: 0; display: inline-block; text-align: center;
     }
-    .case-row:hover{background:rgba(255,255,255,0.04);}
-    .case-row.active{background:rgba(16,185,129,0.07);border-left:3px solid var(--accent);}
-    .case-dot{
-      width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;
-    }
-    .case-dot.enc{background:var(--accent);}
-    .case-dot.tim{background:var(--amber);}
-    .case-dot.wl{background:var(--violet);}
-    .case-dot.done{background:var(--blue);}
-    .case-info{flex:1;min-width:0;}
-    .case-no{font-size:0.82rem;font-weight:700;color:var(--text);}
-    .case-loc{font-size:0.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
-    .case-meta{font-size:0.68rem;color:var(--muted);margin-top:3px;}
-    .case-badge{
-      font-size:0.62rem;font-weight:700;padding:2px 7px;
-      border-radius:4px;flex-shrink:0;margin-top:3px;
-    }
-    .cb-done{background:rgba(16,185,129,0.15);color:var(--accent);}
-    .cb-pend{background:rgba(245,158,11,0.15);color:var(--amber);}
+    .cb-done { background: #e2e8f0; color: #334155; }
+    .cb-pend { background: #fef3c7; color: #d97706; }
 
-    #sb-loading{padding:2rem;text-align:center;color:var(--muted);font-size:0.8rem;}
+    #sb-loading { padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; font-weight: 500; }
 
-    /* ── MAP ── */
-    #map-wrap{flex:1;position:relative;overflow:hidden;}
-    #map{width:100%;height:100%;}
+    /* ── MAP AREA ── */
+    #map-wrap { flex: 1; position: relative; overflow: hidden; }
+    #map { width: 100%; height: 100%; }
 
-    /* map overlay: detail panel bottom */
-    #detail-panel{
-      position:absolute;bottom:0;left:0;right:0;
-      background:linear-gradient(to top,rgba(11,15,26,0.97) 0%,rgba(11,15,26,0.85) 70%,transparent 100%);
-      padding:16px 20px 14px;
-      transform:translateY(100%);
-      transition:transform .3s ease;
-      z-index:50;
-      max-height:55%;
+    /* Detail Panel Bottom (Premium Slide-up) */
+    #detail-panel {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid var(--border2);
+      padding: 24px 28px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 50; max-height: 50%; overflow-y: auto;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.06);
     }
-    #detail-panel.open{transform:translateY(0);}
-    #detail-close{
-      position:absolute;top:10px;right:14px;
-      background:rgba(255,255,255,0.08);border:1px solid var(--border2);
-      color:var(--muted);border-radius:6px;
-      padding:3px 10px;font-size:0.75rem;cursor:pointer;
+    #detail-panel.open { transform: translateY(0); }
+    #detail-close {
+      position: absolute; top: 20px; right: 24px;
+      background: #f1f3f5; border: 1px solid rgba(0,0,0,0.05);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 5px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
     }
-    #detail-close:hover{color:var(--text);background:rgba(255,255,255,0.12);}
-    #detail-content{}
-    .det-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px;}
-    .det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
-    .det-item label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;display:block;}
-    .det-item span{font-size:0.82rem;color:var(--text);font-weight:600;}
+    #detail-close:hover { background: #e2e8f0; }
+    
+    .det-title { font-size: 1.15rem; font-weight: 700; color: #111827; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; padding-right: 80px;}
+    .det-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .det-item label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; font-weight: 700; }
+    .det-item span { font-size: 0.88rem; color: var(--text); font-weight: 600; }
 
-    /* map top-right: legend */
-    #map-legend{
-      position:absolute;top:14px;right:14px;
-      background:rgba(11,15,26,0.88);
-      border:1px solid var(--border2);
-      border-radius:10px;padding:12px 14px;
-      backdrop-filter:blur(8px);z-index:50;
-      min-width:160px;
+    /* Floating Map Legend */
+    #map-legend {
+      position: absolute; top: 20px; right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px 18px;
+      backdrop-filter: blur(10px); z-index: 50;
+      min-width: 180px; box-shadow: var(--shadow-md);
     }
-    .leg-title{font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
-    .leg-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:0.75rem;color:var(--text);}
-    .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-    .leg-line{width:18px;height:3px;border-radius:2px;flex-shrink:0;}
+    .leg-title { font-size: 0.7rem; font-weight: 800; color: #111827; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .leg-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.78rem; color: var(--text); font-weight: 500; }
+    .leg-item:last-child { margin-bottom: 0; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .leg-line { width: 20px; height: 4px; border-radius: 2px; flex-shrink: 0; }
 
-    /* map bottom-left version */
-    #map-version{
-      position:absolute;bottom:8px;left:8px;
-      font-size:0.62rem;color:rgba(255,255,255,0.3);
-      z-index:50;pointer-events:none;
+    #map-version {
+      position: absolute; bottom: 12px; left: 12px;
+      font-size: 0.65rem; color: var(--muted); font-weight: 600;
+      z-index: 50; pointer-events: none;
     }
 
-    /* ── MODALS ── */
-    .modal-overlay{
-      position:fixed;inset:0;
-      background:rgba(0,0,0,0.65);
-      backdrop-filter:blur(8px);
-      display:none;align-items:center;justify-content:center;
-      padding:1rem;z-index:9999;
+    /* ── MODALS (Luxury White Box) ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem; z-index: 9999;
     }
-    .modal-box{
-      background:#141c2e;
-      border:1px solid var(--border2);
-      border-radius:16px;
-      box-shadow:0 24px 60px rgba(0,0,0,0.5);
-      max-width:660px;width:100%;max-height:90vh;
-      overflow-y:auto;padding:24px;
+    .modal-box {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: var(--radius-md);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+      max-width: 680px; width: 100%; max-height: 85vh;
+      overflow-y: auto; padding: 28px;
     }
-    .modal-box::-webkit-scrollbar{width:4px;}
-    .modal-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
-    .modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-    .modal-hd-left{display:flex;align-items:center;gap:10px;}
-    .modal-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;}
-    .modal-icon.enc{background:rgba(16,185,129,0.15);color:var(--accent);}
-    .modal-icon.wl{background:rgba(139,92,246,0.15);color:var(--violet);}
-    .modal-ttl{font-size:1rem;font-weight:700;color:#fff;}
-    .modal-cls{
-      background:rgba(255,255,255,0.06);border:1px solid var(--border);
-      color:var(--muted);border-radius:7px;width:30px;height:30px;
-      display:flex;align-items:center;justify-content:center;
-      cursor:pointer;transition:all .15s;font-size:0.8rem;
+    .modal-box::-webkit-scrollbar { width: 5px; }
+    .modal-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    
+    .modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .modal-hd-left { display: flex; align-items: center; gap: 12px; }
+    .modal-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .modal-icon.enc { background: var(--accent-light); color: var(--accent); }
+    .modal-icon.wl { background: var(--violet-light); color: var(--violet); }
+    .modal-ttl { font-size: 1.05rem; font-weight: 700; color: #111827; }
+    
+    .modal-cls {
+      background: #f1f3f5; border: none;
+      color: var(--muted); border-radius: 50%; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s; font-size: 0.85rem;
     }
-    .modal-cls:hover{background:rgba(239,68,68,0.15);color:var(--red);border-color:rgba(239,68,68,0.3);}
+    .modal-cls:hover { background: #fee2e2; color: var(--red); }
 
-    /* form */
-    .fg{margin-bottom:14px;}
-    .fl{display:block;font-size:0.68rem;font-weight:700;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:5px;}
-    .fi,.fs,.ft{
-      width:100%;padding:9px 12px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid var(--border2);border-radius:8px;
-      font-family:'Sarabun',sans-serif;font-size:0.875rem;
-      color:var(--text);outline:none;transition:border-color .15s;
+    /* Forms Concept */
+    .fg { margin-bottom: 16px; }
+    .fl { display: block; font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+    
+    .fi, .fs, .ft {
+      width: 100%; padding: 10px 14px;
+      background: #f8f9fa;
+      border: 1px solid #e2e8f0; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 0.88rem;
+      color: var(--text); outline: none; transition: all 0.15s ease;
     }
-    .fi::placeholder,.ft::placeholder{color:var(--muted);}
-    .fi:focus,.fs:focus,.ft:focus{border-color:var(--accent);background:rgba(16,185,129,0.05);}
-    .fs{cursor:pointer;}
-    .fs option{background:#1a2235;color:var(--text);}
-    .ft{resize:vertical;min-height:80px;line-height:1.6;}
-    .fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    .fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .fi::placeholder, .ft::placeholder { color: #cbd5e1; }
+    .fi:focus, .fs:focus, .ft:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+    
+    .fs { cursor: pointer; }
+    .ft { resize: vertical; min-height: 90px; line-height: 1.6; }
+    .fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .fg3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-    /* form section */
-    .fsec{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;}
-    .fsec.amber{border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.03);}
-    .fsec.violet{border-color:rgba(139,92,246,0.2);background:rgba(139,92,246,0.03);}
-    .fsec-ttl{font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    /* Sub-sections Container inside Form */
+    .fsec { background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; }
+    .fsec.amber { border-color: rgba(180, 83, 9, 0.15); background: rgba(180, 83, 9, 0.01); }
+    .fsec.violet { border-color: rgba(109, 40, 217, 0.15); background: rgba(109, 40, 217, 0.01); }
+    .fsec-ttl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
-    /* UTM */
-    .btn-utm{padding:7px 14px;border-radius:7px;font-size:0.75rem;font-weight:700;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;}
-    .btn-utm.enc{background:var(--accent);}
-    .btn-utm.enc:hover{background:#059669;}
-    .btn-utm.wl{background:var(--violet);}
-    .btn-utm.wl:hover{background:#7c3aed;}
-    .utm-res{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;font-size:0.72rem;font-weight:700;background:rgba(16,185,129,0.12);color:var(--accent);border:1px solid rgba(16,185,129,0.25);}
-    .utm-res.err{background:rgba(239,68,68,0.12);color:var(--red);border-color:rgba(239,68,68,0.25);}
-    .utm-res.wl{background:rgba(139,92,246,0.12);color:var(--violet);border-color:rgba(139,92,246,0.25);}
+    /* Button UTM */
+    .btn-utm { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 700; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+    .btn-utm.enc { background: var(--accent); }
+    .btn-utm.enc:hover { background: #115e59; }
+    .btn-utm.wl { background: var(--violet); }
+    .btn-utm.wl:hover { background: #5b21b6; }
+    
+    .utm-res { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; background: #e6f4ea; color: #137333; border: 1px solid rgba(19,115,51,0.15); }
+    .utm-res.err { background: #fce8e6; color: #c5221f; border-color: rgba(197,34,31,0.15); }
+    .utm-res.wl { background: #f3e8ff; color: var(--violet); border-color: rgba(109,40,217,0.15); }
 
-    /* drop zone */
-    .drop-zone{
-      border:1.5px dashed rgba(255,255,255,0.15);border-radius:10px;
-      padding:20px;text-align:center;
-      background:rgba(255,255,255,0.02);
-      position:relative;cursor:pointer;transition:all .15s;
+    /* Premium Drag & Drop Area */
+    .drop-zone {
+      border: 2px dashed #cbd5e1; border-radius: var(--radius-md);
+      padding: 24px; text-align: center;
+      background: #f8f9fa; position: relative; cursor: pointer; transition: all 0.2s ease;
     }
-    .drop-zone:hover{border-color:var(--accent);background:rgba(16,185,129,0.05);}
-    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-    .drop-zone-icon{font-size:1.6rem;color:var(--accent);margin-bottom:5px;}
-    .drop-zone-lbl{font-size:0.82rem;font-weight:600;color:var(--text);}
-    .drop-zone-hint{font-size:0.7rem;color:var(--muted);margin-top:3px;}
+    .drop-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+    .drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop-zone-icon { font-size: 1.8rem; color: var(--accent); margin-bottom: 6px; }
+    .drop-zone-lbl { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .drop-zone-hint { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .filename-display { display: none; color: var(--accent); font-weight: 700; font-size: 0.82rem; margin-top: 6px;}
 
-    /* modal footer */
-    .mft{display:flex;justify-content:flex-end;gap:8px;padding-top:16px;border-top:1px solid var(--border);margin-top:4px;}
-    .btn-cancel{padding:8px 18px;border-radius:8px;font-size:0.82rem;font-weight:600;color:var(--muted);border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .15s;}
-    .btn-cancel:hover{background:rgba(255,255,255,0.05);color:var(--text);}
-    .btn-submit{padding:8px 20px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s;}
-    .btn-submit.enc{background:linear-gradient(135deg,#059669,#047857);}
-    .btn-submit.enc:hover{box-shadow:0 0 16px rgba(5,150,105,0.4);transform:translateY(-1px);}
-    .btn-submit.wl{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
-    .btn-submit.wl:hover{box-shadow:0 0 16px rgba(124,58,237,0.4);transform:translateY(-1px);}
+    /* Modal Footer */
+    .mft { display: flex; justify-content: flex-end; gap: 10px; padding-top: 20px; border-top: 1px solid var(--border); margin-top: 8px; }
+    .btn-cancel { padding: 10px 22px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; transition: all 0.15s; }
+    .btn-cancel:hover { background: #f1f3f5; color: var(--text); }
+    
+    .btn-submit { padding: 10px 24px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
+    .btn-submit.enc { background: linear-gradient(135deg, #115e59, #0f766e); box-shadow: 0 4px 14px rgba(15,118,110,0.2); }
+    .btn-submit.enc:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+    .btn-submit.wl { background: linear-gradient(135deg, #5b21b6, #6d28d9); box-shadow: 0 4px 14px rgba(109,40,217,0.2); }
+    .btn-submit.wl:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(109,40,217,0.3); }
 
-    /* timber hidden */
-    #timberFieldsSection{display:none;}
-    #timberFieldsSection.show{display:block;}
+    /* UI Fixes & Helpers */
+    #timberFieldsSection { display: none; }
+    #timberFieldsSection.show { display: block; }
+    
+    .utm-tag { background: #eff6ff; color: #1e40af; border-radius: 4px; padding: 2px 6px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
+    .wgs-tag { background: #ecfdf5; color: #065f46; border-radius: 4px; padding: 2px 6px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
+    .coord-cell { font-size: 0.72rem; color: var(--muted); line-height: 1.6; margin-top: 4px; }
+    
+    .btn-del { background: none; border: none; cursor: pointer; color: #94a3b8; transition: color 0.15s; padding: 4px; }
+    .btn-del:hover { color: var(--red); }
 
-    /* leaflet dark override */
-    .leaflet-container{background:#1a2235;}
-    .leaflet-control-layers{background:rgba(11,15,26,0.9)!important;border:1px solid rgba(255,255,255,0.12)!important;border-radius:10px!important;color:#e2e8f0!important;}
-    .leaflet-control-layers-toggle{background-color:rgba(11,15,26,0.9)!important;}
-    .leaflet-bar a{background:rgba(11,15,26,0.9)!important;color:#e2e8f0!important;border-color:rgba(255,255,255,0.12)!important;}
-    .leaflet-bar a:hover{background:rgba(255,255,255,0.1)!important;}
-    .leaflet-popup-content-wrapper{background:#141c2e;color:#e2e8f0;border:1px solid rgba(255,255,255,0.12);border-radius:10px;}
-    .leaflet-popup-tip{background:#141c2e;}
-
-    /* coord tags */
-    .utm-tag{background:rgba(59,130,246,0.15);color:#93c5fd;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;}
-    .wgs-tag{background:rgba(16,185,129,0.15);color:#6ee7b7;border-radius:4px;padding:1px 5px;font-size:0.65rem;font-weight:700;}
-    .coord-cell{font-size:0.68rem;color:var(--muted);line-height:1.7;}
-
-    /* delete btn */
-    .btn-del{background:none;border:none;cursor:pointer;color:rgba(239,68,68,0.5);transition:color .15s;padding:3px;}
-    .btn-del:hover{color:var(--red);}
+    /* Leaflet Premium Light Theme Map Customization */
+    .leaflet-container { background: #f8f9fa!important; }
+    .leaflet-control-layers { background: rgba(255,255,255,0.95)!important; border: 1px solid var(--border)!important; border-radius: var(--radius-md)!important; color: var(--text)!important; box-shadow: var(--shadow-md)!important; padding: 6px 10px!important;}
+    .leaflet-bar { box-shadow: var(--shadow-md)!important; border: none!important; }
+    .leaflet-bar a { background: rgba(255,255,255,0.95)!important; color: var(--text)!important; border-bottom: 1px solid var(--border)!important; }
+    .leaflet-bar a:hover { background: #f1f3f5!important; }
+    .leaflet-popup-content-wrapper { background: #ffffff; color: var(--text); border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border); }
+    .leaflet-popup-tip { background: #ffffff; }
   </style>
 </head>
 <body>
 
-<!-- ══ TOP NAV ══════════════════════════════════════════════ -->
 <nav id="topnav">
   <div class="nav-brand">
     <div class="nav-logo">
-      <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" alt="DNP">
+      <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8B%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" alt="DNP">
     </div>
     <div>
       <div class="nav-title">DNP · ระบบสารบบคดีเชิงพื้นที่</div>
@@ -358,16 +387,13 @@
   </div>
 </nav>
 
-<!-- ══ APP LAYOUT ═══════════════════════════════════════════ -->
 <div id="app">
 
-  <!-- LEFT SIDEBAR -->
   <aside id="sidebar">
     <div class="sb-header">
       <div class="sb-title" id="sb-label">สารบบคดีบุกรุกพื้นที่ป่า</div>
     </div>
 
-    <!-- stat cards -->
     <div class="stat-row" id="stat-row">
       <div class="stat-card">
         <div class="stat-label">คดีทั้งหมด</div>
@@ -391,7 +417,6 @@
       </div>
     </div>
 
-    <!-- search -->
     <div class="sb-search">
       <div class="search-wrap">
         <i class="fa-solid fa-magnifying-glass si"></i>
@@ -399,40 +424,32 @@
       </div>
     </div>
 
-    <!-- list -->
     <div class="sb-list" id="sb-list">
       <div id="sb-loading"><i class="fa-solid fa-circle-notch fa-spin" style="color:var(--accent);font-size:1.1rem;"></i><br>กำลังโหลด...</div>
     </div>
   </aside>
 
-  <!-- MAP -->
   <div id="map-wrap">
     <div id="map"></div>
 
-    <!-- legend -->
     <div id="map-legend">
-      <div class="leg-title">ชั้นข้อมูล</div>
-      <div class="leg-item"><div class="leg-line" style="background:#ef4444;"></div> บุกรุก (ดำเนินการ)</div>
-      <div class="leg-item"><div class="leg-line" style="background:#10b981;"></div> บุกรุก (สิ้นสุด)</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#8b5cf6;"></div> คดีสัตว์ป่า</div>
+      <div class="leg-title">ชั้นข้อมูลคดีเชิงพื้นที่</div>
+      <div class="leg-item"><div class="leg-line" style="background:#dc2626;"></div> บุกรุก (ดำเนินการ)</div>
+      <div class="leg-item"><div class="leg-line" style="background:#0f766e;"></div> บุกรุก (สิ้นสุด)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#6d28d9;"></div> คดีสัตว์ป่า</div>
       <div class="leg-item"><div class="leg-line" style="background:#047857;"></div> ป่าอนุรักษ์/อุทยาน</div>
       <div class="leg-item"><div class="leg-line" style="background:#db2777;"></div> ป่าสงวนแห่งชาติ</div>
     </div>
 
-    <!-- detail panel -->
     <div id="detail-panel">
-      <button id="detail-close" onclick="closeDetail()">✕ ปิด</button>
+      <button id="detail-close" onclick="closeDetail()">✕ ปิดหน้าต่าง</button>
       <div id="detail-content"></div>
     </div>
 
     <div id="map-version">DNP GIS v3.0 · สบอ.13 ลำปาง</div>
   </div>
 
-</div><!-- end #app -->
-
-
-<!-- ══ MODAL: บุกรุก + ไม้ ═══════════════════════════════ -->
-<div id="formModal" class="modal-overlay">
+</div><div id="formModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-hd">
       <div class="modal-hd-left">
@@ -449,9 +466,8 @@
       </div>
       <div class="fg"><label class="fl">สถานที่เกิดเหตุ</label><input type="text" id="location" required placeholder="ตำบล อำเภอ ชื่อป่าสงวน/ป่าอนุรักษ์" class="fi"></div>
 
-      <!-- timber fields -->
       <div id="timberFieldsSection" class="fsec amber">
-        <div class="fsec-ttl" style="color:var(--amber);"><i class="fa-solid fa-cubes-wood"></i> ข้อมูลไม้ผิดกฎหมาย</div>
+        <div class="fsec-ttl" style="color:var(--gold);"><i class="fa-solid fa-cubes-wood"></i> ข้อมูลไม้ผิดกฎหมาย</div>
         <div class="fg2" style="margin-bottom:10px;">
           <div class="fg" style="margin-bottom:0;"><label class="fl">ชนิดไม้</label><input type="text" id="timberType" class="fi"></div>
           <div class="fg3">
@@ -485,7 +501,6 @@
       </div>
       <div class="fg"><label class="fl">สถานะคดี / ความคืบหน้า</label><textarea id="caseStatus" required placeholder="รายละเอียดความคืบหน้าคดี..." class="ft"></textarea></div>
 
-      <!-- UTM -->
       <div class="fsec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div class="fsec-ttl" style="color:var(--accent);margin-bottom:0;"><i class="fa-solid fa-crosshairs"></i> พิกัด UTM (Zone 47N / WGS84)</div>
@@ -499,8 +514,8 @@
         <div id="utm_result_main" style="display:none;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span class="utm-res" id="utm_result_main_text"></span>
-            <button type="button" onclick="previewUTMOnMap('main')" style="font-size:0.72rem;background:rgba(59,130,246,0.15);color:#93c5fd;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:700;">
-              <i class="fa-solid fa-map-pin"></i> ปักหมุด
+            <button type="button" onclick="previewUTMOnMap('main')" style="font-size:0.72rem;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;padding:5px 12px;border-radius:6px;cursor:pointer;font-weight:700;">
+              <i class="fa-solid fa-map-pin"></i> ปักหมุดบนแผนที่
             </button>
           </div>
         </div>
@@ -508,14 +523,14 @@
         <input type="hidden" id="converted_lat"><input type="hidden" id="converted_lon">
       </div>
 
-      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:#f87171;margin-right:4px;"></i>อัปโหลด PDF (ถ้ามี)</label><input type="file" id="pdfFile" accept=".pdf" class="fi" style="padding:7px 10px;cursor:pointer;"></div>
+      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px;"></i>อัปโหลด PDF (ถ้ามี)</label><input type="file" id="pdfFile" accept=".pdf" class="fi" style="padding:7px 10px;cursor:pointer;background:#fff;"></div>
 
       <div class="fg">
-        <label class="fl"><i class="fa-solid fa-map" style="color:var(--accent);margin-right:4px;"></i>Shapefile (.zip) *</label>
+        <label class="fl"><i class="fa-solid fa-map" style="color:var(--accent);margin-right:6px;"></i>Shapefile (.zip) *</label>
         <div class="drop-zone">
           <input type="file" id="shpZipFile" accept=".zip" required onchange="displaySelectedFilename()">
           <div class="drop-zone-icon"><i class="fa-solid fa-file-zipper"></i></div>
-          <div class="drop-zone-lbl" id="zipLabelText">คลิกหรือลากไฟล์ .zip มาวางที่นี่</div>
+          <div class="drop-zone-lbl" id="zipLabelText">คลิกหรือลากไฟล์แฟ้มข้อมูล .zip มาวางที่นี่</div>
           <div class="drop-zone-hint" id="filenameDisplay" style="display:none;color:var(--accent);font-weight:700;"></div>
         </div>
       </div>
@@ -528,7 +543,6 @@
   </div>
 </div>
 
-<!-- ══ MODAL: สัตว์ป่า ═══════════════════════════════════ -->
 <div id="wildlifeModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-hd">
@@ -556,7 +570,6 @@
       <div class="fg"><label class="fl">หน่วยงานที่ดำเนินการ</label><input type="text" id="wl_agency" required placeholder="สปป.3 (ภาคเหนือ)" class="fi"></div>
       <div class="fg"><label class="fl">สถานะคดี / ความคืบหน้า</label><textarea id="wl_caseStatus" required placeholder="รายละเอียดความคืบหน้าคดี..." class="ft"></textarea></div>
 
-      <!-- UTM wildlife -->
       <div class="fsec violet">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div class="fsec-ttl" style="color:var(--violet);margin-bottom:0;"><i class="fa-solid fa-crosshairs"></i> พิกัด UTM (Zone 47N / WGS84)</div>
@@ -567,26 +580,26 @@
           <div><label class="fl">Easting (X) ม.</label><input type="number" id="wl_utm_e" placeholder="534500" oninput="liveConvertUTM('wl')" class="fi"></div>
           <div><label class="fl">Northing (Y) ม.</label><input type="number" id="wl_utm_n" placeholder="2023000" oninput="liveConvertUTM('wl')" class="fi"></div>
         </div>
-        <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;">
-          <p style="font-size:0.68rem;color:var(--muted);margin-bottom:8px;">หรือกรอก WGS84 (Lat/Lon) โดยตรง :</p>
+        <div style="border-top:1px solid #e2e8f0;margin-top:12px;padding-top:12px;">
+          <p style="font-size:0.72rem;font-weight:600;color:var(--muted);margin-bottom:8px;">หรือระบุระบบพิกัดภูมิศาสตร์ WGS84 (Lat/Lon) โดยตรง :</p>
           <div class="fg2">
             <div><label class="fl">Latitude</label><input type="number" step="any" id="wl_lat" placeholder="18.2897" class="fi"></div>
             <div><label class="fl">Longitude</label><input type="number" step="any" id="wl_lon" placeholder="99.5021" class="fi"></div>
           </div>
         </div>
-        <div id="utm_result_wl" style="display:none;margin-top:8px;">
+        <div id="utm_result_wl" style="display:none;margin-top:10px;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span class="utm-res wl" id="utm_result_wl_text"></span>
-            <button type="button" onclick="previewUTMOnMap('wl')" style="font-size:0.72rem;background:rgba(139,92,246,0.15);color:#c4b5fd;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:700;">
-              <i class="fa-solid fa-map-pin"></i> ปักหมุด
+            <button type="button" onclick="previewUTMOnMap('wl')" style="font-size:0.72rem;background:#f3e8ff;color:var(--violet);border:1px solid #e9d5ff;padding:5px 12px;border-radius:6px;cursor:pointer;font-weight:700;">
+              <i class="fa-solid fa-map-pin"></i> ปักหมุดบนแผนที่
             </button>
           </div>
         </div>
-        <div id="utm_error_wl" style="display:none;margin-top:8px;" class="utm-res err"></div>
+        <div id="utm_error_wl" style="display:none;margin-top:10px;" class="utm-res err"></div>
         <input type="hidden" id="wl_converted_lat"><input type="hidden" id="wl_converted_lon">
       </div>
 
-      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:#f87171;margin-right:4px;"></i>อัปโหลด PDF (ถ้ามี)</label><input type="file" id="wl_pdfFile" accept=".pdf" class="fi" style="padding:7px 10px;cursor:pointer;"></div>
+      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px;"></i>อัปโหลด PDF (ถ้ามี)</label><input type="file" id="wl_pdfFile" accept=".pdf" class="fi" style="padding:7px 10px;cursor:pointer;background:#fff;"></div>
 
       <div class="mft">
         <button type="button" onclick="closeWildlifeModal()" class="btn-cancel">ยกเลิก</button>
@@ -597,7 +610,6 @@
 </div>
 
 
-<!-- ══ JAVASCRIPT ════════════════════════════════════════════ -->
 <script>
 /* ── clock ── */
 function updateClock(){
@@ -608,7 +620,7 @@ function updateClock(){
 }
 updateClock(); setInterval(updateClock,30000);
 
-/* ── UTM → WGS84 ── (ไม่แก้ logic เดิม) */
+/* ── UTM → WGS84 ── */
 function utmToLatLon(easting,northing,zone,isSouthern=false){
   const a=6378137,f=1/298.257223563,e2=2*f-f*f,e=Math.sqrt(e2),k0=0.9996;
   const x=easting-500000,y=northing-(isSouthern?10000000:0);
@@ -652,7 +664,7 @@ function previewUTMOnMap(p){
   if(!lat||!lon){convertUTM(p);return;}
   if(previewMarker)mapInstance.removeLayer(previewMarker);
   previewMarker=L.marker([lat,lon]).addTo(mapInstance)
-    .bindPopup(`<b style="color:#10b981;">📍 UTM Zone ${f.zone}N</b><br><span style="font-size:0.75rem;">Lat:${lat.toFixed(5)}, Lon:${lon.toFixed(5)}</span>`)
+    .bindPopup(`<b style="color:#0f766e;">📍 UTM Zone ${f.zone}N</b><br><span style="font-size:0.75rem;">Lat:${lat.toFixed(5)}, Lon:${lon.toFixed(5)}</span>`)
     .openPopup();
   mapInstance.setView([lat,lon],14);
 }
@@ -674,23 +686,24 @@ const URL_RES='https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public
 function setupMap(){
   mapInstance=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
   L.control.zoom({position:'bottomright'}).addTo(mapInstance);
-  let osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'&copy; OpenStreetMap',
+  // ใช้แผนที่แนว Light / Minimal เพื่อส่งเสริมความ Luxury Modern ของโครงการ
+  let osm=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; OpenStreetMap &copy; CARTO',
     className:'map-tiles'
   }).addTo(mapInstance);
   [encL,timL,wlL,conL,resL].forEach(l=>l.addTo(mapInstance));
-  L.control.layers({"OSM":osm},{
-    "<span style='color:#ef4444;'>⬛ บุกรุก</span>":encL,
-    "<span style='color:#f59e0b;'>⬛ ไม้ผิดกฎหมาย</span>":timL,
-    "<span style='color:#8b5cf6;'>● สัตว์ป่า</span>":wlL,
-    "<span style='color:#10b981;'>⬛ ป่าอนุรักษ์</span>":conL,
+  L.control.layers({"แผนที่สว่างคลีน":osm},{
+    "<span style='color:#dc2626;'>⬛ บุกรุก</span>":encL,
+    "<span style='color:#b45309;'>⬛ ไม้ผิดกฎหมาย</span>":timL,
+    "<span style='color:#6d28d9;'>● สัตว์ป่า</span>":wlL,
+    "<span style='color:#047857;'>⬛ ป่าอนุรักษ์</span>":conL,
     "<span style='color:#ec4899;'>⬛ ป่าสงวน</span>":resL
   },{collapsed:true,position:'bottomright'}).addTo(mapInstance);
   loadForestLayers();
 }
 function loadForestLayers(){
-  fetch(URL_CON).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#047857',weight:1.5,fillColor:'#a7f3d0',fillOpacity:0.2},onEachFeature:(f,l)=>l.bindPopup(`<b style='color:#10b981;'>⛰️ ป่าอนุรักษ์</b><br><span style='font-size:0.75rem;'>${f.properties.NAME_TH||f.properties.name||'ไม่ระบุ'}</span>`)}).addTo(conL);}).catch(()=>{});
-  fetch(URL_RES).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#db2777',weight:1.5,fillColor:'#fbcfe8',fillOpacity:0.2},onEachFeature:(f,l)=>l.bindPopup(`<b style='color:#ec4899;'>🌳 ป่าสงวน</b><br><span style='font-size:0.75rem;'>${f.properties.NAME_TH||f.properties.name||'ไม่ระบุ'}</span>`)}).addTo(resL);}).catch(()=>{});
+  fetch(URL_CON).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#047857',weight:1.5,fillColor:'#a7f3d0',fillOpacity:0.25},onEachFeature:(f,l)=>l.bindPopup(`<b style='color:#047857;'>⛰️ เขตป่าอนุรักษ์</b><br><span style='font-size:0.75rem;'>${f.properties.NAME_TH||f.properties.name||'ไม่ระบุ'}</span>`)}).addTo(conL);}).catch(()=>{});
+  fetch(URL_RES).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#db2777',weight:1.5,fillColor:'#fbcfe8',fillOpacity:0.25},onEachFeature:(f,l)=>l.bindPopup(`<b style='color:#db2777;'>🌳 เขตป่าสงวนแห่งชาติ</b><br><span style='font-size:0.75rem;'>${f.properties.NAME_TH||f.properties.name||'ไม่ระบุ'}</span>`)}).addTo(resL);}).catch(()=>{});
 }
 function clearMapLayers(){encL.clearLayers();timL.clearLayers();wlL.clearLayers();window.mapReg={};}
 
@@ -730,7 +743,7 @@ function closeWildlifeModal(){
 /* ── SHAPEFILE ANALYZE ── */
 async function displaySelectedFilename(){
   const f=document.getElementById('shpZipFile').files[0];if(!f)return;
-  document.getElementById('filenameDisplay').innerHTML=`<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังอ่านพิกัด GIS...`;
+  document.getElementById('filenameDisplay').innerHTML=`<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังวิเคราะห์พิกัด GIS...`;
   document.getElementById('filenameDisplay').style.display='block';
   document.getElementById('zipLabelText').style.display='none';
   const fd=new FormData();fd.append('file',f);
@@ -742,7 +755,7 @@ async function displaySelectedFilename(){
       if(currentActiveTab==='encroachment'){document.getElementById('rai').value=r.rai||0;document.getElementById('ngarn').value=r.ngarn||0;document.getElementById('wa').value=r.wa||0;}
       document.getElementById('converted_lat').value=r.lat;document.getElementById('converted_lon').value=r.lon;
       if(previewMarker)mapInstance.removeLayer(previewMarker);
-      previewMarker=L.marker([r.lat,r.lon]).addTo(mapInstance).bindPopup(`<b style="color:#10b981;">📍 พิกัดกึ่งกลางแปลง</b>`).openPopup();
+      previewMarker=L.marker([r.lat,r.lon]).addTo(mapInstance).bindPopup(`<b style="color:#0f766e;">📍 พิกัดจุดศูนย์กลางแปลง</b>`).openPopup();
       mapInstance.setView([r.lat,r.lon],14);
     }else{document.getElementById('filenameDisplay').textContent=f.name;}
   }catch{document.getElementById('filenameDisplay').textContent=f.name;}
@@ -776,7 +789,7 @@ function switchTab(mode){
 /* ── LOAD + RENDER ── */
 let _allData=[];
 async function loadData(){
-  document.getElementById('sb-list').innerHTML='<div id="sb-loading"><i class="fa-solid fa-circle-notch fa-spin" style="color:var(--accent);"></i><br>กำลังโหลด...</div>';
+  document.getElementById('sb-list').innerHTML='<div id="sb-loading"><i class="fa-solid fa-circle-notch fa-spin" style="color:var(--accent);"></i><br>กำลังโหลดคดีจากระบบคลาวด์...</div>';
   clearMapLayers();
   try{
     const res=await fetch(`${API}/get-cases/${currentActiveTab}`);
@@ -785,7 +798,7 @@ async function loadData(){
     renderMap(_allData);
     updateStats(_allData);
   }catch{
-    document.getElementById('sb-list').innerHTML='<div style="padding:1rem;color:var(--red);font-size:0.78rem;">เชื่อมต่อ API ไม่ได้</div>';
+    document.getElementById('sb-list').innerHTML='<div style="padding:1.5rem;color:var(--red);font-size:0.8rem;text-align:center;font-weight:600;">⚠️ ไม่สามารถเชื่อมต่อระบบเครือข่าย API ได้</div>';
   }
 }
 function updateStats(data){
@@ -796,14 +809,14 @@ function updateStats(data){
 }
 function renderSidebar(data){
   if(!data||!data.length){
-    document.getElementById('sb-list').innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.78rem;">ไม่พบข้อมูลในระบบ</div>';
+    document.getElementById('sb-list').innerHTML='<div style="padding:2.5rem;text-align:center;color:var(--muted);font-size:0.82rem;">ไม่พบฐานข้อมูลคดีในระบบ</div>';
     return;
   }
   const tab=currentActiveTab;
   document.getElementById('sb-list').innerHTML=data.map((item,i)=>{
     const dotCls=item.is_finished?'done':tab==='wildlife'?'wl':tab==='timber'?'tim':'enc';
     const badge=item.is_finished
-      ?`<span class="case-badge cb-done">สิ้นสุด</span>`
+      ?`<span class="case-badge cb-done">สิ้นสุดคดี</span>`
       :`<span class="case-badge cb-pend">ดำเนินการ</span>`;
     const extra=tab==='wildlife'?`<span class="case-meta">${item.wildlife_type||''} ${item.equipment?'· '+item.equipment:''}</span>`
       :tab==='encroachment'?`<span class="case-meta">${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span>`
@@ -816,14 +829,14 @@ function renderSidebar(data){
         ${extra}
         <div class="case-meta">${item.case_date} · ผู้ต้องหา ${item.suspects_count} ราย</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         ${badge}
-        <div style="display:flex;gap:5px;align-items:center;margin-top:2px;flex-wrap:wrap;justify-content:flex-end;">
+        <div style="display:flex;gap:4px;align-items:center;margin-top:4px;flex-wrap:wrap;justify-content:flex-end;">
           ${(tab==='encroachment'||tab==='timber')&&item.geojson_data&&typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')
-            ?`<button onclick="event.stopPropagation();downloadShapefile('${item.geojson_data}','${item.case_no}')" title="ดาวน์โหลด GeoJSON" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#34d399;border-radius:5px;padding:3px 8px;font-size:0.65rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:3px;"><i class="fa-solid fa-file-arrow-down"></i>&nbsp;.json</button>`
+            ?`<button onclick="event.stopPropagation();downloadShapefile('${item.geojson_data}','${item.case_no}')" title="ดาวน์โหลด GeoJSON" style="background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;border-radius:5px;padding:3px 8px;font-size:0.68rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:3px;"><i class="fa-solid fa-file-arrow-down"></i> .json</button>`
             :''}
-          ${item.pdf_url?`<a href="${item.pdf_url}" target="_blank" onclick="event.stopPropagation()" title="ดู PDF" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171;border-radius:5px;padding:3px 8px;font-size:0.65rem;display:inline-flex;align-items:center;gap:3px;"><i class="fa-solid fa-file-pdf"></i>&nbsp;PDF</a>`:''}
-          <button onclick="event.stopPropagation();deleteCase('${item.case_no}')" class="btn-del" title="ลบคดี"><i class="fa-solid fa-trash-can" style="font-size:0.68rem;"></i></button>
+          ${item.pdf_url?`<a href="${item.pdf_url}" target="_blank" onclick="event.stopPropagation()" title="เปิดเอกสาร PDF" style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:5px;padding:3px 8px;font-size:0.68rem;display:inline-flex;align-items:center;gap:3px;text-decoration:none;font-weight:700;"><i class="fa-solid fa-file-pdf"></i> PDF</a>`:''}
+          <button onclick="event.stopPropagation();deleteCase('${item.case_no}')" class="btn-del" title="ลบข้อมูลคดี"><i class="fa-solid fa-trash-can" style="font-size:0.7rem;"></i></button>
         </div>
       </div>
     </div>`;
@@ -837,10 +850,10 @@ function filterSidebar(){
 }
 
 function getCaseStyle(loc,done){
-  let fill='#f59e0b';
-  if((loc||'').match(/อุทยาน|อนุรักษ์|สัตว์ป่า|เตรียมการ/))fill='#065f46';
-  else if((loc||'').match(/ป่าสงวน|แห่งชาติ/))fill='#b11226';
-  return{color:done?'#10b981':'#ef4444',weight:3,fillColor:fill,fillOpacity:0.55};
+  let fill='#b45309';
+  if((loc||'').match(/อุทยาน|อนุรักษ์|สัตว์ป่า|เตรียมการ/))fill='#0f766e';
+  else if((loc||'').match(/ป่าสงวน|แห่งชาติ/))fill='#be123c';
+  return{color:done?'#0f766e':'#dc2626',weight:3,fillColor:fill,fillOpacity:0.4};
 }
 
 function renderMap(data){
@@ -851,7 +864,7 @@ function renderMap(data){
     if(tab==='wildlife'&&item.coords&&Array.isArray(item.coords)&&item.coords.length===2){
       const [lat,lon]=item.coords;
       if(lat||lon){
-        const m=L.circleMarker([lat,lon],{radius:7,color:item.is_finished?'#10b981':'#8b5cf6',fillColor:'#8b5cf6',fillOpacity:0.8,weight:2})
+        const m=L.circleMarker([lat,lon],{radius:8,color:item.is_finished?'#0f766e':'#6d28d9',fillColor:'#6d28d9',fillOpacity:0.7,weight:2})
           .addTo(wlL)
           .bindPopup(buildPopup(item,tab))
           .on('click',()=>selectCase(i));
@@ -873,24 +886,22 @@ function renderMap(data){
 }
 
 function buildPopup(item,tab){
-  return `<div style="min-width:180px;">
-    <div style="font-weight:700;color:#10b981;margin-bottom:6px;">${item.case_no}</div>
-    <div style="font-size:0.75rem;color:#94a3b8;line-height:1.7;">
-      <b style="color:#e2e8f0;">พื้นที่:</b> ${item.location}<br>
-      <b style="color:#e2e8f0;">ผู้ต้องหา:</b> ${item.suspects_count} ราย<br>
-      ${tab==='wildlife'?`<b style="color:#e2e8f0;">ชนิด:</b> ${item.wildlife_type||'–'}<br>`:''}
-      ${item.utm_e?`<b style="color:#e2e8f0;">UTM:</b> Z${item.utm_zone||47}N E:${item.utm_e}<br>`:''}
-      <b style="color:#e2e8f0;">สถานะ:</b> ${item.is_finished?'สิ้นสุดแล้ว':'อยู่ระหว่างคดี'}
+  return `<div style="min-width:200px; padding: 2px;">
+    <div style="font-weight:700;color:#0f766e;font-size:0.9rem;margin-bottom:6px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">คดีหมายเลข: ${item.case_no}</div>
+    <div style="font-size:0.78rem;color:#475569;line-height:1.6;">
+      <b style="color:#111827;">สถานที่:</b> ${item.location}<br>
+      <b style="color:#111827;">ผู้ต้องหา:</b> ${item.suspects_count} ราย<br>
+      ${tab==='wildlife'?`<b style="color:#111827;">ชนิดพันธุ์:</b> ${item.wildlife_type||'–'}<br>`:''}
+      ${item.utm_e?`<b style="color:#111827;">พิกัด UTM:</b> Z${item.utm_zone||47}N E:${item.utm_e}<br>`:''}
+      <b style="color:#111827;">สถานะภาพ:</b> <span style="font-weight:700;color:${item.is_finished?'#0f766e':'#b45309'}">${item.is_finished?'สิ้นสุดพิจารณาคดี':'อยู่ระหว่างการสืบสวน'}</span>
     </div>
   </div>`;
 }
 
 function selectCase(i){
-  // highlight sidebar row
   document.querySelectorAll('.case-row').forEach(r=>r.classList.remove('active'));
   const row=document.getElementById(`crow-${i}`);
   if(row){row.classList.add('active');row.scrollIntoView({block:'nearest'});}
-  // zoom map
   const item=_allData[i];if(!item)return;
   const key=currentActiveTab+'_'+item.id;
   const layer=window.mapReg[key];
@@ -901,32 +912,32 @@ function selectCase(i){
   }else if(item.coords&&item.coords[0]){
     mapInstance.setView([item.coords[0],item.coords[1]],14);
   }
-  // show detail panel
   showDetail(item);
 }
 
 function showDetail(item){
   const tab=currentActiveTab;
   let extra='';
-  if(tab==='encroachment')extra=`<div class="det-item"><label>พื้นที่บุกรุก</label><span style="color:var(--amber);">${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
-  else if(tab==='timber')extra=`<div class="det-item"><label>ชนิดไม้</label><span>${item.timber_type||'–'}</span></div><div class="det-item"><label>ปริมาตรท่อน</label><span>${item.vol_logs||0} ลบ.ม.</span></div><div class="det-item"><label>ปริมาตรแปรรูป</label><span>${item.vol_processed||0} ลบ.ม.</span></div>`;
-  else extra=`<div class="det-item"><label>ชนิดสัตว์ป่า</label><span style="color:var(--violet);">${item.wildlife_type||'–'}</span></div><div class="det-item"><label>อุปกรณ์กระทำผิด</label><span>${item.equipment||'–'}</span></div>`;
+  if(tab==='encroachment')extra=`<div class="det-item"><label>พื้นที่เสียหาย</label><span style="color:var(--gold);">${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
+  else if(tab==='timber')extra=`<div class="det-item"><label>ชนิดไม้หลัก</label><span>${item.timber_type||'–'}</span></div><div class="det-item"><label>ปริมาตรท่อน</label><span>${item.vol_logs||0} ลบ.ม.</span></div><div class="det-item"><label>ปริมาตรแปรรูป</label><span>${item.vol_processed||0} ลบ.ม.</span></div>`;
+  else extra=`<div class="det-item"><label>ชนิดพันธุ์สัตว์ป่า</label><span style="color:var(--violet);">${item.wildlife_type||'–'}</span></div><div class="det-item"><label>ของกลางอุปกรณ์</label><span>${item.equipment||'–'}</span></div>`;
   document.getElementById('detail-content').innerHTML=`
-    <div class="det-title">คดีที่ ${item.case_no} <span style="font-size:0.75rem;font-weight:400;color:var(--muted);">· ${item.case_date}</span>
-      <span style="float:right;display:flex;gap:8px;align-items:center;">
+    <div class="det-title">
+      <div>คดีหมายเลขที่ ${item.case_no} <span style="font-size:0.8rem;font-weight:500;color:var(--muted);margin-left:8px;">· วันเวลาเกิดเหตุ: ${item.case_date}</span></div>
+      <div style="display:flex;gap:8px;align-items:center;">
         ${(tab==='encroachment'||tab==='timber')&&item.geojson_data&&typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')
-          ?`<button onclick="downloadShapefile('${item.geojson_data}','${item.case_no}')" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#34d399;border-radius:6px;padding:4px 12px;font-size:0.72rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:5px;font-family:inherit;"><i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลด GeoJSON</button>`
+          ?`<button onclick="downloadShapefile('${item.geojson_data}','${item.case_no}')" style="background:#e6f4ea;border:1px solid rgba(19,115,51,0.2);color:#137333;border-radius:6px;padding:6px 14px;font-size:0.75rem;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:6px;font-family:inherit;"><i class="fa-solid fa-file-arrow-down"></i> ดาวน์โหลดข้อมูล GIS .json</button>`
           :''}
-        ${item.pdf_url?`<a href="${item.pdf_url}" target="_blank" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#f87171;border-radius:6px;padding:4px 12px;font-size:0.72rem;display:inline-flex;align-items:center;gap:5px;font-weight:700;"><i class="fa-solid fa-file-pdf"></i> PDF</a>`:''}
-      </span>
+        ${item.pdf_url?`<a href="${item.pdf_url}" target="_blank" style="background:#fce8e6;border:1px solid rgba(197,34,31,0.2);color:#c5221f;border-radius:6px;padding:6px 14px;font-size:0.75rem;display:inline-flex;align-items:center;gap:6px;font-weight:700;text-decoration:none;"><i class="fa-solid fa-file-pdf"></i> แฟ้มเอกสาร PDF</a>`:''}
+      </div>
     </div>
     <div class="det-grid">
-      <div class="det-item"><label>สถานที่เกิดเหตุ</label><span>${item.location}</span></div>
-      <div class="det-item"><label>สถานะ</label><span style="color:${item.is_finished?'var(--accent)':'var(--amber)'};">${item.is_finished?'คดีสิ้นสุด':'อยู่ระหว่างคดี'}</span></div>
-      <div class="det-item"><label>ผู้ต้องหา</label><span style="color:var(--red);">${item.suspects_count} ราย</span></div>
-      <div class="det-item"><label>หน่วยงาน</label><span>${item.agency||'–'}</span></div>
+      <div class="det-item"><label>สถานที่ตรวจสอบพบเหตุ</label><span>${item.location}</span></div>
+      <div class="det-item"><label>สถานภาพทางคดี</label><span style="color:${item.is_finished?'var(--accent)':'var(--gold)'};">${item.is_finished?'เสร็จสิ้นสิ้นสุดคดี':'อยู่ระหว่างกระบวนการดำเนินงาน'}</span></div>
+      <div class="det-item"><label>ผู้ต้องหาควบคุม</label><span style="color:var(--red);">${item.suspects_count} ราย</span></div>
+      <div class="det-item"><label>หน่วยงานรับผิดชอบ</label><span>${item.agency||'–'}</span></div>
       ${extra}
-      <div class="det-item" style="grid-column:1/-1;"><label>ความคืบหน้าคดี</label><span style="font-weight:400;">${item.case_status||'–'}</span></div>
+      <div class="det-item" style="grid-column:1/-1;"><label>บันทึกความคืบหน้าและการปฏิบัติงานล่าสุด</label><span style="font-weight:400; line-height:1.6; color:#334155;">${item.case_status||'–'}</span></div>
     </div>`;
   document.getElementById('detail-panel').classList.add('open');
 }
@@ -936,7 +947,7 @@ function closeDetail(){document.getElementById('detail-panel').classList.remove(
 document.getElementById('unifiedForm').onsubmit=async function(e){
   e.preventDefault();
   const btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-microchip fa-spin"></i> กำลังประมวลผล...';
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-microchip fa-spin"></i> กำลังวิเคราะห์ข้อมูลพิกัดบนคลาวด์...';
   const fd=new FormData();
   fd.append('case_type',currentActiveTab);
   fd.append('case_no',document.getElementById('caseNo').value);
@@ -956,9 +967,9 @@ document.getElementById('unifiedForm').onsubmit=async function(e){
   try{
     const res=await fetch(`${API}/process-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
-    if(res.ok&&r.success){alert('🎉 บันทึกสำเร็จ');closeFormModal();loadData();}
-    else alert('ข้อผิดพลาด: '+(r.error||r.detail||JSON.stringify(r)));
-  }catch(err){alert('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: '+err.message);}
+    if(res.ok&&r.success){alert('🎉 บันทึกข้อมูลคดีเรียบร้อย');closeFormModal();loadData();}
+    else alert('ไม่สามารถทำรายการได้เนื่องจาก: '+(r.error||r.detail||JSON.stringify(r)));
+  }catch(err){alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์หลักได้: '+err.message);}
   finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> ส่งประมวลผลขึ้นคลาวด์';}
 };
 
@@ -966,7 +977,7 @@ document.getElementById('unifiedForm').onsubmit=async function(e){
 document.getElementById('wildlifeForm').onsubmit=async function(e){
   e.preventDefault();
   const btn=document.getElementById('wl_submitBtn');
-  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังบันทึก...';
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังบันทึกข้อมูลหลัก...';
   const utmE=document.getElementById('wl_utm_e').value,utmN=document.getElementById('wl_utm_n').value;
   if(utmE&&utmN&&!document.getElementById('wl_converted_lat').value)convertUTM('wl');
   const lat=document.getElementById('wl_converted_lat').value||document.getElementById('wl_lat').value||'0';
@@ -988,9 +999,9 @@ document.getElementById('wildlifeForm').onsubmit=async function(e){
   try{
     const res=await fetch(`${API}/process-wildlife/`,{method:'POST',body:fd});
     const r=await res.json();
-    if(res.ok&&r.success){alert('🐾 บันทึกสำเร็จ');closeWildlifeModal();loadData();}
-    else alert('ข้อผิดพลาด: '+(r.error||r.detail||JSON.stringify(r)));
-  }catch(err){alert('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: '+err.message);}
+    if(res.ok&&r.success){alert('🐾 บันทึกคดีสัตว์ป่าสำเร็จเรียบร้อย');closeWildlifeModal();loadData();}
+    else alert('ข้อผิดพลาดระบบ: '+(r.error||r.detail||JSON.stringify(r)));
+  }catch(err){alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์หลักได้: '+err.message);}
   finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> บันทึกคดีสัตว์ป่า';}
 };
 
@@ -1008,9 +1019,9 @@ async function downloadShapefile(fileUrl,caseNo){
 }
 
 async function deleteCase(cNo){
-  if(confirm(`ลบคดีเลขที่ ${cNo} ออกจากฐานข้อมูลถาวรใช่หรือไม่?`)){
+  if(confirm(`คุณต้องการลบข้อมูลคดีหมายเลขที่ ${cNo} ออกจากฐานข้อมูลส่วนกลางถาวรใช่หรือไม่?`)){
     try{const res=await fetch(`${API}/delete-case/${currentActiveTab}/${cNo}`,{method:'DELETE'});const r=await res.json();alert(r.message);loadData();}
-    catch{alert('เกิดข้อผิดพลาด');}
+    catch{alert('เกิดข้อผิดพลาดในการทำรายการลบข้อมูล');}
   }
 }
 
