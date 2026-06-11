@@ -698,17 +698,33 @@ function setupMap(){
   mapInstance=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
   L.control.zoom({position:'bottomright'}).addTo(mapInstance);
 
-  /* ✅ เปลี่ยนเป็น OpenStreetMap มาตรฐาน → แสดงชื่อภาษาไทย */
+  /* แผนที่ภาษาไทย (OpenStreetMap) */
   let osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     subdomains: 'abc',
     maxZoom: 19
   }).addTo(mapInstance);
 
+  /* แผนที่ดาวเทียม (Esri World Imagery) + ป้ายชื่อภาษาไทยทับ */
+  let satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics',
+    maxZoom: 19
+  });
+  let satelliteLabel=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abc',
+    maxZoom: 19,
+    opacity: 0.45
+  });
+  /* กลุ่ม satellite + label ซ้อนกัน */
+  let satelliteGroup=L.layerGroup([satellite, satelliteLabel]);
+
   [encL,timL,wlL,conL,resL].forEach(l=>l.addTo(mapInstance));
-  L.control.layers({"แผนที่ฐาน (ภาษาไทย)":osm},{
-    "พื้นที่บุกรุก":encL,"ไม้ผิดกฎหมาย":timL,"จุดคดีสัตว์ป่า":wlL,"ป่าอนุรักษ์":conL,"ป่าสงวนฯ":resL
-  },{collapsed:true,position:'bottomright'}).addTo(mapInstance);
+  L.control.layers(
+    {"🗺 แผนที่ภาษาไทย":osm, "🛰 ดาวเทียม (Satellite)":satelliteGroup},
+    {"พื้นที่บุกรุก":encL,"ไม้ผิดกฎหมาย":timL,"จุดคดีสัตว์ป่า":wlL,"ป่าอนุรักษ์":conL,"ป่าสงวนฯ":resL},
+    {collapsed:true,position:'bottomright'}
+  ).addTo(mapInstance);
   loadForestLayers();
 }
 function loadForestLayers(){
