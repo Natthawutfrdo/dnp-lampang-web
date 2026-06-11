@@ -13,31 +13,24 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     
     :root {
-      /* Luxury Nature Palette */
-      --bg:           #fcfcfd; /* Off-white */
+      --bg:           #fcfcfd;
       --panel:        rgba(255, 255, 255, 0.9);
       --panel-pure:   #ffffff;
       --border:       rgba(0, 0, 0, 0.05);
-      --text-main:    #1f2937; /* Slate 800 */
-      --text-muted:   #6b7280; /* Slate 500 */
-      
-      /* Accent Colors */
-      --primary:      #166534; /* Dark Green - Professional */
+      --text-main:    #1f2937;
+      --text-muted:   #6b7280;
+      --primary:      #166534;
       --primary-light:#ecfdf5;
-      --gold:         #b45309; /* Amber 800 */
+      --gold:         #b45309;
       --gold-light:   #fffbeb;
       --violet:       #6d28d9;
       --violet-light: #f5f3ff;
       --danger:       #ef4444;
       --success:      #22c55e;
-      
-      /* Shadows & Effects */
       --shadow-lux:   0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
       --shadow-card:  0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
       --glass:        blur(12px) saturate(180%);
       -webkit-glass:  blur(12px) saturate(180%);
-      
-      /* Radius */
       --radius-sm:    8px;
       --radius-md:    12px;
       --radius-lg:    20px;
@@ -53,7 +46,6 @@
       letter-spacing: -0.01em;
     }
 
-    /* ── TOP NAV (Luxury Glass effect) ── */
     #topnav {
       position: fixed; top: 0; left: 0; right: 0; height: 72px;
       background: rgba(255, 255, 255, 0.75);
@@ -83,8 +75,6 @@
     }
     .nav-tab i { font-size: 0.95rem; opacity: 0.8; }
     .nav-tab:hover { color: var(--primary); background: rgba(255,255,255,0.5); }
-    
-    /* Active Tab Styles - Minimalist underline style on dark green */
     .nav-tab.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2); }
     .nav-tab.active i { opacity: 1; }
 
@@ -101,10 +91,8 @@
     .btn-add:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22, 101, 52, 0.35); filter: brightness(1.1); }
     .btn-add:active { transform: translateY(1px); }
 
-    /* ── LAYOUT ── */
     #app { display: flex; height: 100vh; padding-top: 72px; background: var(--bg); position: relative; }
 
-    /* ── SIDEBAR (Clean & Airy) ── */
     #sidebar {
       width: 380px; flex-shrink: 0; background: var(--panel-pure); border-right: 1px solid var(--border);
       display: flex; flex-direction: column; overflow: hidden; z-index: 10;
@@ -113,7 +101,6 @@
     .sb-header { padding: 24px 24px 12px; flex-shrink: 0; }
     .sb-title { font-size: 0.8rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; text-transform: uppercase; }
 
-    /* Stats Cards - Luxury Grid */
     .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 24px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .stat-card { 
       background: #f8fafc; border: 1px solid rgba(0,0,0,0.03); 
@@ -143,16 +130,13 @@
     .sb-list::-webkit-scrollbar { width: 5px; }
     .sb-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 3px; }
 
-    /* Case Row - Elegant list item */
     .case-row { 
       padding: 20px 24px; border-bottom: 1px solid rgba(0,0,0,0.03); 
       cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 16px; 
       position: relative;
     }
     .case-row:hover { background: rgba(255,255,255,0.8); }
-    .case-row.active { 
-      background: var(--primary-light); 
-    }
+    .case-row.active { background: var(--primary-light); }
     .case-row.active::before {
       content:''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 4px; 
       background: var(--primary); border-radius: 0 4px 4px 0;
@@ -174,11 +158,9 @@
     .cb-pend { background: var(--gold-light); color: var(--gold); }
     #sb-loading { padding: 4rem 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
 
-    /* ── MAP AREA ── */
     #map-wrap { flex: 1; position: relative; overflow: hidden; height: 100%; border-left: 1px solid var(--border); }
     #map { width: 100%; height: 100%; z-index: 1; background: #f1f5f9; }
 
-    /* Detail Panel Bottom (Glassmorphism) */
     #detail-panel {
       position: absolute; bottom: 0; left: 0; right: 0; 
       background: rgba(255, 255, 255, 0.85);
@@ -203,7 +185,6 @@
     .det-item label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.05em; }
     .det-item span { font-size: 0.95rem; color: var(--text-main); font-weight: 600; line-height: 1.5; }
     
-    /* Download Button */
     .btn-download-shp {
       display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; 
       background: #fff; color: var(--primary); border: 1px solid rgba(22, 101, 52, 0.2); 
@@ -213,7 +194,6 @@
     }
     .btn-download-shp:hover { background: var(--primary-light); border-color: rgba(22, 101, 52, 0.3); transform: translateY(-1px); box-shadow: var(--shadow-lux); }
 
-    /* Floating Legend (Glassmorphism) */
     #map-legend {
       position: absolute; top: 24px; right: 24px; 
       background: rgba(255, 255, 255, 0.7);
@@ -229,7 +209,6 @@
 
     #map-version { position: absolute; bottom: 12px; left: 16px; font-size: 0.7rem; color: var(--text-muted); z-index: 40; pointer-events: none; font-weight: 500; }
 
-    /* MOBILE TOGGLE BUTTON */
     #mobile-view-toggle {
       display: none; position: fixed; bottom: 32px; right: 32px; z-index: 999;
       background: var(--primary); color: white; border: none; padding: 16px 24px;
@@ -239,7 +218,6 @@
     }
     #mobile-view-toggle:active { transform: scale(0.95); }
 
-    /* ── MODALS (Luxury look) ── */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -267,7 +245,6 @@
     .modal-cls { background: #f1f5f9; border: none; color: var(--text-muted); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
     .modal-cls:hover { background: #e2e8f0; color: var(--text-main); }
 
-    /* Form UI - Clean Professional */
     .fg { margin-bottom: 18px; }
     .fl { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
     .fi, .fs, .ft {
@@ -321,7 +298,6 @@
     .btn-del { background: none; border: none; cursor: pointer; color: #a1a1aa; padding: 6px; border-radius: 50%; transition: all 0.2s; }
     .btn-del:hover { color: var(--danger); background: #fee2e2; }
 
-    /* 📱 RESPONSIVE MEDIA QUERIES */
     @media (max-width: 1024px) {
       #sidebar { width: 320px; }
       .nav-brand .nav-title { font-size: 0.95rem; }
@@ -465,6 +441,7 @@
 </button>
 
 
+<!-- Modal: บันทึกคดีบุกรุก / ไม้ -->
 <div id="formModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-hd">
@@ -558,6 +535,7 @@
   </div>
 </div>
 
+<!-- Modal: บันทึกคดีสัตว์ป่า -->
 <div id="wildlifeModal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-hd">
@@ -624,9 +602,7 @@
 
 
 <script>
-// JS ฟังก์ชันการทำงานทั้งหมดคงเดิมไม่มีการเปลี่ยนรูปแบบการทำงาน
-
-/* ── Mobile UI Setup & Functions ── */
+/* ── Mobile UI ── */
 function toggleMobileView() {
   const sb = document.getElementById('sidebar');
   const btn = document.getElementById('mobile-view-toggle');
@@ -649,7 +625,7 @@ function checkDeviceWidth() {
   }
 }
 
-/* ── clock ── */
+/* ── Clock ── */
 function updateClock(){
   const d=new Date();
   document.getElementById('navTime').textContent=
@@ -704,7 +680,6 @@ function previewUTMOnMap(p){
     .bindPopup(`<b>📍 จุดพิกัดที่ระบุ</b><br>Lat: ${lat}<br>Lon: ${lon}`)
     .openPopup();
   mapInstance.setView([lat,lon],14);
-  
   if(window.innerWidth <= 868){
     document.getElementById('sidebar').classList.add('hidden');
     document.getElementById('mobile-view-toggle').innerHTML = '<i class="fa-solid fa-list-ul"></i> ดูรายการคดี/สถิติ';
@@ -722,41 +697,40 @@ const URL_RES='https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public
 function setupMap(){
   mapInstance=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
   L.control.zoom({position:'bottomright'}).addTo(mapInstance);
-  
-  let osm=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 20
+
+  /* ✅ เปลี่ยนเป็น OpenStreetMap มาตรฐาน → แสดงชื่อภาษาไทย */
+  let osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abc',
+    maxZoom: 19
   }).addTo(mapInstance);
-  
+
   [encL,timL,wlL,conL,resL].forEach(l=>l.addTo(mapInstance));
-  L.control.layers({"แผนที่ฐาน (สว่าง)":osm},{
+  L.control.layers({"แผนที่ฐาน (ภาษาไทย)":osm},{
     "พื้นที่บุกรุก":encL,"ไม้ผิดกฎหมาย":timL,"จุดคดีสัตว์ป่า":wlL,"ป่าอนุรักษ์":conL,"ป่าสงวนฯ":resL
   },{collapsed:true,position:'bottomright'}).addTo(mapInstance);
   loadForestLayers();
 }
 function loadForestLayers(){
-  fetch(URL_CON).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#166534',weight:1,fillColor:'#22c55e',fillOpacity:0.15, interactive: false}}).addTo(conL);}).catch(()=>{});
-  fetch(URL_RES).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#db2777',weight:1,fillColor:'#db2777',fillOpacity:0.1, interactive: false}}).addTo(resL);}).catch(()=>{});
+  fetch(URL_CON).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#166534',weight:1,fillColor:'#22c55e',fillOpacity:0.15,interactive:false}}).addTo(conL);}).catch(()=>{});
+  fetch(URL_RES).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;L.geoJSON(d,{style:{color:'#db2777',weight:1,fillColor:'#db2777',fillOpacity:0.1,interactive:false}}).addTo(resL);}).catch(()=>{});
 }
 function clearMapLayers(){encL.clearLayers();timL.clearLayers();wlL.clearLayers();window.mapReg={};if(previewMarker)mapInstance.removeLayer(previewMarker);}
 
-/* ── MODALS ── */
+/* ── Modals ── */
 function openFormModal(){
   if(currentActiveTab==='wildlife'){document.getElementById('wildlifeModal').style.display='flex';return;}
   document.getElementById('formModal').style.display='flex';
-  const iconEl = document.getElementById('modalIcon');
+  const iconEl=document.getElementById('modalIcon');
   if(currentActiveTab==='encroachment'){
     document.getElementById('modalTitle').textContent='บันทึกคดีบุกรุกพื้นที่ป่า';
-    iconEl.innerHTML = '<i class="fa-solid fa-tree"></i>';
-    iconEl.className = 'modal-icon enc';
+    iconEl.innerHTML='<i class="fa-solid fa-tree"></i>';iconEl.className='modal-icon enc';
     document.getElementById('timberFieldsSection').classList.remove('show');
     document.getElementById('areaFieldsSection').style.display='';
     document.getElementById('dropZone').style.display='';
   }else{
     document.getElementById('modalTitle').textContent='บันทึกคดีไม้ผิดกฎหมาย';
-    iconEl.innerHTML = '<i class="fa-solid fa-cubes-wood"></i>';
-    iconEl.className = 'modal-icon wl';
+    iconEl.innerHTML='<i class="fa-solid fa-cubes-wood"></i>';iconEl.className='modal-icon wl';
     document.getElementById('timberFieldsSection').classList.add('show');
     document.getElementById('areaFieldsSection').style.display='none';
     document.getElementById('dropZone').style.display='';
@@ -777,11 +751,11 @@ function closeWildlifeModal(){
   if(previewMarker)mapInstance.removeLayer(previewMarker);
 }
 
-/* ── SHAPEFILE ── */
+/* ── Shapefile Analyzer ── */
 async function displaySelectedFilename(){
-  const fileInput = document.getElementById('shpZipFile');
+  const fileInput=document.getElementById('shpZipFile');
   const f=fileInput.files[0];if(!f)return;
-  document.getElementById('filenameDisplay').innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์ไฟล์...`;
+  document.getElementById('filenameDisplay').innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์ไฟล์...';
   document.getElementById('filenameDisplay').style.display='block';
   document.getElementById('zipLabelText').style.display='none';
   const fd=new FormData();fd.append('file',f);
@@ -797,34 +771,32 @@ async function displaySelectedFilename(){
       }
       document.getElementById('converted_lat').value=r.lat;document.getElementById('converted_lon').value=r.lon;
       if(previewMarker)mapInstance.removeLayer(previewMarker);
-      previewMarker=L.marker([r.lat,r.lon]).addTo(mapInstance).bindPopup(`<b>📍 จุดศูนย์กลางแปลง</b>`).openPopup();
+      previewMarker=L.marker([r.lat,r.lon]).addTo(mapInstance).bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
       mapInstance.setView([r.lat,r.lon],14);
-    } else {
-       document.getElementById('filenameDisplay').innerHTML=`<i class="fa-solid fa-times-circle" style="color:var(--danger)"></i> ไฟล์ไม่รองรับ หรือไม่มีพิกัด`;
-       fileInput.value = '';
+    }else{
+      document.getElementById('filenameDisplay').innerHTML='<i class="fa-solid fa-times-circle" style="color:var(--danger)"></i> ไฟล์ไม่รองรับ หรือไม่มีพิกัด';
+      fileInput.value='';
     }
   }catch{
-      document.getElementById('filenameDisplay').innerHTML=`<i class="fa-solid fa-exclamation-triangle" style="color:var(--danger)"></i> เชื่อมต่อบริการวิเคราะห์ล้มเหลว`;
+    document.getElementById('filenameDisplay').innerHTML='<i class="fa-solid fa-exclamation-triangle" style="color:var(--danger)"></i> เชื่อมต่อบริการวิเคราะห์ล้มเหลว';
   }
 }
 
 function switchTab(mode){
   currentActiveTab=mode;
   ['tab-enc','tab-timber','tab-wildlife'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.classList.remove('active');
+    const el=document.getElementById(id);if(el)el.classList.remove('active');
   });
   const labels={encroachment:'สารบบคดีบุกรุกพื้นที่ป่า',timber:'สารบบคดีไม้ผิดกฎหมาย',wildlife:'สารบบคดีสัตว์ป่า'};
   document.getElementById('sb-label').textContent=labels[mode];
-  if(mode==='encroachment') document.getElementById('tab-enc').classList.add('active');
-  else if(mode==='timber') document.getElementById('tab-timber').classList.add('active');
+  if(mode==='encroachment')document.getElementById('tab-enc').classList.add('active');
+  else if(mode==='timber')document.getElementById('tab-timber').classList.add('active');
   else document.getElementById('tab-wildlife').classList.add('active');
-  
-  if(detailPanelOpen) closeDetail();
+  if(detailPanelOpen)closeDetail();
   loadData();
 }
 
-/* ── LOAD DATA ── */
+/* ── Load Data ── */
 let _allData=[];
 async function loadData(){
   document.getElementById('sb-list').innerHTML='<div id="sb-loading"><i class="fa-solid fa-circle-notch fa-spin c-primary"></i><br><br>กำลังโหลดคดีระบบคลาวด์...</div>';
@@ -836,7 +808,7 @@ async function loadData(){
     renderMap(_allData);
     updateStats(_allData);
   }catch{
-    document.getElementById('sb-list').innerHTML='<div style="padding:2rem;color:var(--danger);text-align:center; font-weight:600;"><i class="fa-solid fa-wifi-slash" style="font-size:2rem; margin-bottom:10px;"></i><br>เชื่อมต่อเครือข่ายล้มเหลว</div>';
+    document.getElementById('sb-list').innerHTML='<div style="padding:2rem;color:var(--danger);text-align:center;font-weight:600;"><i class="fa-solid fa-wifi-slash" style="font-size:2rem;margin-bottom:10px;"></i><br>เชื่อมต่อเครือข่ายล้มเหลว</div>';
   }
 }
 function updateStats(data){
@@ -847,13 +819,13 @@ function updateStats(data){
 }
 function renderSidebar(data){
   if(!data||!data.length){
-    document.getElementById('sb-list').innerHTML='<div style="padding:3rem 2rem;text-align:center;color:var(--text-muted); font-weight:500;"><i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i><br>ไม่พบข้อมูลคดีในหมวดนี้</div>';
+    document.getElementById('sb-list').innerHTML='<div style="padding:3rem 2rem;text-align:center;color:var(--text-muted);font-weight:500;"><i class="fa-solid fa-folder-open" style="font-size:2rem;margin-bottom:10px;opacity:0.5;"></i><br>ไม่พบข้อมูลคดีในหมวดนี้</div>';
     return;
   }
   const tab=currentActiveTab;
   document.getElementById('sb-list').innerHTML=data.map((item,i)=>{
     const dotCls=item.is_finished?'done':tab==='wildlife'?'wl':tab==='timber'?'tim':'enc';
-    const badge=item.is_finished?`<span class="case-badge cb-done">สิ้นสุด</span>` :`<span class="case-badge cb-pend">ดำเนินการ</span>`;
+    const badge=item.is_finished?`<span class="case-badge cb-done">สิ้นสุด</span>`:`<span class="case-badge cb-pend">ดำเนินการ</span>`;
     return `<div class="case-row" onclick="selectCase(${i})" id="crow-${i}">
       <div class="case-dot ${dotCls}"></div>
       <div class="case-info">
@@ -861,7 +833,7 @@ function renderSidebar(data){
         <div class="case-loc">${item.location}</div>
         <div class="case-meta">${item.case_date} · ผู้ต้องหา ${item.suspects_count} ราย · ${badge}</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px; flex-shrink:0;">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
         <button onclick="event.stopPropagation();deleteCase('${item.case_no}')" class="btn-del" title="ลบคดี"><i class="fa-solid fa-trash-alt"></i></button>
       </div>
     </div>`;
@@ -871,10 +843,10 @@ function renderSidebar(data){
 function filterSidebar(){
   const q=document.getElementById('tableSearchInput').value.toLowerCase();
   if(!q){renderSidebar(_allData);return;}
-  const filtered=_allData.filter(item=> 
-    (item.case_no && item.case_no.toLowerCase().includes(q)) || 
-    (item.location && item.location.toLowerCase().includes(q)) ||
-    (item.agency && item.agency.toLowerCase().includes(q))
+  const filtered=_allData.filter(item=>
+    (item.case_no&&item.case_no.toLowerCase().includes(q))||
+    (item.location&&item.location.toLowerCase().includes(q))||
+    (item.agency&&item.agency.toLowerCase().includes(q))
   );
   renderSidebar(filtered);
 }
@@ -886,158 +858,123 @@ function renderMap(data){
     const key=tab+'_'+item.id;
     if(tab==='wildlife'&&item.coords&&item.coords[0]){
       const m=L.circleMarker([item.coords[0],item.coords[1]],{
-          radius:8,
-          color:'#fff',
-          weight: 2,
-          fillColor:'#6d28d9',
-          fillOpacity:0.9,
-          className: 'map-marker-wl'
-      })
-        .addTo(wlL).bindPopup(`<b>คดีสัตว์ป่า: ${item.case_no}</b><br>${item.location}`).on('click',()=>selectCase(i));
+        radius:8,color:'#fff',weight:2,fillColor:'#6d28d9',fillOpacity:0.9
+      }).addTo(wlL).bindPopup(`<b>คดีสัตว์ป่า: ${item.case_no}</b><br>${item.location}`).on('click',()=>selectCase(i));
       window.mapReg[key]=m;
     }
     if((tab==='encroachment'||tab==='timber')&&item.geojson_data){
       const addLayer=gd=>{
         const ml=L.geoJSON(gd,{
-            style:{
-                color:item.is_finished?'#166534':'#dc2626',
-                weight:2.5,
-                fillColor:item.is_finished?'#22c55e':'#ef4444',
-                fillOpacity: item.is_finished? 0.3 : 0.5
-            },
-            onEachFeature:(f,l)=>{
-                l.bindPopup(`<b>คดี${tab==='encroachment'?'บุกรุก':'ไม้'}: ${item.case_no}</b><br>${item.location}`);
-                l.on('click',()=>selectCase(i));
-            }
+          style:{
+            color:item.is_finished?'#166534':'#dc2626',
+            weight:2.5,
+            fillColor:item.is_finished?'#22c55e':'#ef4444',
+            fillOpacity:item.is_finished?0.3:0.5
+          },
+          onEachFeature:(f,l)=>{
+            l.bindPopup(`<b>คดี${tab==='encroachment'?'บุกรุก':'ไม้'}: ${item.case_no}</b><br>${item.location}`);
+            l.on('click',()=>selectCase(i));
+          }
         }).addTo(target);
         window.mapReg[key]=ml;
       };
-      if(typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')) fetch(item.geojson_data).then(r=>r.json()).then(addLayer).catch(()=>{});
+      if(typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http'))
+        fetch(item.geojson_data).then(r=>r.json()).then(addLayer).catch(()=>{});
       else{try{addLayer(typeof item.geojson_data==='string'?JSON.parse(item.geojson_data):item.geojson_data);}catch{}}
     }
   });
 }
 
-let detailPanelOpen = false;
+let detailPanelOpen=false;
 function selectCase(i){
   document.querySelectorAll('.case-row').forEach(r=>r.classList.remove('active'));
   const row=document.getElementById(`crow-${i}`);
-  if(row) row.classList.add('active');
+  if(row)row.classList.add('active');
   const item=_allData[i];if(!item)return;
   const key=currentActiveTab+'_'+item.id;
   const layer=window.mapReg[key];
   if(layer){
-    if(layer.getBounds)mapInstance.fitBounds(layer.getBounds(),{maxZoom:16, padding: [20,20]});
+    if(layer.getBounds)mapInstance.fitBounds(layer.getBounds(),{maxZoom:16,padding:[20,20]});
     else mapInstance.setView(layer.getLatLng(),16);
     layer.openPopup();
-  } else if (item.coords && item.coords[0]) {
-      mapInstance.setView([item.coords[0], item.coords[1]], 16);
+  }else if(item.coords&&item.coords[0]){
+    mapInstance.setView([item.coords[0],item.coords[1]],16);
   }
-  showDetail(item, i);
-  
-  if(window.innerWidth <= 868){
+  showDetail(item,i);
+  if(window.innerWidth<=868){
     document.getElementById('sidebar').classList.add('hidden');
-    document.getElementById('mobile-view-toggle').innerHTML = '<i class="fa-solid fa-list-ul"></i> ดูรายการคดี/สถิติ';
+    document.getElementById('mobile-view-toggle').innerHTML='<i class="fa-solid fa-list-ul"></i> ดูรายการคดี/สถิติ';
   }
 }
 
-/* ── ฟังก์ชันดาวน์โหลด GeoJSON ── */
-async function triggerDownload(index) {
-  const item = _allData[index];
-  if(!item || !item.geojson_data) {
-    alert('ไม่พบข้อมูลแผนที่เชิงพื้นที่สำหรับคดีนี้');
-    return;
-  }
-  
-  const safeCaseNo = item.case_no.replace(/\//g, '-');
-  const typeTh = currentActiveTab==='encroachment'?'บุกรุก':'ไม้ผิดกฎหมาย';
-  
-  if(typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
-    try {
-      const res = await fetch(item.geojson_data);
-      const geojson = await res.json();
-      downloadObjectAsJson(geojson, `DNP_สบอ13_คดี${typeTh}_ที่_${safeCaseNo}_พิกัดแปลง.json`);
-    } catch(err) {
-      alert('ดาวน์โหลดไฟล์ล้มเหลว: ' + err.message);
-    }
-  } else {
-    try {
-      const geojson = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data;
-      downloadObjectAsJson(geojson, `DNP_สบอ13_คดี${typeTh}_ที่_${safeCaseNo}_พิกัดแปลง.json`);
-    } catch(err) {
-      alert('ข้อมูลพิกัดรูปแบบไม่ถูกต้อง');
-    }
+/* ── Download GeoJSON ── */
+async function triggerDownload(index){
+  const item=_allData[index];
+  if(!item||!item.geojson_data){alert('ไม่พบข้อมูลแผนที่เชิงพื้นที่สำหรับคดีนี้');return;}
+  const safeCaseNo=item.case_no.replace(/\//g,'-');
+  const typeTh=currentActiveTab==='encroachment'?'บุกรุก':'ไม้ผิดกฎหมาย';
+  if(typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')){
+    try{
+      const res=await fetch(item.geojson_data);
+      const geojson=await res.json();
+      downloadObjectAsJson(geojson,`DNP_สบอ13_คดี${typeTh}_ที่_${safeCaseNo}_พิกัดแปลง.json`);
+    }catch(err){alert('ดาวน์โหลดไฟล์ล้มเหลว: '+err.message);}
+  }else{
+    try{
+      const geojson=typeof item.geojson_data==='string'?JSON.parse(item.geojson_data):item.geojson_data;
+      downloadObjectAsJson(geojson,`DNP_สบอ13_คดี${typeTh}_ที่_${safeCaseNo}_พิกัดแปลง.json`);
+    }catch{alert('ข้อมูลพิกัดรูปแบบไม่ถูกต้อง');}
   }
 }
-
-function downloadObjectAsJson(obj, filename){
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", filename);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
+function downloadObjectAsJson(obj,filename){
+  const dataStr="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(obj));
+  const a=document.createElement('a');
+  a.setAttribute("href",dataStr);a.setAttribute("download",filename);
+  document.body.appendChild(a);a.click();a.remove();
 }
 
-function showDetail(item, index){
-  detailPanelOpen = true;
-  let downloadBtnHtml = '';
-  if(currentActiveTab !== 'wildlife' && item.geojson_data) {
-    downloadBtnHtml = `
-      <div style="margin-top: 10px;">
-        <button class="btn-download-shp" onclick="triggerDownload(${index})">
-          <i class="fa-solid fa-download"></i> ดาวน์โหลดพิกัด GeoJSON (ผังแปลง)
-        </button>
-      </div>`;
+function showDetail(item,index){
+  detailPanelOpen=true;
+  let downloadBtnHtml='';
+  if(currentActiveTab!=='wildlife'&&item.geojson_data){
+    downloadBtnHtml=`<div style="margin-top:10px;"><button class="btn-download-shp" onclick="triggerDownload(${index})"><i class="fa-solid fa-download"></i> ดาวน์โหลดพิกัด GeoJSON (ผังแปลง)</button></div>`;
   }
-  
-  let areaHtml = '';
-  if(currentActiveTab === 'encroachment' && item.area_rai !== undefined) {
-      areaHtml = `<div class="det-item"><label>พื้นที่บุกรุก</label><span>${item.area_rai} ไร่ ${item.area_ngarn} งาน ${item.area_wa} ตร.ว.</span></div>`;
+  let areaHtml='';
+  if(currentActiveTab==='encroachment'&&item.area_rai!==undefined){
+    areaHtml=`<div class="det-item"><label>พื้นที่บุกรุก</label><span>${item.area_rai} ไร่ ${item.area_ngarn} งาน ${item.area_wa} ตร.ว.</span></div>`;
   }
-  
-  let timberHtml = '';
-  if(currentActiveTab === 'timber' && item.timber_type) {
-      timberHtml = `
-        <div class="det-item"><label>ชนิดไม้</label><span>${item.timber_type}</span></div>
-        <div class="det-item"><label>ปริมาตร (ท่อน/แปรรูป)</label><span>${item.vol_round||0} / ${item.vol_processed||0} ลบ.ม.</span></div>
-      `;
+  let timberHtml='';
+  if(currentActiveTab==='timber'&&item.timber_type){
+    timberHtml=`<div class="det-item"><label>ชนิดไม้</label><span>${item.timber_type}</span></div>
+      <div class="det-item"><label>ปริมาตร (ท่อน/แปรรูป)</label><span>${item.vol_round||0} / ${item.vol_processed||0} ลบ.ม.</span></div>`;
   }
-  
-  let wildlifeHtml = '';
-  if(currentActiveTab === 'wildlife' && item.wildlife_type) {
-      wildlifeHtml = `
-        <div class="det-item"><label>ชนิดสัตว์ป่า/ซาก</label><span>${item.wildlife_type}</span></div>
-        <div class="det-item"><label>อุปกรณ์กระทำผิด</label><span>${item.equipment||'–'}</span></div>
-      `;
+  let wildlifeHtml='';
+  if(currentActiveTab==='wildlife'&&item.wildlife_type){
+    wildlifeHtml=`<div class="det-item"><label>ชนิดสัตว์ป่า/ซาก</label><span>${item.wildlife_type}</span></div>
+      <div class="det-item"><label>อุปกรณ์กระทำผิด</label><span>${item.equipment||'–'}</span></div>`;
   }
-
   document.getElementById('detail-content').innerHTML=`
     <div class="det-title">คดีหมายเลข: <b>${item.case_no}</b></div>
     <div class="det-grid">
       <div class="det-item"><label>วันที่เกิดเหตุ</label><span>${item.case_date}</span></div>
       <div class="det-item"><label>สถานที่</label><span>${item.location}</span></div>
-      <div class="det-item"><label>สถานะคดี</label><span class="${item.is_finished?'c-primary':'c-gold'} font-bold">${item.is_finished?'✅ เสร็จสิ้นคดี':'🔶 อยู่ระหว่างดำเนินการ'}</span></div>
+      <div class="det-item"><label>สถานะคดี</label><span class="${item.is_finished?'c-primary':'c-gold'}">${item.is_finished?'✅ เสร็จสิ้นคดี':'🔶 อยู่ระหว่างดำเนินการ'}</span></div>
       <div class="det-item"><label>ผู้ต้องหา</label><span>${item.suspects_count||0} ราย</span></div>
       <div class="det-item"><label>หน่วยงานรับผิดชอบ</label><span>${item.agency||'–'}</span></div>
-      ${areaHtml}
-      ${timberHtml}
-      ${wildlifeHtml}
-      <div class="det-item" style="grid-column: 1 / -1;"><label>บันทึกความคืบหน้าล่าสุด</label><span style="font-weight:500; white-space:pre-wrap;">${item.case_status||'–'}</span></div>
+      ${areaHtml}${timberHtml}${wildlifeHtml}
+      <div class="det-item" style="grid-column:1/-1;"><label>บันทึกความคืบหน้าล่าสุด</label><span style="font-weight:500;white-space:pre-wrap;">${item.case_status||'–'}</span></div>
     </div>
     ${downloadBtnHtml}`;
   document.getElementById('detail-panel').classList.add('open');
 }
-function closeDetail(){detailPanelOpen = false; document.getElementById('detail-panel').classList.remove('open');}
+function closeDetail(){detailPanelOpen=false;document.getElementById('detail-panel').classList.remove('open');}
 
-/* ── SUBMIT FORMS ── */
+/* ── Submit: คดีบุกรุก/ไม้ ── */
 document.getElementById('unifiedForm').onsubmit=async function(e){
   e.preventDefault();
-  if(!confirm('ยืนยันการบันทึกข้อมูลคดีลงระบบคลาวด์?')) return;
-  const btn=document.getElementById('submitBtn'); btn.disabled=true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-  
+  if(!confirm('ยืนยันการบันทึกข้อมูลคดีลงระบบคลาวด์?'))return;
+  const btn=document.getElementById('submitBtn');btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
   const fd=new FormData();
   fd.append('case_type',currentActiveTab);
   fd.append('case_no',document.getElementById('caseNo').value);
@@ -1049,36 +986,34 @@ document.getElementById('unifiedForm').onsubmit=async function(e){
   fd.append('suspects_count',document.getElementById('suspectsCount').value);
   fd.append('file',document.getElementById('shpZipFile').files[0]);
   fd.append('utm_zone',document.getElementById('utm_zone').value);
-  fd.append('utm_e',document.getElementById('utm_e').value||'0');
-  fd.append('utm_n',document.getElementById('utm_n').value||'0');
-  
-  const pdfF = document.getElementById('pdfFile').files[0];
-  if(pdfF) fd.append('pdf_file', pdfF);
-
+  fd.append('utm_easting',document.getElementById('utm_e').value||'0');
+  fd.append('utm_northing',document.getElementById('utm_n').value||'0');
+  const pdfF=document.getElementById('pdfFile').files[0];
+  if(pdfF)fd.append('pdf_file',pdfF);
   if(currentActiveTab==='encroachment'){
-      fd.append('rai',document.getElementById('rai').value||'0');
-      fd.append('ngarn',document.getElementById('ngarn').value||'0');
-      fd.append('wa',document.getElementById('wa').value||'0');
-  } else if (currentActiveTab === 'timber') {
-      fd.append('timber_type', document.getElementById('timberType').value);
-      fd.append('vol_round', document.getElementById('vol1').value||'0');
-      fd.append('vol_processed', document.getElementById('vol2').value||'0');
+    fd.append('rai',document.getElementById('rai').value||'0');
+    fd.append('ngarn',document.getElementById('ngarn').value||'0');
+    fd.append('wa',document.getElementById('wa').value||'0');
+  }else if(currentActiveTab==='timber'){
+    fd.append('timber_type',document.getElementById('timberType').value);
+    fd.append('vol1',document.getElementById('vol1').value||'0');
+    fd.append('vol2',document.getElementById('vol2').value||'0');
   }
-  
   try{
     const res=await fetch(`${API}/process-shapefile/`,{method:'POST',body:fd});
-    const result = await res.json();
-    if(res.ok && result.success){alert('🎉 บันทึกคดีสำเร็จ ข้อมูลถูกส่งขึ้นระบบคลาวด์แล้ว');closeFormModal();loadData();}
-    else { alert('❌ ล้มเหลว: ' + (result.error||'ไม่สามารถบันทึกได้')); }
-  }catch{alert('❌ ผิดพลาด: ไม่สามารถเชื่อมต่อ API เซิร์ฟเวอร์');}finally{btn.disabled=false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกข้อมูลเข้าคลาวด์';}
+    const result=await res.json();
+    if(res.ok&&result.success){alert('🎉 บันทึกคดีสำเร็จ ข้อมูลถูกส่งขึ้นระบบคลาวด์แล้ว');closeFormModal();loadData();}
+    else{alert('❌ ล้มเหลว: '+(result.error||'ไม่สามารถบันทึกได้'));}
+  }catch{alert('❌ ผิดพลาด: ไม่สามารถเชื่อมต่อ API เซิร์ฟเวอร์');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกข้อมูลเข้าคลาวด์';}
 };
 
+/* ── Submit: คดีสัตว์ป่า ── */
 document.getElementById('wildlifeForm').onsubmit=async function(e){
   e.preventDefault();
-  if(!confirm('ยืนยันการบันทึกข้อมูลคดีสัตว์ป่า?')) return;
-  const btn=document.getElementById('wl_submitBtn'); btn.disabled=true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-  
+  if(!confirm('ยืนยันการบันทึกข้อมูลคดีสัตว์ป่า?'))return;
+  const btn=document.getElementById('wl_submitBtn');btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
   const fd=new FormData();
   fd.append('case_no',document.getElementById('wl_caseNo').value);
   fd.append('case_date',document.getElementById('wl_caseDate').value);
@@ -1089,45 +1024,46 @@ document.getElementById('wildlifeForm').onsubmit=async function(e){
   fd.append('suspects_count',document.getElementById('wl_suspectsCount').value);
   fd.append('wildlife_type',document.getElementById('wl_wildlifeType').value);
   fd.append('equipment',document.getElementById('wl_equipment').value);
-  const lat = document.getElementById('wl_lat').value;
-  const lon = document.getElementById('wl_lon').value;
+  const lat=document.getElementById('wl_lat').value;
+  const lon=document.getElementById('wl_lon').value;
   fd.append('coords_lat',lat||'0');
   fd.append('coords_lon',lon||'0');
-  
-  const pdfF = document.getElementById('wl_pdfFile').files[0];
-  if(pdfF) fd.append('pdf_file', pdfF);
-
+  const pdfF=document.getElementById('wl_pdfFile').files[0];
+  if(pdfF)fd.append('pdf_file',pdfF);
   try{
     const res=await fetch(`${API}/process-wildlife/`,{method:'POST',body:fd});
-    const result = await res.json();
-    if(res.ok && result.success){alert('🎉 บันทึกคดีสัตว์ป่าสำเร็จ');closeWildlifeModal();loadData();}
-    else { alert('❌ ล้มเหลว: ' + (result.error||'บันทึกไม่ได้')); }
-  }catch{alert('❌ ผิดพลาด: เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว');}finally{btn.disabled=false; btn.innerHTML = '<i class="fa-solid fa-save"></i> บันทึกข้อมูล';}
+    const result=await res.json();
+    if(res.ok&&result.success){alert('🎉 บันทึกคดีสัตว์ป่าสำเร็จ');closeWildlifeModal();loadData();}
+    else{alert('❌ ล้มเหลว: '+(result.error||'บันทึกไม่ได้'));}
+  }catch{alert('❌ ผิดพลาด: เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-save"></i> บันทึกข้อมูล';}
 };
 
+/* ── Delete ── */
 async function deleteCase(cNo){
   if(confirm(`⚠️ คุณต้องการลบคดีหมายเลขที่ ${cNo} ใช่หรือไม่?\nข้อมูลเชิงพื้นที่และเอกสารที่เกี่ยวข้องจะถูกลบออกจากคลาวด์อย่างถาวร`)){
     try{
-        const res = await fetch(`${API}/delete-case/${currentActiveTab}/${cNo}`,{method:'DELETE'});
-        if(res.ok) { alert('ลบข้อมูลคดีเรียบร้อย'); if(detailPanelOpen) closeDetail(); loadData(); }
-        else { alert('ไม่สามารถลบได้ เซิร์ฟเวอร์ตอบกลับข้อผิดพลาด'); }
+      const res=await fetch(`${API}/delete-case/${currentActiveTab}/${cNo}`,{method:'DELETE'});
+      if(res.ok){alert('ลบข้อมูลคดีเรียบร้อย');if(detailPanelOpen)closeDetail();loadData();}
+      else{alert('ไม่สามารถลบได้ เซิร์ฟเวอร์ตอบกลับข้อผิดพลาด');}
     }catch{alert('ผิดพลาดในการเชื่อมต่อเพื่อลบข้อมูล');}
   }
 }
 
-const dropZone = document.getElementById('dropZone');
+/* ── Drag & Drop Zone ── */
+const dropZone=document.getElementById('dropZone');
 if(dropZone){
-    ['dragenter', 'dragover'].forEach(eventName => {
-      dropZone.addEventListener(eventName, e => { e.preventDefault(); dropZone.style.borderColor = 'var(--primary)'; dropZone.style.background = 'var(--primary-light)'; }, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-      dropZone.addEventListener(eventName, e => { e.preventDefault(); dropZone.style.borderColor = '#cbd5e1'; dropZone.style.background = '#f8fafc'; }, false);
-    });
-    dropZone.addEventListener('drop', e => {
-      const dt = e.dataTransfer; const files = dt.files;
-      document.getElementById('shpZipFile').files = files;
-      displaySelectedFilename();
-    }, false);
+  ['dragenter','dragover'].forEach(ev=>{
+    dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.style.borderColor='var(--primary)';dropZone.style.background='var(--primary-light)';},false);
+  });
+  ['dragleave','drop'].forEach(ev=>{
+    dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.style.borderColor='#cbd5e1';dropZone.style.background='#f8fafc';},false);
+  });
+  dropZone.addEventListener('drop',e=>{
+    const dt=e.dataTransfer;const files=dt.files;
+    document.getElementById('shpZipFile').files=files;
+    displaySelectedFilename();
+  },false);
 }
 
 window.onload=()=>{setupMap();checkDeviceWidth();switchTab('encroachment');};
