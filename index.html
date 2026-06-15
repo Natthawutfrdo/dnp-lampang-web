@@ -1,863 +1,790 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ระบบสารบบคดีเชิงพื้นที่ · DNP สบอ.13 ลำปาง</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <style>
-    /* ─── Reset & Tokens ─── */
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --bg:#f0f4f0;
-      --surface:#ffffff;
-      --surface-2:#f8faf8;
-      --border:#e3ebe3;
-      --border-strong:#c8d9c8;
-      --text:#1a2e1a;
-      --text-2:#4a6b4a;
-      --text-muted:#7a9a7a;
-      --primary:#1a5c2e;
-      --primary-hover:#134a24;
-      --primary-light:#eaf5ee;
-      --primary-pale:#f0faf2;
-      --gold:#8a5c00;
-      --gold-light:#fdf8ec;
-      --violet:#5b2db5;
-      --violet-light:#f3f0fc;
-      --danger:#c0392b;
-      --danger-light:#fdf0ef;
-      --success:#1d7a3a;
-      --nav-h:64px;
-      --sb-w:360px;
-      --radius:10px;
-      --radius-lg:16px;
-      --shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-      --shadow:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
-      --shadow-lg:0 10px 30px rgba(0,0,0,0.1),0 4px 10px rgba(0,0,0,0.05);
-      --transition:0.2s cubic-bezier(0.4,0,0.2,1);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DNP GeoIndex v4 · สบอ.13 ลำปาง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   TOKENS & RESET
+══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f5f0;
+  --surface:#fff;
+  --surface-2:#f5f8f5;
+  --surface-3:#edf3ed;
+  --border:rgba(0,0,0,.07);
+  --border-md:rgba(0,0,0,.13);
+  --text:#111d11;
+  --text-2:#3d593d;
+  --text-3:#6b8a6b;
+  --primary:#1a5c2e;
+  --primary-h:#134a24;
+  --primary-pale:#eaf5ee;
+  --primary-bg:#f2faf4;
+  --gold:#8a5c00;
+  --gold-bg:#fdf8ec;
+  --gold-border:rgba(138,92,0,.15);
+  --violet:#4a2aa0;
+  --violet-bg:#f3f0fc;
+  --violet-border:rgba(74,42,160,.15);
+  --danger:#b5281e;
+  --danger-bg:#fdf0ef;
+  --danger-border:rgba(181,40,30,.15);
+  --blue:#1550a0;
+  --blue-bg:#eaf1fc;
+  --nav:52px;
+  --sb:340px;
+  --rad:8px;
+  --rad-lg:12px;
+  --rad-xl:16px;
+  --trans:.18s cubic-bezier(.4,0,.2,1);
+  --shadow-xs:0 1px 3px rgba(0,0,0,.06);
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 28px rgba(0,0,0,.1);
+}
+html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
 
-    html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased;}
+/* ══════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:900;
+  background:rgba(255,255,255,.97);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  display:flex;align-items:center;padding:0 16px;gap:12px;
+}
+.nav-logo{width:30px;height:30px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo i{color:#fff;font-size:13px}
+.nav-title-w{flex-shrink:0}
+.nav-title{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.2}
+.nav-sub{font-size:.66rem;color:var(--text-3);margin-top:1px}
+.nav-sep{width:1px;height:22px;background:var(--border-md);flex-shrink:0}
 
-    /* ─── Nav ─── */
-    #topnav{
-      position:fixed;top:0;left:0;right:0;height:var(--nav-h);
-      background:rgba(255,255,255,0.96);
-      border-bottom:1px solid var(--border);
-      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-      display:flex;align-items:center;padding:0 20px;gap:16px;
-      z-index:900;box-shadow:var(--shadow-sm);
-    }
-    .nav-brand{display:flex;align-items:center;gap:12px;flex-shrink:0;}
-    .nav-logo{width:40px;height:40px;display:flex;align-items:center;justify-content:center;}
-    .nav-logo img{width:100%;height:100%;object-fit:contain;}
-    .nav-title{font-size:0.95rem;font-weight:700;color:var(--text);line-height:1.2;}
-    .nav-sub{font-size:0.72rem;color:var(--text-muted);font-weight:400;margin-top:1px;}
-    .nav-divider{width:1px;height:32px;background:var(--border);flex-shrink:0;}
+/* View switcher */
+.view-sw{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border)}
+.vsw-btn{
+  padding:5px 12px;border-radius:26px;font-family:inherit;font-size:.75rem;font-weight:600;
+  color:var(--text-3);border:none;background:transparent;cursor:pointer;
+  transition:all var(--trans);display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.vsw-btn i{font-size:.73rem}
+.vsw-btn:hover{color:var(--primary)}
+.vsw-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,.22)}
 
-    /* Pill tabs */
-    .nav-tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:50px;border:1px solid var(--border);flex:1;max-width:480px;}
-    .nav-tab{
-      flex:1;padding:8px 14px;border-radius:50px;
-      font-family:inherit;font-size:0.82rem;font-weight:600;
-      color:var(--text-muted);border:none;background:transparent;
-      cursor:pointer;transition:all var(--transition);
-      display:flex;align-items:center;justify-content:center;gap:6px;
-      white-space:nowrap;
-    }
-    .nav-tab i{font-size:0.82rem;}
-    .nav-tab:hover{color:var(--primary);background:rgba(255,255,255,0.7);}
-    .nav-tab.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,0.25);}
+/* Tab pills */
+.nav-tabs{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border);flex:1;max-width:420px}
+.ntab{
+  flex:1;padding:5px 10px;border-radius:26px;font-family:inherit;font-size:.76rem;font-weight:600;
+  color:var(--text-3);border:none;background:transparent;cursor:pointer;
+  transition:all var(--trans);display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;
+}
+.ntab i{font-size:.72rem}
+.ntab:hover{color:var(--primary)}
+.ntab.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,.22)}
+.ntab .cnt{font-size:.62rem;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
+.ntab.active .cnt{background:rgba(255,255,255,.25);color:#fff}
+.ntab:not(.active) .cnt{background:var(--border);color:var(--text-3)}
 
-    .nav-right{display:flex;align-items:center;gap:12px;margin-left:auto;flex-shrink:0;}
-    .nav-time{font-size:0.78rem;color:var(--text-muted);font-weight:500;white-space:nowrap;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-time{font-size:.72rem;color:var(--text-3);font-weight:500}
+.btn-add{
+  display:flex;align-items:center;gap:6px;padding:7px 14px;
+  background:var(--primary);color:#fff;border:none;border-radius:30px;
+  font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer;
+  transition:all var(--trans);white-space:nowrap;
+}
+.btn-add:hover{background:var(--primary-h);transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,92,46,.28)}
 
-    .btn-add{
-      display:flex;align-items:center;gap:8px;
-      padding:10px 20px;border-radius:50px;
-      font-family:inherit;font-size:0.82rem;font-weight:700;
-      color:#fff;border:none;cursor:pointer;
-      background:linear-gradient(135deg,var(--primary),#2d7a47);
-      box-shadow:0 3px 10px rgba(26,92,46,0.3);
-      transition:all var(--transition);white-space:nowrap;
-    }
-    .btn-add:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(26,92,46,0.4);}
-    .btn-add:active{transform:translateY(0);}
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+#app{display:flex;height:100vh;padding-top:var(--nav)}
 
-    /* ─── App Layout ─── */
-    #app{display:flex;height:100vh;padding-top:var(--nav-h);}
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+#sidebar{
+  width:var(--sb);flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;
+  transition:transform var(--trans);
+}
+.sb-head{padding:12px 14px 10px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.sb-label{font-size:.64rem;font-weight:700;color:var(--primary);letter-spacing:.09em;text-transform:uppercase;margin-bottom:8px}
 
-    /* ─── Sidebar ─── */
-    #sidebar{
-      width:var(--sb-w);flex-shrink:0;
-      background:var(--surface);
-      border-right:1px solid var(--border);
-      display:flex;flex-direction:column;overflow:hidden;
-      z-index:10;transition:transform var(--transition);
-    }
-    .sb-header{padding:18px 20px 0;flex-shrink:0;}
-    .sb-eyebrow{font-size:0.68rem;font-weight:700;color:var(--primary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.stat-c{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad);padding:8px 10px}
+.sl{font-size:.62rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.sv{font-size:1.45rem;font-weight:700;line-height:1;letter-spacing:-.03em}
+.sv.cg{color:var(--primary)}.sv.ca{color:var(--gold)}.sv.cb{color:var(--blue)}.sv.cr{color:var(--danger)}
+.ss{font-size:.62rem;color:var(--text-3);margin-top:1px}
 
-    /* Stats */
-    .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px 14px;flex-shrink:0;}
-    .stat-card{
-      background:var(--surface-2);border:1px solid var(--border);
-      border-radius:var(--radius);padding:12px 14px;
-      transition:all var(--transition);cursor:default;
-    }
-    .stat-card:hover{background:#fff;box-shadow:var(--shadow-sm);transform:translateY(-1px);}
-    .stat-label{font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;}
-    .stat-val{font-size:1.5rem;font-weight:800;line-height:1;letter-spacing:-0.03em;}
-    .stat-sub{font-size:0.7rem;color:var(--text-muted);margin-top:3px;}
-    .c-primary{color:var(--primary);}
-    .c-gold{color:var(--gold);}
-    .c-violet{color:var(--violet);}
-    .c-danger{color:var(--danger);}
-    .c-blue{color:#1a56a0;}
+/* Search */
+.sb-srch{padding:8px 14px;flex-shrink:0;border-bottom:1px solid var(--border);position:relative}
+.sb-srch i.srch-ic{position:absolute;left:24px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:.76rem;pointer-events:none}
+.sb-srch input{width:100%;padding:7px 30px 7px 32px;background:var(--surface-2);border:1px solid var(--border);border-radius:30px;font-family:inherit;font-size:.82rem;color:var(--text);outline:none;transition:all var(--trans)}
+.sb-srch input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,92,46,.1)}
+.sb-srch input::placeholder{color:var(--text-3)}
+#srch-clear{position:absolute;right:22px;top:50%;transform:translateY(-50%);display:none;border:none;background:none;color:var(--text-3);cursor:pointer;font-size:.73rem;padding:2px}
+#srch-clear.show{display:block}
 
-    /* Search */
-    .sb-search{padding:10px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .search-wrap{position:relative;}
-    .search-wrap input{
-      width:100%;padding:10px 14px 10px 38px;
-      background:var(--surface-2);border:1px solid var(--border);
-      border-radius:50px;font-family:inherit;font-size:0.88rem;
-      color:var(--text);outline:none;transition:all var(--transition);
-    }
-    .search-wrap input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,92,46,0.1);}
-    .search-wrap input::placeholder{color:var(--text-muted);}
-    .search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.82rem;pointer-events:none;}
-    .search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:none;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.8rem;padding:2px;}
-    .search-clear.show{display:block;}
+/* List */
+.sb-list{flex:1;overflow-y:auto;overscroll-behavior:contain}
+.sb-list::-webkit-scrollbar{width:3px}
+.sb-list::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
 
-    /* Case list */
-    .sb-list{flex:1;overflow-y:auto;overscroll-behavior:contain;}
-    .sb-list::-webkit-scrollbar{width:4px;}
-    .sb-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
+/* Skeleton */
+.sk-row{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px}
+.sk{background:linear-gradient(90deg,#edf3ed 25%,#e2ece2 50%,#edf3ed 75%);background-size:200% 100%;border-radius:5px;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-d{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.sk-ln{flex:1;display:flex;flex-direction:column;gap:6px}
+.sk-h{height:12px;width:60%}.sk-p{height:11px;width:84%}.sk-s{height:10px;width:42%}
 
-    /* Skeleton loader */
-    .skeleton-list{padding:8px 0;}
-    .skeleton-row{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
-    .sk{background:linear-gradient(90deg,#eef2ee 25%,#e4eae4 50%,#eef2ee 75%);background-size:200% 100%;border-radius:6px;animation:shimmer 1.5s infinite;}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-    .sk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-    .sk-lines{flex:1;display:flex;flex-direction:column;gap:8px;}
-    .sk-h{height:14px;width:55%;}.sk-p{height:12px;width:80%;}.sk-s{height:11px;width:40%;}
+/* Case row */
+.case-row{
+  padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background var(--trans);display:flex;align-items:flex-start;gap:9px;position:relative;
+}
+.case-row:hover{background:var(--primary-bg)}
+.case-row.active{background:var(--primary-pale)}
+.case-row.active::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:2.5px;background:var(--primary);border-radius:0 3px 3px 0}
+.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.d-enc{background:var(--primary)}.d-tim{background:var(--gold)}.d-wl{background:var(--violet)}.d-done{background:var(--text-3)}
+.cinfo{flex:1;min-width:0}
+.cno{font-size:.84rem;font-weight:700;color:var(--text);line-height:1.3}
+.cloc{font-size:.75rem;color:var(--text-2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmeta{font-size:.66rem;color:var(--text-3);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;font-size:.61rem;font-weight:700;padding:2px 6px;border-radius:20px}
+.badge-ok{background:var(--primary-pale);color:var(--primary);border:1px solid rgba(26,92,46,.15)}
+.badge-pend{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border)}
+.row-del{
+  flex-shrink:0;width:24px;height:24px;border-radius:6px;border:none;background:transparent;
+  cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;opacity:0;transition:all var(--trans);
+}
+.case-row:hover .row-del{opacity:1}
+.row-del:hover{color:var(--danger);background:var(--danger-bg)}
 
-    /* Case rows */
-    .case-row{
-      padding:14px 20px;border-bottom:1px solid rgba(0,0,0,0.04);
-      cursor:pointer;transition:background var(--transition);
-      display:flex;align-items:flex-start;gap:12px;position:relative;
-    }
-    .case-row:hover{background:var(--primary-pale);}
-    .case-row.active{background:var(--primary-light);}
-    .case-row.active::before{
-      content:'';position:absolute;left:0;top:20%;bottom:20%;
-      width:3px;background:var(--primary);border-radius:0 3px 3px 0;
-    }
-    .case-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-    .dot-enc{background:var(--primary);}
-    .dot-tim{background:var(--gold);}
-    .dot-wl{background:var(--violet);}
-    .dot-done{background:var(--text-muted);}
+/* Pagination */
+.sb-pager{
+  padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.pager-info{font-size:.68rem;color:var(--text-3);font-weight:500}
+.pager-btns{display:flex;gap:4px}
+.pager-btn{
+  width:28px;height:28px;border-radius:var(--rad);border:1px solid var(--border);
+  background:var(--surface);color:var(--text-2);cursor:pointer;font-size:.72rem;
+  display:flex;align-items:center;justify-content:center;transition:all var(--trans);font-family:inherit;
+}
+.pager-btn:hover:not(:disabled){background:var(--primary-pale);color:var(--primary);border-color:rgba(26,92,46,.25)}
+.pager-btn:disabled{opacity:.38;cursor:not-allowed}
+.pager-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-    .case-info{flex:1;min-width:0;}
-    .case-no{font-size:0.9rem;font-weight:700;color:var(--text);letter-spacing:-0.01em;line-height:1.3;}
-    .case-loc{font-size:0.82rem;color:var(--text-2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .case-meta{font-size:0.72rem;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-    .badge{display:inline-flex;align-items:center;font-size:0.67rem;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.03em;}
-    .badge-pending{background:var(--gold-light);color:var(--gold);border:1px solid rgba(138,92,0,0.15);}
-    .badge-done{background:#f0f4f0;color:var(--text-muted);border:1px solid var(--border);}
+/* Empty/Error */
+.state-box{padding:36px 18px;text-align:center}
+.state-icon{font-size:2rem;opacity:.28;margin-bottom:10px}
+.state-title{font-size:.86rem;font-weight:700;color:var(--text-2);margin-bottom:5px}
+.state-desc{font-size:.75rem;color:var(--text-3);line-height:1.75}
+.btn-retry{margin-top:12px;padding:6px 16px;border-radius:30px;background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer}
 
-    .row-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;opacity:0;transition:opacity var(--transition);}
-    .case-row:hover .row-actions{opacity:1;}
-    .btn-del{background:none;border:none;cursor:pointer;color:var(--text-muted);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.78rem;transition:all var(--transition);}
-    .btn-del:hover{color:var(--danger);background:var(--danger-light);}
+/* ══════════════════════════════════════════
+   MAP AREA
+══════════════════════════════════════════ */
+#map-wrap{flex:1;position:relative;overflow:hidden}
+#map{width:100%;height:100%;background:#e6efe6}
+.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--rad)!important;overflow:hidden;box-shadow:var(--shadow-xs)!important}
+.leaflet-control-zoom a{font-size:13px!important;color:var(--text)!important}
+.leaflet-popup-content-wrapper{border-radius:var(--rad)!important;border:1px solid var(--border)!important;box-shadow:var(--shadow)!important}
+.leaflet-popup-content{font-family:'Sarabun',sans-serif!important;font-size:.82rem!important;line-height:1.6!important}
 
-    /* Empty/Error states */
-    .state-block{padding:40px 24px;text-align:center;color:var(--text-muted);}
-    .state-icon{font-size:2rem;margin-bottom:12px;opacity:0.4;}
-    .state-title{font-size:0.9rem;font-weight:600;color:var(--text-2);margin-bottom:6px;}
-    .state-desc{font-size:0.82rem;line-height:1.6;}
+/* Legend */
+#legend{
+  position:absolute;top:12px;right:12px;background:rgba(255,255,255,.94);
+  border:1px solid var(--border);border-radius:var(--rad);padding:10px 12px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  z-index:40;box-shadow:var(--shadow-xs);min-width:155px;
+}
+.leg-ttl{font-size:.61rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px}
+.leg-row{display:flex;align-items:center;gap:6px;font-size:.71rem;color:var(--text-2);font-weight:500;margin-bottom:4px}
+.leg-row:last-child{margin-bottom:0}
+.leg-line{width:14px;height:2.5px;border-radius:2px;flex-shrink:0}
+.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+#map-ver{position:absolute;bottom:8px;left:12px;font-size:.58rem;color:rgba(0,0,0,.25);z-index:40;pointer-events:none}
 
-    /* ─── Map ─── */
-    #map-wrap{flex:1;position:relative;overflow:hidden;}
-    #map{width:100%;height:100%;background:#e8f0e8;}
-    .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--radius)!important;overflow:hidden;box-shadow:var(--shadow-sm)!important;}
-    .leaflet-control-zoom a{font-size:14px!important;color:var(--text)!important;}
+/* Connection banner */
+#conn-banner{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.76);color:#fff;font-size:.73rem;font-weight:600;
+  padding:6px 14px;border-radius:30px;z-index:50;
+  display:none;align-items:center;gap:7px;white-space:nowrap;
+}
+#conn-banner.show{display:flex}
 
-    /* Legend */
-    #map-legend{
-      position:absolute;top:16px;right:16px;
-      background:rgba(255,255,255,0.92);
-      border:1px solid var(--border);border-radius:var(--radius);
-      padding:14px 16px;
-      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-      z-index:40;box-shadow:var(--shadow);min-width:175px;
-    }
-    .leg-title{font-size:0.68rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;}
-    .leg-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:0.77rem;color:var(--text-2);font-weight:500;}
-    .leg-item:last-child{margin-bottom:0;}
-    .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-    .leg-line{width:18px;height:3px;border-radius:2px;flex-shrink:0;}
+/* ══════════════════════════════════════════
+   DETAIL PANEL
+══════════════════════════════════════════ */
+#det-panel{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.97);border-top:1px solid var(--border);
+  border-radius:var(--rad-xl) var(--rad-xl) 0 0;padding:18px 20px 22px;
+  transform:translateY(100%);transition:transform .32s cubic-bezier(.16,1,.3,1);
+  z-index:50;max-height:58%;overflow-y:auto;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 -5px 20px rgba(0,0,0,.06);
+}
+#det-panel.open{transform:translateY(0)}
+#det-panel::-webkit-scrollbar{width:3px}
+#det-panel::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
+.det-drag{width:30px;height:3px;background:var(--border-md);border-radius:2px;margin:0 auto 12px}
+.det-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
+.det-title{font-size:.96rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.35}
+.det-st{margin-top:3px;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700}
+.det-st.pend{color:var(--gold)}.det-st.done{color:var(--primary)}
+.det-close{flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;transition:all var(--trans)}
+.det-close:hover{background:var(--border-md)}
+.det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:7px;margin-bottom:10px}
+.det-cell{background:var(--surface-2);padding:8px 11px;border-radius:var(--rad);border:1px solid var(--border)}
+.det-cell label{font-size:.59rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;font-weight:700}
+.det-cell span{font-size:.81rem;color:var(--text);font-weight:600;line-height:1.5}
+.det-full{grid-column:1/-1}
+.det-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.det-btn{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 12px;
+  background:var(--surface);color:var(--text);border:1px solid var(--border-md);
+  border-radius:30px;font-family:inherit;font-size:.73rem;font-weight:700;cursor:pointer;
+  text-decoration:none;transition:all var(--trans);
+}
+.det-btn:hover{background:var(--primary-pale);border-color:rgba(26,92,46,.25);color:var(--primary)}
+.det-btn.pdf:hover{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger)}
 
-    #map-version{position:absolute;bottom:10px;left:14px;font-size:0.65rem;color:var(--text-muted);z-index:40;pointer-events:none;}
+/* ══════════════════════════════════════════
+   DASHBOARD VIEW
+══════════════════════════════════════════ */
+#dash-wrap{flex:1;overflow-y:auto;padding:20px;display:none;background:var(--bg)}
+#dash-wrap::-webkit-scrollbar{width:4px}
+#dash-wrap::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:4px}
+.dash-title{font-size:.65rem;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.kpi-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);
+  padding:14px 16px;position:relative;overflow:hidden;
+}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.green::before{background:linear-gradient(90deg,var(--primary),#2d8a4e)}
+.kpi-card.amber::before{background:linear-gradient(90deg,var(--gold),#c48a10)}
+.kpi-card.blue::before{background:linear-gradient(90deg,var(--blue),#2272d4)}
+.kpi-card.red::before{background:linear-gradient(90deg,var(--danger),#e03c30)}
+.kpi-label{font-size:.66rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.kpi-val{font-size:2rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.kpi-val.green{color:var(--primary)}.kpi-val.amber{color:var(--gold)}.kpi-val.blue{color:var(--blue)}.kpi-val.red{color:var(--danger)}
+.kpi-sub{font-size:.68rem;color:var(--text-3);margin-top:4px}
+.kpi-icon{position:absolute;right:14px;top:14px;font-size:1.4rem;opacity:.1}
 
-    /* ─── Detail panel ─── */
-    #detail-panel{
-      position:absolute;bottom:0;left:0;right:0;
-      background:rgba(255,255,255,0.95);
-      border-top:1px solid var(--border);
-      border-radius:var(--radius-lg) var(--radius-lg) 0 0;
-      padding:24px;
-      transform:translateY(100%);
-      transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
-      z-index:50;max-height:65%;overflow-y:auto;
-      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      box-shadow:0 -8px 24px rgba(0,0,0,0.06);
-    }
-    #detail-panel.open{transform:translateY(0);}
-    #detail-panel::-webkit-scrollbar{width:4px;}
-    #detail-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:16px}
+.chart-title{font-size:.72rem;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.chart-title i{color:var(--primary);font-size:.75rem}
+.chart-box{position:relative;height:200px}
+.chart-box canvas{max-height:200px}
 
-    .det-drag{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px;}
-    .det-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
-    .det-title{font-size:1.1rem;font-weight:800;color:var(--text);letter-spacing:-0.02em;line-height:1.3;}
-    #detail-close{
-      background:var(--surface-2);border:1px solid var(--border);
-      color:var(--text-muted);border-radius:50%;width:30px;height:30px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:0.75rem;cursor:pointer;transition:all var(--transition);flex-shrink:0;
-    }
-    #detail-close:hover{background:var(--border);color:var(--text);}
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);overflow:hidden;margin-bottom:14px}
+.table-hd{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.7rem;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.table-hd i{color:var(--primary);font-size:.73rem}
+table.dash-tbl{width:100%;border-collapse:collapse}
+table.dash-tbl th{padding:8px 14px;text-align:left;font-size:.62rem;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);background:var(--surface-2)}
+table.dash-tbl td{padding:9px 14px;font-size:.78rem;color:var(--text);border-bottom:1px solid var(--border)}
+table.dash-tbl tr:last-child td{border-bottom:none}
+table.dash-tbl tr:hover td{background:var(--primary-bg)}
 
-    .det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px;}
-    .det-item{background:var(--surface-2);padding:12px 14px;border-radius:var(--radius);border:1px solid var(--border);}
-    .det-item label{font-size:0.67rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px;font-weight:700;}
-    .det-item span{font-size:0.88rem;color:var(--text);font-weight:600;line-height:1.5;}
-    .det-full{grid-column:1/-1;}
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+#toast-wrap{position:fixed;top:60px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);
+  padding:9px 13px;box-shadow:var(--shadow-lg);min-width:230px;max-width:310px;
+  display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;
+  animation:tIn .26s cubic-bezier(.16,1,.3,1);pointer-events:all;
+}
+.toast.success{border-left:3px solid var(--primary)}
+.toast.error{border-left:3px solid var(--danger)}
+.toast.info{border-left:3px solid var(--blue)}
+.toast i{font-size:.88rem}
+.toast.success i{color:var(--primary)}.toast.error i{color:var(--danger)}.toast.info i{color:var(--blue)}
+@keyframes tIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
 
-    .btn-download{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 20px;background:var(--surface);
-      color:var(--primary);border:1px solid rgba(26,92,46,0.2);
-      border-radius:50px;font-family:inherit;font-size:0.82rem;font-weight:700;
-      cursor:pointer;transition:all var(--transition);text-decoration:none;
-    }
-    .btn-download:hover{background:var(--primary-light);border-color:rgba(26,92,46,0.4);}
+/* ══════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(10,20,10,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:16px;z-index:9000}
+.overlay.open{display:flex}
+.modal-box{background:var(--surface);border-radius:var(--rad-xl);border:1px solid var(--border);box-shadow:var(--shadow-lg);max-width:640px;width:100%;max-height:90vh;overflow-y:auto;animation:mUp .25s cubic-bezier(.16,1,.3,1)}
+.modal-box::-webkit-scrollbar{width:3px}
+.modal-box::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
+@keyframes mUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.m-hd{position:sticky;top:0;background:var(--surface);z-index:1;display:flex;align-items:center;gap:11px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.m-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.m-icon.enc{background:var(--primary-pale);color:var(--primary)}
+.m-icon.tim{background:var(--gold-bg);color:var(--gold)}
+.m-icon.wl{background:var(--violet-bg);color:var(--violet)}
+.m-title{font-size:.94rem;font-weight:800;color:var(--text)}
+.m-sub{font-size:.69rem;color:var(--text-3);margin-top:1px}
+.m-close{margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);display:flex;align-items:center;justify-content:center;font-size:.72rem;cursor:pointer;transition:all var(--trans);flex-shrink:0}
+.m-close:hover{background:var(--border-md)}
+.m-body{padding:20px}
+.m-ft{position:sticky;bottom:0;background:var(--surface);display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
 
-    /* ─── Mobile FAB ─── */
-    #fab-toggle{
-      display:none;position:fixed;bottom:24px;right:24px;z-index:999;
-      background:var(--primary);color:white;border:none;
-      padding:14px 22px;border-radius:50px;
-      font-family:inherit;font-size:0.85rem;font-weight:700;
-      box-shadow:0 6px 20px rgba(26,92,46,0.35);
-      cursor:pointer;align-items:center;gap:8px;
-      transition:all var(--transition);
-    }
-    #fab-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,46,0.4);}
+/* Form */
+.fsec{margin-bottom:16px}
+.fsec-ttl{font-size:.64rem;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.fg{margin-bottom:10px}.fg:last-child{margin-bottom:0}
+.fl{display:block;font-size:.64rem;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.badge-new{font-size:.56rem;font-weight:800;padding:1px 4px;border-radius:6px;background:#dcfce7;color:#166534;margin-left:3px;vertical-align:middle}
+.fi,.fs,.ft{width:100%;padding:8px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad);font-family:inherit;font-size:.83rem;color:var(--text);outline:none;transition:border-color var(--trans),box-shadow var(--trans)}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,92,46,.1)}
+.fi::placeholder{color:var(--text-3)}
+.fs{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b8a6b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px;padding-right:32px}
+.ft{resize:vertical;min-height:78px;line-height:1.65}
+.fg-row{display:grid;gap:9px}.fg-2{grid-template-columns:1fr 1fr}.fg-3{grid-template-columns:1fr 1fr 1fr}
+.fbox{border-radius:var(--rad-lg);padding:12px;margin-bottom:2px}
+.fbox.green{background:var(--primary-pale);border:1px solid rgba(26,92,46,.13)}
+.fbox.amber{background:var(--gold-bg);border:1px solid var(--gold-border)}
+.fbox.violet{background:var(--violet-bg);border:1px solid var(--violet-border)}
+.fbox-ttl{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px;margin-bottom:9px}
+.fbox-ttl.green{color:var(--primary)}.fbox-ttl.amber{color:var(--gold)}.fbox-ttl.violet{color:var(--violet)}
+.fbox-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.btn-utm{padding:5px 11px;border-radius:30px;font-family:inherit;font-size:.7rem;font-weight:700;color:#fff;border:none;cursor:pointer;transition:all var(--trans)}
+.btn-utm.green{background:var(--primary)}.btn-utm.violet{background:var(--violet)}
+.btn-utm:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.utm-res{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:30px;font-size:.71rem;font-weight:600;margin-top:7px}
+.utm-ok{background:#dcfce7;color:#166534;border:1px solid rgba(22,101,52,.15)}
+.utm-err{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+.utm-vl{background:var(--violet-bg);color:var(--violet);border:1px solid var(--violet-border)}
+.btn-mprev{font-size:.65rem;font-family:inherit;font-weight:700;cursor:pointer;border-radius:20px;padding:4px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);transition:all var(--trans)}
+.btn-mprev:hover{background:var(--primary-pale);color:var(--primary);border-color:rgba(26,92,46,.3)}
+.drop-zone{border:2px dashed var(--border-md);border-radius:var(--rad);padding:18px 12px;text-align:center;background:var(--surface-2);position:relative;cursor:pointer;transition:all var(--trans)}
+.drop-zone:hover,.drop-zone.over{border-color:var(--primary);background:var(--primary-bg)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:1.4rem;color:var(--primary);opacity:.6;margin-bottom:5px}
+.drop-lbl{font-size:.78rem;font-weight:600;color:var(--text-2)}
+.drop-sub{font-size:.67rem;color:var(--text-3);margin-top:1px}
+.drop-st{font-size:.72rem;font-weight:600;margin-top:4px}
+.drop-st.ok{color:var(--primary)}.drop-st.err{color:var(--danger)}
+.btn-cancel{padding:7px 16px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:600;color:var(--text-2);border:1px solid var(--border-md);background:var(--surface);cursor:pointer;transition:all var(--trans)}
+.btn-cancel:hover{background:var(--surface-2)}
+.btn-submit{padding:7px 18px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:700;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all var(--trans)}
+.btn-submit.green{background:var(--primary);box-shadow:0 2px 8px rgba(26,92,46,.22)}
+.btn-submit.violet{background:var(--violet);box-shadow:0 2px 8px rgba(74,42,160,.22)}
+.btn-submit:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.55;pointer-events:none}
 
-    /* ─── Modal ─── */
-    .modal-overlay{
-      position:fixed;inset:0;
-      background:rgba(10,20,10,0.45);
-      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-      display:none;align-items:center;justify-content:center;
-      padding:20px;z-index:9999;
-    }
-    .modal-overlay.open{display:flex;}
+/* ══════════════════════════════════════════
+   FAB MOBILE
+══════════════════════════════════════════ */
+#fab{display:none;position:fixed;bottom:20px;right:20px;z-index:990;background:var(--primary);color:#fff;border:none;padding:11px 18px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:700;box-shadow:0 5px 18px rgba(26,92,46,.32);cursor:pointer;align-items:center;gap:6px;transition:all var(--trans)}
+#fab:hover{transform:translateY(-2px)}
 
-    .modal-box{
-      background:#fff;border-radius:var(--radius-lg);
-      box-shadow:var(--shadow-lg);
-      max-width:680px;width:100%;
-      max-height:90vh;overflow-y:auto;
-      animation:slideUp 0.28s cubic-bezier(0.16,1,0.3,1);
-      border:1px solid var(--border);
-    }
-    .modal-box::-webkit-scrollbar{width:4px;}
-    .modal-box::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
-    @keyframes slideUp{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-
-    .modal-hd{
-      position:sticky;top:0;background:#fff;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:20px 24px;border-bottom:1px solid var(--border);
-      z-index:1;
-    }
-    .modal-hd-left{display:flex;align-items:center;gap:12px;}
-    .modal-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-    .icon-enc{background:var(--primary-light);color:var(--primary);}
-    .icon-tim{background:var(--gold-light);color:var(--gold);}
-    .icon-wl{background:var(--violet-light);color:var(--violet);}
-    .modal-ttl{font-size:1.05rem;font-weight:800;color:var(--text);}
-    .modal-sub{font-size:0.78rem;color:var(--text-muted);margin-top:2px;}
-    .modal-cls{
-      background:var(--surface-2);border:none;color:var(--text-muted);
-      border-radius:50%;width:34px;height:34px;
-      display:flex;align-items:center;justify-content:center;
-      cursor:pointer;transition:all var(--transition);font-size:0.8rem;
-    }
-    .modal-cls:hover{background:var(--border);color:var(--text);}
-
-    .modal-body{padding:24px;}
-
-    /* Form elements */
-    .fsection{margin-bottom:20px;}
-    .fsection-title{
-      font-size:0.72rem;font-weight:800;color:var(--text-2);
-      text-transform:uppercase;letter-spacing:0.08em;
-      margin-bottom:12px;padding-bottom:8px;
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;gap:7px;
-    }
-    .fsection-title i{opacity:0.7;}
-
-    .fg{margin-bottom:14px;}
-    .fg:last-child{margin-bottom:0;}
-    .fl{display:block;font-size:0.72rem;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:5px;}
-    .badge-new{display:inline-block;font-size:0.6rem;font-weight:800;padding:1px 6px;border-radius:10px;background:#dcfce7;color:#166534;margin-left:5px;vertical-align:middle;letter-spacing:0.04em;}
-
-    .fi,.fs,.ft{
-      width:100%;padding:10px 14px;
-      background:var(--surface-2);border:1px solid var(--border);
-      border-radius:var(--radius);font-family:inherit;font-size:0.88rem;
-      color:var(--text);outline:none;
-      transition:border-color var(--transition),box-shadow var(--transition);
-    }
-    .fi:focus,.fs:focus,.ft:focus{
-      border-color:var(--primary);background:#fff;
-      box-shadow:0 0 0 3px rgba(26,92,46,0.1);
-    }
-    .fi::placeholder{color:var(--text-muted);}
-    .fs{
-      appearance:none;cursor:pointer;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a9a7a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:36px;
-    }
-    .ft{resize:vertical;min-height:90px;line-height:1.6;}
-
-    .fg-row{display:grid;gap:12px;}
-    .fg-2{grid-template-columns:1fr 1fr;}
-    .fg-3{grid-template-columns:1fr 1fr 1fr;}
-
-    .fbox{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;}
-    .fbox.amber{border-color:rgba(138,92,0,0.2);background:var(--gold-light);}
-    .fbox.violet{border-color:rgba(91,45,181,0.2);background:var(--violet-light);}
-    .fbox.green{border-color:rgba(26,92,46,0.15);background:var(--primary-pale);}
-
-    .fbox-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .fbox-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:7px;}
-    .fbox-title.green{color:var(--primary);}
-    .fbox-title.amber{color:var(--gold);}
-    .fbox-title.violet{color:var(--violet);}
-
-    .btn-utm{
-      padding:7px 14px;border-radius:50px;
-      font-family:inherit;font-size:0.78rem;font-weight:700;
-      color:#fff;border:none;cursor:pointer;transition:all var(--transition);
-    }
-    .btn-utm.green{background:var(--primary);box-shadow:0 2px 6px rgba(26,92,46,0.25);}
-    .btn-utm.violet{background:var(--violet);box-shadow:0 2px 6px rgba(91,45,181,0.25);}
-    .btn-utm:hover{filter:brightness(1.08);transform:translateY(-1px);}
-
-    .utm-result{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 12px;border-radius:50px;
-      font-size:0.78rem;font-weight:600;margin-top:10px;
-    }
-    .utm-result.ok{background:#dcfce7;color:#166534;border:1px solid rgba(22,101,52,0.15);}
-    .utm-result.err{background:var(--danger-light);color:var(--danger);border:1px solid rgba(192,57,43,0.15);}
-    .utm-result.violet{background:var(--violet-light);color:var(--violet);border:1px solid rgba(91,45,181,0.15);}
-    .btn-preview{
-      font-size:0.72rem;font-family:inherit;font-weight:700;cursor:pointer;
-      border-radius:20px;padding:5px 12px;border:1px solid var(--border);
-      background:#fff;color:var(--text-2);transition:all var(--transition);
-    }
-    .btn-preview:hover{background:var(--primary-light);color:var(--primary);border-color:var(--primary);}
-
-    /* Drop zone */
-    .drop-zone{
-      border:2px dashed var(--border-strong);border-radius:var(--radius);
-      padding:24px 16px;text-align:center;
-      background:var(--surface-2);position:relative;cursor:pointer;
-      transition:all var(--transition);
-    }
-    .drop-zone:hover,.drop-zone.over{border-color:var(--primary);background:var(--primary-pale);}
-    .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-    .drop-icon{font-size:1.6rem;color:var(--primary);margin-bottom:8px;opacity:0.7;}
-    .drop-label{font-size:0.85rem;font-weight:600;color:var(--text-2);}
-    .drop-sub{font-size:0.75rem;color:var(--text-muted);margin-top:3px;}
-    .drop-status{font-size:0.8rem;font-weight:600;margin-top:6px;}
-    .drop-status.ok{color:var(--primary);}
-    .drop-status.err{color:var(--danger);}
-
-    /* Modal footer */
-    .modal-footer{
-      position:sticky;bottom:0;background:#fff;
-      display:flex;justify-content:flex-end;gap:10px;
-      padding:16px 24px;border-top:1px solid var(--border);
-    }
-    .btn-cancel{
-      padding:10px 22px;border-radius:50px;
-      font-family:inherit;font-size:0.85rem;font-weight:600;
-      color:var(--text-2);border:1px solid var(--border);
-      background:#fff;cursor:pointer;transition:all var(--transition);
-    }
-    .btn-cancel:hover{background:var(--surface-2);}
-    .btn-submit{
-      padding:10px 24px;border-radius:50px;
-      font-family:inherit;font-size:0.85rem;font-weight:700;
-      color:#fff;border:none;cursor:pointer;
-      display:flex;align-items:center;gap:8px;
-      transition:all var(--transition);
-    }
-    .btn-submit.green{background:var(--primary);box-shadow:0 3px 10px rgba(26,92,46,0.25);}
-    .btn-submit.violet{background:var(--violet);box-shadow:0 3px 10px rgba(91,45,181,0.25);}
-    .btn-submit:hover{filter:brightness(1.08);transform:translateY(-1px);}
-    .btn-submit:disabled{opacity:0.6;pointer-events:none;}
-
-    /* Timber section toggle */
-    #timberSection{display:none;}
-    #timberSection.show{display:block;animation:fadeIn 0.25s;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-
-    /* Toast notification */
-    #toast-container{position:fixed;top:80px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-    .toast{
-      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
-      padding:12px 16px;box-shadow:var(--shadow-lg);
-      display:flex;align-items:center;gap:10px;
-      font-size:0.85rem;font-weight:600;color:var(--text);
-      animation:toastIn 0.3s cubic-bezier(0.16,1,0.3,1);
-      min-width:260px;max-width:340px;pointer-events:all;
-    }
-    .toast.success{border-left:3px solid var(--success);}
-    .toast.error{border-left:3px solid var(--danger);}
-    .toast i{font-size:1rem;}
-    .toast.success i{color:var(--success);}
-    .toast.error i{color:var(--danger);}
-    @keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
-
-    /* ─── Responsive ─── */
-    @media(max-width:1024px){
-      :root{--sb-w:320px;}
-      .nav-title{font-size:0.88rem;}
-      .nav-sub{display:none;}
-    }
-    @media(max-width:768px){
-      :root{--nav-h:60px;}
-      #topnav{padding:0 14px;gap:10px;}
-      .nav-brand{gap:10px;}
-      .nav-logo{width:34px;height:34px;}
-      .nav-title{font-size:0.82rem;}
-      .nav-divider{display:none;}
-      .nav-tabs{flex:none;order:10;width:calc(100% + 28px);margin:-14px -14px 0;
-        border-radius:0;border-left:0;border-right:0;border-top:0;
-        background:var(--surface-2);padding:6px 14px;max-width:none;}
-      .nav-tab{font-size:0.76rem;padding:7px 10px;}
-      .nav-tab .tab-label{display:none;}
-      .nav-time{display:none;}
-      .btn-add span{display:none;}
-      .btn-add{padding:10px 14px;border-radius:50%;}
-      #topnav{flex-wrap:wrap;height:auto;padding-bottom:0;}
-      #app{flex-direction:column;padding-top:calc(60px + 44px);}
-      #sidebar{
-        position:fixed;
-        top:calc(60px + 44px);bottom:0;left:0;
-        width:100%;z-index:100;border-right:none;
-      }
-      #sidebar.hidden{transform:translateX(-100%);}
-      #map-wrap{width:100%;height:100%;}
-      #map-legend{top:auto;bottom:80px;right:12px;left:12px;min-width:auto;}
-      .leg-title{display:none;}
-      .leg-item{font-size:0.72rem;}
-      #map-version{display:none;}
-      #fab-toggle{display:flex;}
-      #detail-panel{bottom:70px;max-height:75%;padding:16px;}
-      .det-grid{grid-template-columns:1fr 1fr;gap:8px;}
-      .det-item{padding:10px 12px;}
-      .fg-2{grid-template-columns:1fr;}
-      .fg-3{grid-template-columns:1fr 1fr 1fr;}
-      .modal-box{max-height:94vh;}
-      .modal-body{padding:16px;}
-      .modal-footer{padding:12px 16px;}
-    }
-    @media(max-width:400px){
-      .fg-3{grid-template-columns:1fr 1fr;}
-    }
-  </style>
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:1100px){:root{--sb:300px}.kpi-row{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+@media(max-width:768px){
+  :root{--nav:60px}
+  #nav{flex-wrap:wrap;height:auto;padding:8px 12px 0;gap:8px}
+  .nav-tabs{order:10;width:calc(100% + 24px);margin:-8px -12px 0;border-radius:0;border-left:0;border-right:0;border-top:0;padding:4px 12px 5px;max-width:none;background:var(--surface-2)}
+  .ntab .tab-lbl{display:none}
+  .nav-right{gap:7px}
+  .nav-time,.nav-sub{display:none}
+  .btn-add span{display:none}
+  .btn-add{padding:8px 12px;border-radius:50%}
+  .view-sw .vsw-lbl{display:none}
+  #app{flex-direction:column;padding-top:calc(60px + 40px)}
+  #sidebar{position:fixed;top:calc(60px + 40px);bottom:0;left:0;width:100%;z-index:100;border-right:none}
+  #sidebar.hidden{transform:translateX(-100%)}
+  #map-wrap{width:100%;height:100%}
+  #legend{top:auto;bottom:68px;right:8px;left:8px;min-width:auto}
+  #map-ver{display:none}
+  #fab{display:flex}
+  #det-panel{bottom:62px;max-height:70%;padding:14px 14px 18px}
+  .det-grid{grid-template-columns:1fr 1fr;gap:6px}
+  .fg-2{grid-template-columns:1fr}.fg-3{grid-template-columns:1fr 1fr 1fr}
+  .modal-box{max-height:92vh}.m-body{padding:14px}.m-ft{padding:10px 14px}
+  #dash-wrap{padding:14px}
+  .kpi-row{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi-val{font-size:1.6rem}
+}
+@media(max-width:400px){.fg-3{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
 
-<!-- Toast container -->
-<div id="toast-container"></div>
+<div id="toast-wrap"></div>
 
-<nav id="topnav">
-  <div class="nav-brand">
-    <div class="nav-logo">
-      <img src="https://upload.wikimedia.org/wikipedia/th/7/7d/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%A3%E0%B8%A1%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B9%81%E0%B8%AB%E0%B9%88%E0%B8%87%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4_%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2_%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9E%E0%B8%B7%E0%B8%8A.png" alt="DNP">
-    </div>
-    <div>
-      <div class="nav-title">DNP สารบบคดีเชิงพื้นที่</div>
-      <div class="nav-sub">สบอ.13 สาขาลำปาง</div>
-    </div>
+<!-- ══════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-logo"><i class="fa-solid fa-tree"></i></div>
+  <div class="nav-title-w">
+    <div class="nav-title">DNP GeoIndex</div>
+    <div class="nav-sub">สบอ.13 สาขาลำปาง</div>
   </div>
+  <div class="nav-sep"></div>
 
-  <div class="nav-divider"></div>
+  <!-- View: map / dashboard -->
+  <div class="view-sw">
+    <button class="vsw-btn active" id="vsw-map" onclick="switchView('map')">
+      <i class="fa-solid fa-map"></i><span class="vsw-lbl">แผนที่</span>
+    </button>
+    <button class="vsw-btn" id="vsw-dash" onclick="switchView('dashboard')">
+      <i class="fa-solid fa-chart-pie"></i><span class="vsw-lbl">Dashboard</span>
+    </button>
+  </div>
+  <div class="nav-sep"></div>
 
+  <!-- Tabs -->
   <div class="nav-tabs">
-    <button class="nav-tab active" id="tab-enc" onclick="switchTab('encroachment')">
-      <i class="fa-solid fa-tree-city"></i>
-      <span class="tab-label">บุกรุกป่า</span>
+    <button class="ntab active" id="tab-enc" onclick="switchTab('encroachment',this)">
+      <i class="fa-solid fa-tree-city"></i><span class="tab-lbl">บุกรุกป่า</span>
+      <span class="cnt" id="cnt-enc">–</span>
     </button>
-    <button class="nav-tab" id="tab-timber" onclick="switchTab('timber')">
-      <i class="fa-solid fa-cubes-wood"></i>
-      <span class="tab-label">ไม้ผิดกฎหมาย</span>
+    <button class="ntab" id="tab-timber" onclick="switchTab('timber',this)">
+      <i class="fa-solid fa-cubes-stacked"></i><span class="tab-lbl">ไม้ผิดกฎหมาย</span>
+      <span class="cnt" id="cnt-timber">–</span>
     </button>
-    <button class="nav-tab" id="tab-wildlife" onclick="switchTab('wildlife')">
-      <i class="fa-solid fa-paw"></i>
-      <span class="tab-label">สัตว์ป่า</span>
+    <button class="ntab" id="tab-wildlife" onclick="switchTab('wildlife',this)">
+      <i class="fa-solid fa-paw"></i><span class="tab-lbl">สัตว์ป่า</span>
+      <span class="cnt" id="cnt-wildlife">–</span>
     </button>
   </div>
 
   <div class="nav-right">
     <span class="nav-time" id="navTime"></span>
-    <button class="btn-add" onclick="openFormModal()">
-      <i class="fa-solid fa-plus"></i>
-      <span>บันทึกคดีใหม่</span>
+    <button class="btn-add" onclick="openAdd()">
+      <i class="fa-solid fa-plus"></i><span>บันทึกคดีใหม่</span>
     </button>
   </div>
 </nav>
 
+<!-- ══════════════════════════════════════════
+     APP BODY
+══════════════════════════════════════════ -->
 <div id="app">
   <!-- Sidebar -->
   <aside id="sidebar">
-    <div class="sb-header">
-      <div class="sb-eyebrow" id="sb-label">สารบบคดีบุกรุกพื้นที่ป่า</div>
-    </div>
-    <div class="stat-row">
-      <div class="stat-card"><div class="stat-label">คดีทั้งหมด</div><div class="stat-val c-primary" id="stat-total">–</div><div class="stat-sub">รายการ</div></div>
-      <div class="stat-card"><div class="stat-label">ระหว่างคดี</div><div class="stat-val c-gold" id="stat-pending">–</div><div class="stat-sub">รายการ</div></div>
-      <div class="stat-card"><div class="stat-label">สิ้นสุดคดี</div><div class="stat-val c-blue" id="stat-done">–</div><div class="stat-sub">รายการ</div></div>
-      <div class="stat-card"><div class="stat-label">ผู้ต้องหา</div><div class="stat-val c-danger" id="stat-suspects">–</div><div class="stat-sub">ราย</div></div>
-    </div>
-    <div class="sb-search">
-      <div class="search-wrap">
-        <i class="fa-solid fa-search search-icon"></i>
-        <input type="text" id="searchInput" placeholder="ค้นหาเลขคดี, สถานที่..." autocomplete="off">
-        <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fa-solid fa-times"></i></button>
+    <div class="sb-head">
+      <div class="sb-label" id="sb-label">สารบบคดีบุกรุกพื้นที่ป่า</div>
+      <div class="stats">
+        <div class="stat-c"><div class="sl">ทั้งหมด</div><div class="sv cg" id="s-total">–</div><div class="ss">รายการ</div></div>
+        <div class="stat-c"><div class="sl">ระหว่างคดี</div><div class="sv ca" id="s-pend">–</div><div class="ss">รายการ</div></div>
+        <div class="stat-c"><div class="sl">สิ้นสุดแล้ว</div><div class="sv cb" id="s-done">–</div><div class="ss">รายการ</div></div>
+        <div class="stat-c"><div class="sl">ผู้ต้องหา</div><div class="sv cr" id="s-susp">–</div><div class="ss">ราย</div></div>
+      </div>
+      <div class="sb-srch">
+        <i class="fa-solid fa-magnifying-glass srch-ic"></i>
+        <input type="text" id="srch-inp" placeholder="ค้นหาเลขคดี, สถานที่..." autocomplete="off">
+        <button id="srch-clear" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
-    <div class="sb-list" id="sb-list">
-      <!-- Skeleton -->
-      <div class="skeleton-list" id="skeleton">
-        <div class="skeleton-row"><div class="sk sk-dot"></div><div class="sk-lines"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>
-        <div class="skeleton-row"><div class="sk sk-dot"></div><div class="sk-lines"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>
-        <div class="skeleton-row"><div class="sk sk-dot"></div><div class="sk-lines"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>
-        <div class="skeleton-row"><div class="sk sk-dot"></div><div class="sk-lines"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>
-      </div>
+    <div class="sb-list" id="sb-list"></div>
+    <!-- Pagination -->
+    <div class="sb-pager" id="pager" style="display:none">
+      <span class="pager-info" id="pager-info"></span>
+      <div class="pager-btns" id="pager-btns"></div>
     </div>
   </aside>
 
   <!-- Map -->
   <div id="map-wrap">
     <div id="map"></div>
-    <div id="map-legend">
-      <div class="leg-title">คำอธิบายสัญลักษณ์</div>
-      <div class="leg-item"><div class="leg-line" style="background:#c0392b;"></div> อยู่ระหว่างคดี</div>
-      <div class="leg-item"><div class="leg-line" style="background:var(--primary);"></div> คดีสิ้นสุดแล้ว</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--violet);"></div> จุดคดีสัตว์ป่า</div>
-      <div class="leg-item"><div class="leg-line" style="background:rgba(34,197,94,0.3);border:1px solid var(--primary);"></div> ป่าอนุรักษ์</div>
-      <div class="leg-item"><div class="leg-line" style="background:rgba(219,39,119,0.2);border:1px solid #db2777;"></div> ป่าสงวนฯ</div>
+    <div id="legend">
+      <div class="leg-ttl">สัญลักษณ์</div>
+      <div class="leg-row"><div class="leg-line" style="background:#c0392b"></div>ระหว่างคดี</div>
+      <div class="leg-row"><div class="leg-line" style="background:var(--primary)"></div>สิ้นสุดแล้ว</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--violet)"></div>คดีสัตว์ป่า</div>
+      <div class="leg-row"><div class="leg-line" style="background:rgba(34,197,94,.35);border:1px solid var(--primary)"></div>ป่าอนุรักษ์</div>
+      <div class="leg-row"><div class="leg-line" style="background:rgba(219,39,119,.25);border:1px solid #db2777"></div>ป่าสงวนฯ</div>
     </div>
-    <div id="detail-panel">
+    <div id="conn-banner"><i class="fa-solid fa-circle-notch fa-spin"></i><span id="conn-msg">กำลังเชื่อมต่อ...</span></div>
+    <!-- Detail panel -->
+    <div id="det-panel">
       <div class="det-drag"></div>
-      <div class="det-header">
-        <div class="det-title" id="det-title">รายละเอียดคดี</div>
-        <button id="detail-close" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="det-hd">
+        <div>
+          <div class="det-title" id="det-title">–</div>
+          <div class="det-st pend" id="det-st"></div>
+        </div>
+        <button class="det-close" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div id="detail-content"></div>
+      <div class="det-grid" id="det-grid"></div>
+      <div class="det-actions" id="det-actions"></div>
     </div>
-    <div id="map-version">DNP GeoIndex v3.2 · สบอ.13 ลำปาง</div>
+    <div id="map-ver">DNP GeoIndex v4.0 · สบอ.13 ลำปาง</div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash-wrap">
+    <!-- KPI cards -->
+    <div class="dash-title"><i class="fa-solid fa-chart-line"></i>ภาพรวมสถิติคดีทั้งหมด</div>
+    <div class="kpi-row">
+      <div class="kpi-card green">
+        <div class="kpi-label">คดีบุกรุกป่า</div>
+        <div class="kpi-val green" id="kpi-enc">–</div>
+        <div class="kpi-sub" id="kpi-enc-sub">รายการ</div>
+        <i class="fa-solid fa-tree-city kpi-icon"></i>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">คดีไม้ผิดกฎหมาย</div>
+        <div class="kpi-val amber" id="kpi-tim">–</div>
+        <div class="kpi-sub" id="kpi-tim-sub">รายการ</div>
+        <i class="fa-solid fa-cubes-stacked kpi-icon"></i>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">คดีสัตว์ป่า</div>
+        <div class="kpi-val blue" id="kpi-wl">–</div>
+        <div class="kpi-sub" id="kpi-wl-sub">รายการ</div>
+        <i class="fa-solid fa-paw kpi-icon"></i>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-label">ผู้ต้องหารวม</div>
+        <div class="kpi-val red" id="kpi-susp">–</div>
+        <div class="kpi-sub">รายชื่อ</div>
+        <i class="fa-solid fa-user-slash kpi-icon"></i>
+      </div>
+    </div>
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title"><i class="fa-solid fa-chart-donut"></i>สัดส่วนสถานะคดี (แยกประเภท)</div>
+        <div class="chart-box"><canvas id="chart-donut"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="fa-solid fa-chart-bar"></i>จำนวนคดีแต่ละประเภท</div>
+        <div class="chart-box"><canvas id="chart-bar"></canvas></div>
+      </div>
+    </div>
+    <!-- Recent table -->
+    <div class="table-card">
+      <div class="table-hd"><i class="fa-solid fa-clock-rotate-left"></i>รายการคดีล่าสุด (ทุกประเภท)</div>
+      <div style="overflow-x:auto">
+        <table class="dash-tbl">
+          <thead><tr>
+            <th>เลขคดี</th><th>ประเภท</th><th>สถานที่</th><th>วันที่</th><th>ผู้ต้องหา</th><th>สถานะ</th>
+          </tr></thead>
+          <tbody id="dash-tbl-body"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- FAB Mobile -->
-<button id="fab-toggle" onclick="toggleMobileView()">
+<!-- FAB -->
+<button id="fab" onclick="toggleFab()">
   <i class="fa-solid fa-map-marked-alt" id="fab-icon"></i>
   <span id="fab-label">ดูแผนที่</span>
 </button>
 
-<!-- ═══════════════════════════════════════════
-     Modal: บุกรุก / ไม้ผิดกฎหมาย
-════════════════════════════════════════════ -->
-<div id="formModal" class="modal-overlay">
+<!-- ══════════════════════════════════════════
+     MODAL: บุกรุก / ไม้
+══════════════════════════════════════════ -->
+<div id="modal-form" class="overlay">
   <div class="modal-box">
-    <div class="modal-hd">
-      <div class="modal-hd-left">
-        <div class="modal-icon icon-enc" id="modalIcon"><i class="fa-solid fa-tree"></i></div>
-        <div>
-          <div class="modal-ttl" id="modalTitle">บันทึกคดีบุกรุกพื้นที่ป่า</div>
-          <div class="modal-sub">สบอ.13 สาขาลำปาง · กรมอุทยานแห่งชาติ</div>
-        </div>
+    <div class="m-hd">
+      <div class="m-icon enc" id="m-icon"><i class="fa-solid fa-tree"></i></div>
+      <div>
+        <div class="m-title" id="m-title">บันทึกคดีบุกรุกพื้นที่ป่า</div>
+        <div class="m-sub">สบอ.13 สาขาลำปาง · กรมอุทยานแห่งชาติฯ</div>
       </div>
-      <button class="modal-cls" onclick="closeFormModal()"><i class="fa-solid fa-xmark"></i></button>
+      <button class="m-close" onclick="closeForm()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <div class="modal-body">
-    <form id="unifiedForm">
-
-      <!-- เลขคดี -->
-      <div class="fsection">
-        <div class="fsection-title"><i class="fa-solid fa-file-signature"></i> หมายเลขคดี</div>
+    <div class="m-body">
+      <div class="fsec">
+        <div class="fsec-ttl"><i class="fa-solid fa-file-signature"></i>หมายเลขคดี</div>
         <div class="fg-row fg-3">
-          <div class="fg">
-            <label class="fl">เลขคำแจ้งความที่</label>
-            <input type="text" id="complaintNo" placeholder="123/2569" class="fi">
-          </div>
-          <div class="fg">
-            <label class="fl">เลขคดีอาญาที่ <span class="badge-new">ใหม่</span></label>
-            <input type="text" id="criminalNo" placeholder="อ.456/2569" class="fi">
-          </div>
-          <div class="fg">
-            <label class="fl">ยึดทรัพย์ที่ <span class="badge-new">ใหม่</span></label>
-            <input type="text" id="seizureNo" placeholder="ยท.78/2569" class="fi">
-          </div>
+          <div class="fg"><label class="fl">เลขคำแจ้งความ</label><input type="text" id="f-complaint" placeholder="123/2569" class="fi"></div>
+          <div class="fg"><label class="fl">เลขคดีอาญา <span class="badge-new">ใหม่</span></label><input type="text" id="f-criminal" placeholder="อ.456/2569" class="fi"></div>
+          <div class="fg"><label class="fl">ยึดทรัพย์ที่ <span class="badge-new">ใหม่</span></label><input type="text" id="f-seizure" placeholder="ยท.78/2569" class="fi"></div>
         </div>
       </div>
-
-      <!-- ข้อมูลทั่วไป -->
-      <div class="fsection">
-        <div class="fsection-title"><i class="fa-solid fa-circle-info"></i> ข้อมูลคดี</div>
+      <div class="fsec">
+        <div class="fsec-ttl"><i class="fa-solid fa-circle-info"></i>ข้อมูลคดี</div>
         <div class="fg-row fg-2">
-          <div class="fg"><label class="fl">วันที่เกิดเหตุ</label><input type="text" id="caseDate" required placeholder="04/06/2569" class="fi"></div>
-          <div class="fg"><label class="fl">หน่วยงานที่ดำเนินการ</label><input type="text" id="agency" required placeholder="สปป.3, หน่วยฯ ลป..." class="fi"></div>
+          <div class="fg"><label class="fl">วันที่เกิดเหตุ <span style="color:var(--danger)">*</span></label><input type="text" id="f-date" placeholder="04/06/2569" class="fi"></div>
+          <div class="fg"><label class="fl">หน่วยงาน <span style="color:var(--danger)">*</span></label><input type="text" id="f-agency" placeholder="สปป.3, หน่วยฯ ลป..." class="fi"></div>
         </div>
-        <div class="fg"><label class="fl">สถานที่เกิดเหตุ / ชื่อป่า</label><input type="text" id="location" required placeholder="ต.เมือง อ.เมือง จ.ลำปาง" class="fi"></div>
+        <div class="fg"><label class="fl">สถานที่เกิดเหตุ / ชื่อป่า <span style="color:var(--danger)">*</span></label><input type="text" id="f-location" placeholder="ต.เมือง อ.เมือง จ.ลำปาง" class="fi"></div>
       </div>
-
-      <!-- ไม้ผิดกฎหมาย -->
-      <div id="timberSection" class="fbox amber fsection">
-        <div class="fbox-title amber"><i class="fa-solid fa-cubes-wood"></i> ข้อมูลไม้ผิดกฎหมาย</div>
-        <div class="fg-row fg-2" style="margin-top:12px;">
-          <div class="fg"><label class="fl">ชนิดไม้</label><input type="text" id="timberType" class="fi" placeholder="ไม้สัก, ไม้ประดู่..."></div>
+      <!-- Timber section -->
+      <div id="timber-sec" class="fbox amber fsec" style="display:none">
+        <div class="fbox-ttl amber"><i class="fa-solid fa-cubes-stacked"></i>ข้อมูลไม้ผิดกฎหมาย</div>
+        <div class="fg-row fg-2" style="margin-top:4px">
+          <div class="fg"><label class="fl">ชนิดไม้</label><input type="text" id="f-timber-type" placeholder="ไม้สัก, ไม้ประดู่..." class="fi"></div>
           <div>
             <label class="fl">ขนาด (กว้าง / ยาว / โต)</label>
-            <div class="fg-row fg-3">
-              <input type="text" id="width" value="-" class="fi" style="text-align:center;" placeholder="กว้าง">
-              <input type="text" id="length" value="-" class="fi" style="text-align:center;" placeholder="ยาว">
-              <input type="text" id="size" value="-" class="fi" style="text-align:center;" placeholder="โต">
-            </div>
+            <div class="fg-row fg-3"><input type="text" id="f-width" value="-" class="fi" style="text-align:center"><input type="text" id="f-length" value="-" class="fi" style="text-align:center"><input type="text" id="f-size" value="-" class="fi" style="text-align:center"></div>
           </div>
         </div>
         <div class="fg-row fg-2">
-          <div class="fg"><label class="fl">ท่อน (ลบ.ม.)</label><input type="text" id="vol1" value="0" class="fi"></div>
-          <div class="fg"><label class="fl">แปรรูป (ลบ.ม.)</label><input type="text" id="vol2" value="0" class="fi"></div>
+          <div class="fg"><label class="fl">ท่อน (ลบ.ม.)</label><input type="number" id="f-vol1" value="0" class="fi"></div>
+          <div class="fg"><label class="fl">แปรรูป (ลบ.ม.)</label><input type="number" id="f-vol2" value="0" class="fi"></div>
         </div>
       </div>
-
-      <!-- ผล + พื้นที่ -->
-      <div class="fsection">
+      <div class="fsec">
         <div class="fg-row fg-2">
-          <div class="fg">
-            <label class="fl">ผลการดำเนินคดี</label>
-            <select id="status" class="fs">
-              <option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option>
-              <option value="คดีสิ้นสุด">คดีสิ้นสุด</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label class="fl">จำนวนผู้ต้องหา (ราย)</label>
-            <input type="number" id="suspectsCount" min="0" value="0" required class="fi">
-          </div>
+          <div class="fg"><label class="fl">ผลการดำเนินคดี</label><select id="f-status" class="fs"><option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option><option value="คดีสิ้นสุด">คดีสิ้นสุด</option></select></div>
+          <div class="fg"><label class="fl">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="f-suspects" min="0" value="0" class="fi"></div>
         </div>
-        <div id="areaSection" class="fg">
+        <div class="fg" id="area-sec">
           <label class="fl">พื้นที่บุกรุก (ไร่ – งาน – ตร.ว.)</label>
-          <div class="fg-row fg-3">
-            <input type="number" id="rai" value="0" min="0" class="fi" style="text-align:center;" placeholder="ไร่">
-            <input type="number" id="ngarn" value="0" min="0" class="fi" style="text-align:center;" placeholder="งาน">
-            <input type="number" id="wa" value="0" min="0" class="fi" style="text-align:center;" placeholder="ตร.ว.">
-          </div>
+          <div class="fg-row fg-3"><input type="number" id="f-rai" value="0" min="0" class="fi" placeholder="ไร่"><input type="number" id="f-ngarn" value="0" min="0" class="fi" placeholder="งาน"><input type="number" id="f-wa" value="0" min="0" class="fi" placeholder="ตร.ว."></div>
         </div>
-        <div class="fg">
-          <label class="fl">สถานะ / ความคืบหน้าล่าสุด</label>
-          <textarea id="caseStatus" required placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea>
-        </div>
+        <div class="fg"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="f-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
       </div>
-
       <!-- UTM -->
-      <div class="fbox green fsection">
+      <div class="fbox green fsec">
         <div class="fbox-hd">
-          <div class="fbox-title green"><i class="fa-solid fa-location-crosshairs"></i> พิกัด UTM (Zone 47N)</div>
+          <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (Zone 47N)</div>
           <button type="button" onclick="convertUTM('main')" class="btn-utm green"><i class="fa-solid fa-arrows-rotate"></i> แปลง</button>
         </div>
         <div class="fg-row fg-3">
-          <div>
-            <label class="fl">Zone</label>
-            <select id="utm_zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select>
-          </div>
-          <div><label class="fl">E (X)</label><input type="number" id="utm_e" placeholder="534500" oninput="liveConvertUTM('main')" class="fi"></div>
-          <div><label class="fl">N (Y)</label><input type="number" id="utm_n" placeholder="2023000" oninput="liveConvertUTM('main')" class="fi"></div>
+          <div><label class="fl">Zone</label><select id="f-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
+          <div><label class="fl">E (X)</label><input type="number" id="f-utm-e" placeholder="534500" oninput="liveUTM('main')" class="fi"></div>
+          <div><label class="fl">N (Y)</label><input type="number" id="f-utm-n" placeholder="2023000" oninput="liveUTM('main')" class="fi"></div>
         </div>
-        <div id="utm_result_main" style="display:none;margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;display:none;">
-          <span class="utm-result ok" id="utm_result_main_text"></span>
-          <button type="button" onclick="previewUTMOnMap('main')" class="btn-preview"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
+        <div id="utm-res-main" style="display:none;margin-top:7px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;display:none">
+          <span class="utm-res utm-ok" id="utm-res-main-txt"></span>
+          <button type="button" onclick="prevUTM('main')" class="btn-mprev"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
         </div>
-        <div id="utm_error_main" style="display:none;" class="utm-result err"></div>
-        <input type="hidden" id="converted_lat"><input type="hidden" id="converted_lon">
+        <div id="utm-err-main" style="display:none" class="utm-res utm-err"></div>
+        <input type="hidden" id="f-lat"><input type="hidden" id="f-lon">
       </div>
-
-      <!-- ไฟล์ -->
-      <div class="fsection">
-        <div class="fsection-title"><i class="fa-solid fa-paperclip"></i> ไฟล์แนบ</div>
+      <!-- Files -->
+      <div class="fsec">
+        <div class="fsec-ttl"><i class="fa-solid fa-paperclip"></i>ไฟล์แนบ</div>
         <div class="fg-row fg-2">
+          <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger)"></i> เอกสาร PDF</label><input type="file" id="f-pdf" accept=".pdf" class="fi" style="cursor:pointer;padding:6px 9px"></div>
           <div class="fg">
-            <label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger);"></i> เอกสารคดี (PDF)</label>
-            <input type="file" id="pdfFile" accept=".pdf" class="fi" style="cursor:pointer;padding:8px 12px;">
-          </div>
-          <div class="fg">
-            <label class="fl"><i class="fa-solid fa-map-marked" style="color:var(--primary);"></i> Shapefile (.zip) <span style="color:var(--danger);">*</span></label>
-            <div class="drop-zone" id="dropZone">
-              <input type="file" id="shpZipFile" accept=".zip" onchange="handleShpSelect()">
+            <label class="fl"><i class="fa-solid fa-map-marked" style="color:var(--primary)"></i> Shapefile (.zip) <span style="color:var(--danger)">*</span></label>
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="f-shp" accept=".zip" onchange="handleShp()">
               <div class="drop-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-              <div class="drop-label" id="dropLabel">ลากไฟล์ หรือ คลิก</div>
-              <div class="drop-sub">.zip บรรจุ .shp, .dbf, .prj</div>
-              <div class="drop-status" id="dropStatus"></div>
+              <div class="drop-lbl" id="drop-lbl">ลากไฟล์ หรือ คลิก</div>
+              <div class="drop-sub">.zip บรรจุ .shp .dbf .prj</div>
+              <div class="drop-st" id="drop-st"></div>
             </div>
           </div>
         </div>
       </div>
-
-    </form>
     </div>
-
-    <div class="modal-footer">
-      <button type="button" onclick="closeFormModal()" class="btn-cancel">ยกเลิก</button>
-      <button type="button" id="submitBtn" onclick="submitEncForm()" class="btn-submit green">
-        <i class="fa-solid fa-cloud-arrow-up"></i> บันทึกขึ้นคลาวด์
-      </button>
+    <div class="m-ft">
+      <button class="btn-cancel" onclick="closeForm()">ยกเลิก</button>
+      <button class="btn-submit green" id="btn-submit" onclick="submitForm()"><i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     Modal: สัตว์ป่า
-════════════════════════════════════════════ -->
-<div id="wildlifeModal" class="modal-overlay">
+<!-- ══════════════════════════════════════════
+     MODAL: สัตว์ป่า
+══════════════════════════════════════════ -->
+<div id="modal-wl" class="overlay">
   <div class="modal-box">
-    <div class="modal-hd">
-      <div class="modal-hd-left">
-        <div class="modal-icon icon-wl"><i class="fa-solid fa-paw"></i></div>
-        <div>
-          <div class="modal-ttl">บันทึกคดีสัตว์ป่า</div>
-          <div class="modal-sub">สบอ.13 สาขาลำปาง</div>
-        </div>
-      </div>
-      <button class="modal-cls" onclick="closeWildlifeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="m-hd">
+      <div class="m-icon wl"><i class="fa-solid fa-paw"></i></div>
+      <div><div class="m-title">บันทึกคดีสัตว์ป่า</div><div class="m-sub">สบอ.13 สาขาลำปาง</div></div>
+      <button class="m-close" onclick="closeWL()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <div class="modal-body">
-    <form id="wildlifeForm">
+    <div class="m-body">
       <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">เลขคดีที่</label><input type="text" id="wl_caseNo" required placeholder="5/2569" class="fi"></div>
-        <div class="fg"><label class="fl">วันที่เกิดเหตุ</label><input type="text" id="wl_caseDate" required placeholder="04/06/2569" class="fi"></div>
+        <div class="fg"><label class="fl">เลขคดีที่ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-case-no" placeholder="5/2569" class="fi"></div>
+        <div class="fg"><label class="fl">วันที่เกิดเหตุ</label><input type="text" id="wl-date" placeholder="04/06/2569" class="fi"></div>
       </div>
-      <div class="fg"><label class="fl">สถานที่เกิดเหตุ</label><input type="text" id="wl_location" required placeholder="ตำบล อำเภอ จังหวัด..." class="fi"></div>
+      <div class="fg"><label class="fl">สถานที่เกิดเหตุ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-location" placeholder="ตำบล อำเภอ จังหวัด..." class="fi"></div>
       <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">ชนิดสัตว์ป่า / ซาก</label><input type="text" id="wl_wildlifeType" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi"></div>
-        <div class="fg"><label class="fl">อุปกรณ์กระทำผิด</label><input type="text" id="wl_equipment" placeholder="ตาข่ายดักนก, ปืนแก๊ป" class="fi"></div>
+        <div class="fg"><label class="fl">ชนิดสัตว์ป่า / ซาก</label><input type="text" id="wl-wildlife-type" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi"></div>
+        <div class="fg"><label class="fl">อุปกรณ์กระทำผิด</label><input type="text" id="wl-equipment" placeholder="ตาข่ายดักนก, ปืนแก๊ป" class="fi"></div>
       </div>
       <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">ผลการดำเนินคดี</label><select id="wl_status" class="fs"><option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option><option value="คดีสิ้นสุด">คดีสิ้นสุด</option></select></div>
-        <div class="fg"><label class="fl">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="wl_suspectsCount" min="0" value="0" required class="fi"></div>
+        <div class="fg"><label class="fl">ผลการดำเนินคดี</label><select id="wl-status" class="fs"><option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option><option value="คดีสิ้นสุด">คดีสิ้นสุด</option></select></div>
+        <div class="fg"><label class="fl">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="wl-suspects" min="0" value="0" class="fi"></div>
       </div>
-      <div class="fg"><label class="fl">หน่วยงานที่ดำเนินการ</label><input type="text" id="wl_agency" required placeholder="สายตรวจ สบอ.13, เขตฯ..." class="fi"></div>
-      <div class="fg"><label class="fl">สถานะ / ความคืบหน้า</label><textarea id="wl_caseStatus" required placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
-
-      <div class="fbox violet">
+      <div class="fg"><label class="fl">หน่วยงาน <span style="color:var(--danger)">*</span></label><input type="text" id="wl-agency" placeholder="สายตรวจ สบอ.13, เขตฯ..." class="fi"></div>
+      <div class="fg"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="wl-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
+      <div class="fbox violet" style="margin-bottom:12px">
         <div class="fbox-hd">
-          <div class="fbox-title violet"><i class="fa-solid fa-location-crosshairs"></i> พิกัดที่เกิดเหตุ</div>
+          <div class="fbox-ttl violet"><i class="fa-solid fa-location-crosshairs"></i>พิกัดที่เกิดเหตุ</div>
           <button type="button" onclick="convertUTM('wl')" class="btn-utm violet"><i class="fa-solid fa-arrows-rotate"></i> แปลง UTM</button>
         </div>
-        <div class="fg-row fg-3" style="margin-bottom:12px;">
-          <div><label class="fl">Zone</label><select id="wl_utm_zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
-          <div><label class="fl">E (X)</label><input type="number" id="wl_utm_e" placeholder="534500" oninput="liveConvertUTM('wl')" class="fi"></div>
-          <div><label class="fl">N (Y)</label><input type="number" id="wl_utm_n" placeholder="2023000" oninput="liveConvertUTM('wl')" class="fi"></div>
+        <div class="fg-row fg-3" style="margin-bottom:9px">
+          <div><label class="fl">Zone</label><select id="wl-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
+          <div><label class="fl">E (X)</label><input type="number" id="wl-utm-e" placeholder="534500" oninput="liveUTM('wl')" class="fi"></div>
+          <div><label class="fl">N (Y)</label><input type="number" id="wl-utm-n" placeholder="2023000" oninput="liveUTM('wl')" class="fi"></div>
         </div>
-        <div style="border-top:1px solid rgba(91,45,181,0.15);padding-top:12px;">
-          <p style="font-size:0.73rem;font-weight:600;color:var(--text-muted);margin-bottom:8px;">หรือระบุพิกัดภูมิศาสตร์ (WGS84) โดยตรง:</p>
+        <div style="border-top:1px solid rgba(74,42,160,.12);padding-top:9px">
+          <p style="font-size:.65rem;font-weight:600;color:var(--text-3);margin-bottom:6px">หรือระบุพิกัด WGS84 โดยตรง:</p>
           <div class="fg-row fg-2">
-            <div><label class="fl">Latitude</label><input type="number" step="any" id="wl_lat" placeholder="18.281234" class="fi"></div>
-            <div><label class="fl">Longitude</label><input type="number" step="any" id="wl_lon" placeholder="99.501234" class="fi"></div>
+            <div><label class="fl">Latitude</label><input type="number" step="any" id="wl-lat" placeholder="18.281234" class="fi"></div>
+            <div><label class="fl">Longitude</label><input type="number" step="any" id="wl-lon" placeholder="99.501234" class="fi"></div>
           </div>
         </div>
-        <div id="utm_result_wl" style="display:none;margin-top:10px;" class="utm-result violet">
-          <span id="utm_result_wl_text"></span>
+        <div id="utm-res-wl" style="display:none;margin-top:7px" class="utm-res utm-vl"><span id="utm-res-wl-txt"></span></div>
+        <div id="utm-err-wl" style="display:none;margin-top:7px" class="utm-res utm-err"></div>
+        <div id="wl-map-actions" style="display:none;margin-top:6px">
+          <button type="button" onclick="prevUTM('wl')" class="btn-mprev"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
         </div>
-        <div id="utm_error_wl" style="display:none;margin-top:10px;" class="utm-result err"></div>
-        <input type="hidden" id="wl_converted_lat"><input type="hidden" id="wl_converted_lon">
-        <div id="wl_utm_actions" style="display:none;margin-top:8px;">
-          <button type="button" onclick="previewUTMOnMap('wl')" class="btn-preview"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
-        </div>
+        <input type="hidden" id="wl-cvt-lat"><input type="hidden" id="wl-cvt-lon">
       </div>
-
-      <div class="fg" style="margin-top:16px;">
-        <label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger);"></i> เอกสารคดี PDF (ถ้ามี)</label>
-        <input type="file" id="wl_pdfFile" accept=".pdf" class="fi" style="cursor:pointer;padding:8px 12px;">
-      </div>
-    </form>
+      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger)"></i> เอกสาร PDF (ถ้ามี)</label><input type="file" id="wl-pdf" accept=".pdf" class="fi" style="cursor:pointer;padding:6px 9px"></div>
     </div>
-
-    <div class="modal-footer">
-      <button type="button" onclick="closeWildlifeModal()" class="btn-cancel">ยกเลิก</button>
-      <button type="button" id="wl_submitBtn" onclick="submitWildlifeForm()" class="btn-submit violet">
-        <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล
-      </button>
+    <div class="m-ft">
+      <button class="btn-cancel" onclick="closeWL()">ยกเลิก</button>
+      <button class="btn-submit violet" id="wl-submit" onclick="submitWL()"><i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    CONFIG
-════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 const API = 'https://dnp-lampang-api-2.onrender.com';
-const URL_CON = 'https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/conservation_forest.geojson';
-const URL_RES = 'https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles/reserve_forest.geojson';
+const STORAGE_BASE = 'https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles';
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    STATE
-════════════════════════════════════════════ */
-let currentTab = 'encroachment';
-let _allData = [];
-let mapInstance, previewMarker = null;
-let encL, timL, wlL, conL, resL;
+══════════════════════════════════════════ */
+let curTab = 'encroachment';
+let curView = 'map';
+let allData = [];
+let mapInst, prevMarker = null;
+let layerEnc, layerTim, layerWL, layerCon, layerRes;
 let mapReg = {};
-let detailOpen = false;
-let searchDebounce = null;
+let detOpen = false;
+let srchTimer = null;
+let fabOpen = false;
 
-/* ════════════════════════════════════════════
-   TOAST
-════════════════════════════════════════════ */
-function toast(msg, type = 'success', duration = 3500) {
-  const el = document.createElement('div');
-  const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-xmark';
-  el.className = `toast ${type}`;
-  el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${msg}</span>`;
-  document.getElementById('toast-container').appendChild(el);
-  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300); }, duration);
-}
+/* Pagination */
+const PAGE_SIZE = 20;
+let curPage = 1;
+let totalItems = 0;
 
-/* ════════════════════════════════════════════
+/* Dashboard cache */
+let dashCache = { enc: null, tim: null, wl: null };
+let chartDonut = null, chartBar = null;
+
+/* ══════════════════════════════════════════
    CLOCK
-════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 function updateClock() {
   const d = new Date();
   const el = document.getElementById('navTime');
@@ -865,250 +792,223 @@ function updateClock() {
 }
 updateClock(); setInterval(updateClock, 30000);
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function toast(msg, type = 'success', dur = 3500) {
+  const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${msg}</span>`;
+  document.getElementById('toast-wrap').appendChild(el);
+  setTimeout(() => { el.style.cssText = 'opacity:0;transform:translateX(14px);transition:.24s'; setTimeout(() => el.remove(), 240); }, dur);
+}
+
+/* ══════════════════════════════════════════
+   CONNECTION BANNER
+══════════════════════════════════════════ */
+function showBanner(msg) { document.getElementById('conn-msg').textContent = msg; document.getElementById('conn-banner').classList.add('show'); }
+function hideBanner() { document.getElementById('conn-banner').classList.remove('show'); }
+
+/* ══════════════════════════════════════════
    UTM CONVERTER
-════════════════════════════════════════════ */
-function utmToLatLon(easting, northing, zone, isSouthern = false) {
-  const a = 6378137, f = 1/298.257223563, e2 = 2*f - f*f, k0 = 0.9996;
-  const x = easting - 500000, y = northing - (isSouthern ? 10000000 : 0);
-  const M = y/k0, mu = M/(a*(1 - e2/4 - 3*e2**2/64 - 5*e2**3/256));
-  const e1 = (1 - Math.sqrt(1-e2))/(1 + Math.sqrt(1-e2));
-  const phi1 = mu + (3*e1/2 - 27*e1**3/32)*Math.sin(2*mu) + (21*e1**2/16 - 55*e1**4/32)*Math.sin(4*mu) + (151*e1**3/96)*Math.sin(6*mu);
-  const sp = Math.sin(phi1), cp = Math.cos(phi1), tp = sp/cp;
-  const N1 = a/Math.sqrt(1 - e2*sp**2), T1 = tp**2, C1 = e2*cp**2/(1-e2), R1 = a*(1-e2)/Math.pow(1-e2*sp**2, 1.5), D = x/(N1*k0);
-  const lat = phi1 - (N1*tp/R1)*(D**2/2 - (5+3*T1+10*C1-4*C1**2-9*e2*cp**2/(1-e2))*D**4/24 + (61+90*T1+298*C1+45*T1**2-252*e2*cp**2/(1-e2)-3*C1**2)*D**6/720);
-  const lon0 = (zone-1)*6 - 180 + 3;
-  const lon = (lon0*Math.PI/180) + (D - (1+2*T1+C1)*D**3/6 + (5-2*C1+28*T1-3*C1**2+8*e2*cp**2/(1-e2)+24*T1**2)*D**5/120)/cp;
-  return { lat: lat*180/Math.PI, lon: lon*180/Math.PI };
+══════════════════════════════════════════ */
+function utmToLL(e, n, zone) {
+  const a = 6378137, f = 1 / 298.257223563, e2 = 2 * f - f * f, k0 = 0.9996;
+  const x = e - 500000, y = n;
+  const M = y / k0, mu = M / (a * (1 - e2 / 4 - 3 * e2 ** 2 / 64 - 5 * e2 ** 3 / 256));
+  const e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+  const p = mu + (3 * e1 / 2 - 27 * e1 ** 3 / 32) * Math.sin(2 * mu) + (21 * e1 ** 2 / 16 - 55 * e1 ** 4 / 32) * Math.sin(4 * mu) + (151 * e1 ** 3 / 96) * Math.sin(6 * mu);
+  const sp = Math.sin(p), cp = Math.cos(p), tp = sp / cp;
+  const N1 = a / Math.sqrt(1 - e2 * sp ** 2), T1 = tp ** 2, C1 = e2 * cp ** 2 / (1 - e2), R1 = a * (1 - e2) / Math.pow(1 - e2 * sp ** 2, 1.5), D = x / (N1 * k0);
+  const lat = p - (N1 * tp / R1) * (D ** 2 / 2 - (5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * e2 * cp ** 2 / (1 - e2)) * D ** 4 / 24 + (61 + 90 * T1 + 298 * C1 + 45 * T1 ** 2 - 252 * e2 * cp ** 2 / (1 - e2) - 3 * C1 ** 2) * D ** 6 / 720);
+  const lon0 = (zone - 1) * 6 - 180 + 3;
+  const lon = (lon0 * Math.PI / 180) + (D - (1 + 2 * T1 + C1) * D ** 3 / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 ** 2 + 8 * e2 * cp ** 2 / (1 - e2) + 24 * T1 ** 2) * D ** 5 / 120) / cp;
+  return { lat: lat * 180 / Math.PI, lon: lon * 180 / Math.PI };
 }
-
-function getUTMFields(p) {
-  if (p === 'main') return {
-    zone: +document.getElementById('utm_zone').value,
-    e: +document.getElementById('utm_e').value,
-    n: +document.getElementById('utm_n').value,
-    rDiv: 'utm_result_main', rTxt: 'utm_result_main_text',
-    eDiv: 'utm_error_main', latF: 'converted_lat', lonF: 'converted_lon'
-  };
-  return {
-    zone: +document.getElementById('wl_utm_zone').value,
-    e: +document.getElementById('wl_utm_e').value,
-    n: +document.getElementById('wl_utm_n').value,
-    rDiv: 'utm_result_wl', rTxt: 'utm_result_wl_text',
-    eDiv: 'utm_error_wl', latF: 'wl_converted_lat', lonF: 'wl_converted_lon'
-  };
+function getUF(p) {
+  if (p === 'main') return { zone: +document.getElementById('f-utm-zone').value, e: +document.getElementById('f-utm-e').value, n: +document.getElementById('f-utm-n').value, rDiv: 'utm-res-main', rTxt: 'utm-res-main-txt', eDiv: 'utm-err-main', latF: 'f-lat', lonF: 'f-lon' };
+  return { zone: +document.getElementById('wl-utm-zone').value, e: +document.getElementById('wl-utm-e').value, n: +document.getElementById('wl-utm-n').value, rDiv: 'utm-res-wl', rTxt: 'utm-res-wl-txt', eDiv: 'utm-err-wl', latF: 'wl-cvt-lat', lonF: 'wl-cvt-lon' };
 }
-
 function convertUTM(p) {
-  const f = getUTMFields(p);
+  const f = getUF(p);
   const rd = document.getElementById(f.rDiv), ed = document.getElementById(f.eDiv);
   rd.style.display = 'none'; ed.style.display = 'none';
-  if (!f.e || !f.n || isNaN(f.e) || isNaN(f.n)) {
-    ed.textContent = '⚠ ระบุ E (X) และ N (Y) ให้ครบ'; ed.style.display = 'inline-flex'; return null;
-  }
+  if (!f.e || !f.n || isNaN(f.e) || isNaN(f.n)) { ed.textContent = '⚠ ระบุ E และ N ให้ครบ'; ed.style.display = 'inline-flex'; return; }
   try {
-    const r = utmToLatLon(f.e, f.n, f.zone, false);
+    const r = utmToLL(f.e, f.n, f.zone);
     const ls = r.lat.toFixed(6), lo = r.lon.toFixed(6);
     document.getElementById(f.latF).value = ls;
     document.getElementById(f.lonF).value = lo;
-    if (p === 'wl') { document.getElementById('wl_lat').value = ls; document.getElementById('wl_lon').value = lo; }
-    document.getElementById(f.rTxt).innerHTML = `Lat: <b>${ls}</b> , Lon: <b>${lo}</b>`;
+    if (p === 'wl') { document.getElementById('wl-lat').value = ls; document.getElementById('wl-lon').value = lo; }
+    document.getElementById(f.rTxt).innerHTML = `Lat: <b>${ls}</b>, Lon: <b>${lo}</b>`;
     rd.style.display = 'flex';
-    if (p === 'wl') { const wa = document.getElementById('wl_utm_actions'); if(wa) wa.style.display = 'block'; }
-    return r;
-  } catch { ed.textContent = '⚠ ข้อมูลไม่ถูกต้อง'; ed.style.display = 'inline-flex'; return null; }
+    if (p === 'wl') { const wa = document.getElementById('wl-map-actions'); if (wa) wa.style.display = 'block'; }
+  } catch { ed.textContent = '⚠ ค่าพิกัดไม่ถูกต้อง'; ed.style.display = 'inline-flex'; }
 }
-
-let _debUTM = {};
-function liveConvertUTM(p) {
-  clearTimeout(_debUTM[p]);
-  _debUTM[p] = setTimeout(() => {
-    const f = getUTMFields(p);
-    if (f.e && f.n && !isNaN(f.e) && !isNaN(f.n) && f.e > 100000 && f.n > 1000000) convertUTM(p);
-  }, 700);
+const _utmDb = {};
+function liveUTM(p) {
+  clearTimeout(_utmDb[p]);
+  _utmDb[p] = setTimeout(() => { const f = getUF(p); if (f.e && f.n && f.e > 100000 && f.n > 1000000) convertUTM(p); }, 600);
 }
-
-function previewUTMOnMap(p) {
-  const f = getUTMFields(p);
+function prevUTM(p) {
+  const f = getUF(p);
   const lat = +document.getElementById(f.latF).value, lon = +document.getElementById(f.lonF).value;
   if (!lat || !lon) { convertUTM(p); return; }
-  if (previewMarker) mapInstance.removeLayer(previewMarker);
-  previewMarker = L.marker([lat, lon]).addTo(mapInstance)
-    .bindPopup(`<b>📍 จุดพิกัดที่ระบุ</b><br>Lat: ${lat.toFixed(5)}<br>Lon: ${lon.toFixed(5)}`).openPopup();
-  mapInstance.setView([lat, lon], 14);
-  closeMobileSidebar();
+  if (prevMarker) mapInst.removeLayer(prevMarker);
+  prevMarker = L.marker([lat, lon]).addTo(mapInst).bindPopup(`<b>📍 จุดพิกัด</b><br>Lat: ${lat.toFixed(5)}<br>Lon: ${lon.toFixed(5)}`).openPopup();
+  mapInst.setView([lat, lon], 14);
+  if (window.innerWidth <= 768) closeMobileSB();
 }
 
-/* ════════════════════════════════════════════
-   MAP SETUP
-════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   MAP
+══════════════════════════════════════════ */
 function setupMap() {
-  mapInstance = L.map('map', { zoomControl: false }).setView([18.29, 99.50], 9);
-  L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
-
-  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors', subdomains: 'abc', maxZoom: 19
-  }).addTo(mapInstance);
-
+  mapInst = L.map('map', { zoomControl: false }).setView([18.29, 99.50], 9);
+  L.control.zoom({ position: 'bottomright' }).addTo(mapInst);
+  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', subdomains: 'abc', maxZoom: 19 }).addTo(mapInst);
   const sat = L.layerGroup([
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }),
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { subdomains: 'abc', maxZoom: 19, opacity: 0.4 })
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { subdomains: 'abc', maxZoom: 19, opacity: .35 })
   ]);
-
-  encL = L.layerGroup().addTo(mapInstance);
-  timL = L.layerGroup().addTo(mapInstance);
-  wlL  = L.layerGroup().addTo(mapInstance);
-  conL = L.layerGroup().addTo(mapInstance);
-  resL = L.layerGroup().addTo(mapInstance);
-
-  L.control.layers(
-    { '🗺 แผนที่': osm, '🛰 ดาวเทียม': sat },
-    { 'พื้นที่บุกรุก': encL, 'ไม้ผิดกฎหมาย': timL, 'คดีสัตว์ป่า': wlL, 'ป่าอนุรักษ์': conL, 'ป่าสงวนฯ': resL },
-    { collapsed: true, position: 'bottomright' }
-  ).addTo(mapInstance);
-
-  loadForestLayers();
+  layerEnc = L.layerGroup().addTo(mapInst); layerTim = L.layerGroup().addTo(mapInst);
+  layerWL = L.layerGroup().addTo(mapInst); layerCon = L.layerGroup().addTo(mapInst); layerRes = L.layerGroup().addTo(mapInst);
+  L.control.layers({ '🗺 แผนที่': osm, '🛰 ดาวเทียม': sat }, { 'พื้นที่บุกรุก': layerEnc, 'ไม้ผิดกฎหมาย': layerTim, 'คดีสัตว์ป่า': layerWL, 'ป่าอนุรักษ์': layerCon, 'ป่าสงวนฯ': layerRes }, { collapsed: true, position: 'bottomright' }).addTo(mapInst);
+  fetch(STORAGE_BASE + '/conservation_forest.geojson').then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: { color: '#1a5c2e', weight: 1, fillColor: '#22c55e', fillOpacity: .12, interactive: false } }).addTo(layerCon); }).catch(() => {});
+  fetch(STORAGE_BASE + '/reserve_forest.geojson').then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: { color: '#db2777', weight: 1, fillColor: '#db2777', fillOpacity: .08, interactive: false } }).addTo(layerRes); }).catch(() => {});
 }
-
-function loadForestLayers() {
-  const style_con = { color: '#1a5c2e', weight: 1, fillColor: '#22c55e', fillOpacity: 0.15, interactive: false };
-  const style_res = { color: '#db2777', weight: 1, fillColor: '#db2777', fillOpacity: 0.1, interactive: false };
-  fetch(URL_CON).then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: style_con }).addTo(conL); }).catch(() => {});
-  fetch(URL_RES).then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: style_res }).addTo(resL); }).catch(() => {});
-}
-
 function clearMapLayers() {
-  encL.clearLayers(); timL.clearLayers(); wlL.clearLayers();
-  mapReg = {};
-  if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
+  layerEnc.clearLayers(); layerTim.clearLayers(); layerWL.clearLayers(); mapReg = {};
+  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker = null; }
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
+   VIEW SWITCH: map / dashboard
+══════════════════════════════════════════ */
+function switchView(v) {
+  curView = v;
+  document.getElementById('vsw-map').classList.toggle('active', v === 'map');
+  document.getElementById('vsw-dash').classList.toggle('active', v === 'dashboard');
+  const mapWrap = document.getElementById('map-wrap');
+  const dashWrap = document.getElementById('dash-wrap');
+  if (v === 'map') { mapWrap.style.display = ''; dashWrap.style.display = 'none'; }
+  else { mapWrap.style.display = 'none'; dashWrap.style.display = 'block'; renderDashboard(); }
+}
+
+/* ══════════════════════════════════════════
    MOBILE
-════════════════════════════════════════════ */
-let sidebarVisible = false;
-
-function closeMobileSidebar() {
+══════════════════════════════════════════ */
+function closeMobileSB() {
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.add('hidden');
     document.getElementById('fab-icon').className = 'fa-solid fa-map-marked-alt';
-    document.getElementById('fab-label').textContent = 'ดูแผนที่';
-    sidebarVisible = false;
+    document.getElementById('fab-label').textContent = 'ดูแผนที่'; fabOpen = false;
   }
 }
-
-function toggleMobileView() {
-  const sb = document.getElementById('sidebar');
-  sidebarVisible = !sidebarVisible;
-  if (sidebarVisible) {
-    sb.classList.remove('hidden');
-    document.getElementById('fab-icon').className = 'fa-solid fa-list-ul';
-    document.getElementById('fab-label').textContent = 'รายการคดี';
-  } else {
-    sb.classList.add('hidden');
-    document.getElementById('fab-icon').className = 'fa-solid fa-map-marked-alt';
-    document.getElementById('fab-label').textContent = 'ดูแผนที่';
-  }
+function toggleFab() {
+  fabOpen = !fabOpen;
+  document.getElementById('sidebar').classList.toggle('hidden', !fabOpen);
+  document.getElementById('fab-icon').className = fabOpen ? 'fa-solid fa-list-ul' : 'fa-solid fa-map-marked-alt';
+  document.getElementById('fab-label').textContent = fabOpen ? 'รายการคดี' : 'ดูแผนที่';
 }
-
 function checkDevice() {
-  if (window.innerWidth <= 768) {
-    document.getElementById('sidebar').classList.add('hidden');
-    document.getElementById('fab-toggle').style.display = 'flex';
-    sidebarVisible = false;
-  } else {
-    document.getElementById('sidebar').classList.remove('hidden');
-    document.getElementById('fab-toggle').style.display = 'none';
-  }
+  const mob = window.innerWidth <= 768;
+  document.getElementById('sidebar').classList.toggle('hidden', mob);
+  document.getElementById('fab').style.display = mob ? 'flex' : 'none';
+  if (mob) fabOpen = false;
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    TAB SWITCH
-════════════════════════════════════════════ */
-function switchTab(mode) {
-  currentTab = mode;
-  ['tab-enc', 'tab-timber', 'tab-wildlife'].forEach(id => document.getElementById(id)?.classList.remove('active'));
+══════════════════════════════════════════ */
+function switchTab(mode, btn) {
+  curTab = mode; curPage = 1;
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
   const labels = { encroachment: 'สารบบคดีบุกรุกพื้นที่ป่า', timber: 'สารบบคดีไม้ผิดกฎหมาย', wildlife: 'สารบบคดีสัตว์ป่า' };
   document.getElementById('sb-label').textContent = labels[mode];
-  const tabMap = { encroachment: 'tab-enc', timber: 'tab-timber', wildlife: 'tab-wildlife' };
-  document.getElementById(tabMap[mode]).classList.add('active');
-  if (detailOpen) closeDetail();
+  if (detOpen) closeDetail();
   clearSearch();
   loadData();
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    SEARCH
-════════════════════════════════════════════ */
-document.getElementById('searchInput').addEventListener('input', function() {
+══════════════════════════════════════════ */
+document.getElementById('srch-inp').addEventListener('input', function () {
   const q = this.value;
-  document.getElementById('searchClear').classList.toggle('show', q.length > 0);
-  clearTimeout(searchDebounce);
-  searchDebounce = setTimeout(() => filterSidebar(q), 250);
+  document.getElementById('srch-clear').classList.toggle('show', q.length > 0);
+  clearTimeout(srchTimer);
+  srchTimer = setTimeout(() => { curPage = 1; filterAndRender(q); }, 220);
 });
-
 function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('searchClear').classList.remove('show');
-  renderSidebar(_allData);
+  document.getElementById('srch-inp').value = '';
+  document.getElementById('srch-clear').classList.remove('show');
+  renderSidebar(allData);
+  renderPager(allData.length);
 }
-
-function filterSidebar(q) {
-  if (!q) { renderSidebar(_allData); return; }
+function filterAndRender(q) {
+  if (!q) { renderSidebar(allData); renderPager(allData.length); return; }
   const lq = q.toLowerCase();
-  const filtered = _allData.filter(item =>
-    [item.case_no, item.complaint_no, item.criminal_no, item.location, item.agency]
-      .some(v => v && v.toLowerCase().includes(lq))
-  );
-  renderSidebar(filtered);
+  const f = allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location, i.agency].some(v => v && v.toLowerCase().includes(lq)));
+  renderSidebar(f);
+  renderPager(f.length, q);
 }
 
-/* ════════════════════════════════════════════
-   LOAD DATA
-════════════════════════════════════════════ */
-async function loadData() {
-  showSkeleton();
-  clearMapLayers();
-  try {
-    const res = await fetch(`${API}/get-cases/${currentTab}`);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    _allData = await res.json();
-    renderSidebar(_allData);
-    renderMap(_allData);
-    updateStats(_allData);
-  } catch (err) {
-    document.getElementById('sb-list').innerHTML = `
-      <div class="state-block">
-        <div class="state-icon"><i class="fa-solid fa-wifi-slash" style="color:var(--danger);"></i></div>
-        <div class="state-title">เชื่อมต่อไม่ได้</div>
-        <div class="state-desc">ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต<br>หรือเซิร์ฟเวอร์ API ขัดข้อง</div>
-        <button onclick="loadData()" style="margin-top:14px;padding:8px 20px;border-radius:50px;background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;">ลองอีกครั้ง</button>
-      </div>`;
+/* ══════════════════════════════════════════
+   LOAD DATA (bug-fixed: uses json.data)
+══════════════════════════════════════════ */
+async function loadData(retries = 3) {
+  showSkeleton(); clearMapLayers(); showBanner('กำลังโหลดข้อมูล...');
+  for (let i = 0; i < retries; i++) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 15000);
+      /* ✅ FIX 1: ส่ง limit=200 เพื่อดึงข้อมูลทั้งหมดก่อน แล้ว paginate ฝั่ง client */
+      const res = await fetch(`${API}/get-cases/${curTab}?limit=200&page=1`, { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      /* ✅ FIX 2: API คืน {data,total,page,limit} — ต้องดึง .data */
+      allData = Array.isArray(json) ? json : (Array.isArray(json.data) ? json.data : []);
+      totalItems = allData.length;
+      hideBanner();
+      renderSidebar(allData);
+      renderPager(totalItems);
+      renderMap(allData);
+      updateStats(allData);
+      updateTabCnt(curTab, totalItems);
+      /* Cache for dashboard */
+      dashCache[curTab === 'encroachment' ? 'enc' : curTab === 'timber' ? 'tim' : 'wl'] = allData;
+      return;
+    } catch (err) {
+      if (i < retries - 1) { showBanner(`เชื่อมต่อไม่ได้ ลองอีก (${i + 2}/${retries})...`); await new Promise(r => setTimeout(r, 3000)); }
+      else { hideBanner(); showError(err); }
+    }
   }
 }
 
 function showSkeleton() {
-  document.getElementById('sb-list').innerHTML = `
-    <div class="skeleton-list">
-      ${Array(5).fill('').map(() => `
-        <div class="skeleton-row">
-          <div class="sk sk-dot"></div>
-          <div class="sk-lines">
-            <div class="sk sk-h"></div>
-            <div class="sk sk-p"></div>
-            <div class="sk sk-s"></div>
-          </div>
-        </div>`).join('')}
-    </div>`;
+  document.getElementById('sb-list').innerHTML = `<div style="padding:6px 0">${Array(5).fill('').map(() => `<div class="sk-row"><div class="sk sk-d"></div><div class="sk-ln"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>`).join('')}</div>`;
+  document.getElementById('pager').style.display = 'none';
 }
-
+function showError(err) {
+  document.getElementById('sb-list').innerHTML = `<div class="state-box"><div class="state-icon"><i class="fa-solid fa-wifi-slash" style="color:var(--danger)"></i></div><div class="state-title">เชื่อมต่อ API ไม่ได้</div><div class="state-desc">Render free tier อาจกำลัง wake up<br>รอ 30–60 วิ แล้วลองใหม่<br><span style="font-size:.68rem;color:var(--text-3)">${err?.message || ''}</span></div><button class="btn-retry" onclick="loadData()"><i class="fa-solid fa-arrows-rotate"></i> ลองอีกครั้ง</button></div>`;
+  document.getElementById('pager').style.display = 'none';
+}
 function updateStats(data) {
-  document.getElementById('stat-total').textContent = data.length;
-  document.getElementById('stat-pending').textContent = data.filter(d => !d.is_finished).length;
-  document.getElementById('stat-done').textContent = data.filter(d => d.is_finished).length;
-  document.getElementById('stat-suspects').textContent = data.reduce((s, d) => s + (+d.suspects_count || 0), 0);
+  if (!Array.isArray(data)) return;
+  document.getElementById('s-total').textContent = data.length;
+  document.getElementById('s-pend').textContent = data.filter(d => !d.is_finished).length;
+  document.getElementById('s-done').textContent = data.filter(d => d.is_finished).length;
+  document.getElementById('s-susp').textContent = data.reduce((s, d) => s + (+d.suspects_count || 0), 0);
 }
-
+function updateTabCnt(tab, n) {
+  const ids = { encroachment: 'cnt-enc', timber: 'cnt-timber', wildlife: 'cnt-wildlife' };
+  const el = document.getElementById(ids[tab]);
+  if (el) el.textContent = n;
+}
 function getCaseLabel(item) {
   const parts = [];
   if (item.complaint_no) parts.push(`แจ้ง: ${item.complaint_no}`);
@@ -1116,440 +1016,385 @@ function getCaseLabel(item) {
   return parts.length ? parts.join(' · ') : (item.case_no || '–');
 }
 
-/* ════════════════════════════════════════════
-   RENDER SIDEBAR
-════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   PAGINATION
+══════════════════════════════════════════ */
+function getPage(data, page) {
+  const start = (page - 1) * PAGE_SIZE;
+  return data.slice(start, start + PAGE_SIZE);
+}
+function renderPager(total, q = '') {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pager = document.getElementById('pager');
+  const start = (curPage - 1) * PAGE_SIZE + 1;
+  const end = Math.min(curPage * PAGE_SIZE, total);
+  if (total === 0 || pages <= 1) { pager.style.display = 'none'; return; }
+  pager.style.display = 'flex';
+  document.getElementById('pager-info').textContent = `${start}–${end} จาก ${total}`;
+  const btns = document.getElementById('pager-btns');
+  let html = `<button class="pager-btn" onclick="goPage(${curPage - 1},'${q}')" ${curPage <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
+  const range = [];
+  for (let p = 1; p <= pages; p++) {
+    if (p === 1 || p === pages || Math.abs(p - curPage) <= 1) range.push(p);
+    else if (range[range.length - 1] !== '…') range.push('…');
+  }
+  range.forEach(p => {
+    if (p === '…') html += `<button class="pager-btn" disabled>…</button>`;
+    else html += `<button class="pager-btn${p === curPage ? ' active' : ''}" onclick="goPage(${p},'${q}')">${p}</button>`;
+  });
+  html += `<button class="pager-btn" onclick="goPage(${curPage + 1},'${q}')" ${curPage >= pages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
+  btns.innerHTML = html;
+}
+function goPage(p, q = '') {
+  const pages = Math.ceil((q ? allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location].some(v => v && v.toLowerCase().includes(q.toLowerCase()))) : allData).length / PAGE_SIZE);
+  if (p < 1 || p > pages) return;
+  curPage = p;
+  const data = q ? allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location].some(v => v && v.toLowerCase().includes(q.toLowerCase()))) : allData;
+  renderSidebar(data);
+  renderPager(data.length, q);
+  document.getElementById('sb-list').scrollTop = 0;
+}
+
+/* ══════════════════════════════════════════
+   RENDER SIDEBAR (with pagination)
+══════════════════════════════════════════ */
 function renderSidebar(data) {
-  if (!data || !data.length) {
-    document.getElementById('sb-list').innerHTML = `
-      <div class="state-block">
-        <div class="state-icon"><i class="fa-solid fa-folder-open"></i></div>
-        <div class="state-title">ไม่พบข้อมูลคดี</div>
-        <div class="state-desc">ยังไม่มีการบันทึกคดีในหมวดนี้</div>
-      </div>`;
+  if (!Array.isArray(data) || !data.length) {
+    document.getElementById('sb-list').innerHTML = `<div class="state-box"><div class="state-icon"><i class="fa-solid fa-folder-open"></i></div><div class="state-title">ไม่พบข้อมูลคดี</div><div class="state-desc">ยังไม่มีการบันทึกคดีในหมวดนี้</div></div>`;
     return;
   }
-  const tab = currentTab;
-  const html = data.map((item, i) => {
-    const dotCls = item.is_finished ? 'dot-done' : tab === 'wildlife' ? 'dot-wl' : tab === 'timber' ? 'dot-tim' : 'dot-enc';
-    const badge = item.is_finished
-      ? `<span class="badge badge-done">สิ้นสุดแล้ว</span>`
-      : `<span class="badge badge-pending">ดำเนินการ</span>`;
-    const label = getCaseLabel(item);
+  const pageData = getPage(data, curPage);
+  const tab = curTab;
+  const dotMap = { encroachment: 'd-enc', timber: 'd-tim', wildlife: 'd-wl' };
+  const globalOffset = (curPage - 1) * PAGE_SIZE;
+  const html = pageData.map((item, pi) => {
+    const i = globalOffset + pi;
+    const dot = item.is_finished ? 'd-done' : dotMap[tab];
+    const badge = item.is_finished ? '<span class="badge badge-ok">สิ้นสุดแล้ว</span>' : '<span class="badge badge-pend">ดำเนินการ</span>';
+    const lbl = getCaseLabel(item);
     const delKey = item.case_no || item.complaint_no || item.id;
     return `<div class="case-row" onclick="selectCase(${i})" id="crow-${i}">
-      <div class="case-dot ${dotCls}"></div>
-      <div class="case-info">
-        <div class="case-no">${label}</div>
-        <div class="case-loc">${item.location || '–'}</div>
-        <div class="case-meta">
-          ${item.case_date || ''}
-          <span>·</span>ผู้ต้องหา ${item.suspects_count || 0} ราย
-          <span>·</span>${badge}
-        </div>
+      <div class="cdot ${dot}"></div>
+      <div class="cinfo">
+        <div class="cno">${lbl}</div>
+        <div class="cloc">${item.location || '–'}</div>
+        <div class="cmeta">${item.case_date ? `<span>${item.case_date}</span><span>·</span>` : ''}<span>ผู้ต้องหา ${item.suspects_count || 0} ราย</span><span>·</span>${badge}</div>
       </div>
-      <div class="row-actions">
-        <button onclick="event.stopPropagation();deleteCase('${delKey}')" class="btn-del" title="ลบคดี">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </div>
+      <button onclick="event.stopPropagation();deleteCase('${delKey}')" class="row-del" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
     </div>`;
   }).join('');
   document.getElementById('sb-list').innerHTML = html;
 }
 
-/* ════════════════════════════════════════════
-   RENDER MAP — batch GeoJSON fetches
-════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   RENDER MAP
+══════════════════════════════════════════ */
 async function renderMap(data) {
-  const tab = currentTab;
-  const target = tab === 'encroachment' ? encL : tab === 'timber' ? timL : wlL;
-
-  // Collect remote GeoJSON URLs to fetch in parallel
-  const remoteFetches = [];
+  const tab = curTab;
+  const target = tab === 'encroachment' ? layerEnc : tab === 'timber' ? layerTim : layerWL;
+  if (tab === 'wildlife') {
+    data.forEach((item, i) => {
+      if (!item.coords?.[0]) return;
+      const m = L.circleMarker([item.coords[0], item.coords[1]], { radius: 8, color: '#fff', weight: 2, fillColor: '#4a2aa0', fillOpacity: .9 })
+        .addTo(layerWL).bindPopup(`<b>${item.case_no || '–'}</b><br>${item.location || ''}`).on('click', () => selectCase(i));
+      mapReg[tab + '_' + item.id] = m;
+    });
+    return;
+  }
+  const remote = data.map((item, i) => ({ i, item, url: item.geojson_data })).filter(r => r.url && typeof r.url === 'string' && r.url.startsWith('http'));
+  const results = await Promise.allSettled(remote.map(r => fetch(r.url).then(res => res.json()).then(gd => ({ ...r, gd }))));
+  const geo = {}; results.forEach(r => { if (r.status === 'fulfilled') geo[r.value.i] = r.value.gd; });
   data.forEach((item, i) => {
-    if ((tab === 'encroachment' || tab === 'timber') && item.geojson_data &&
-        typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
-      remoteFetches.push({ i, item, url: item.geojson_data });
-    }
-  });
-
-  // Fetch all remote GeoJSON in parallel
-  const fetched = await Promise.allSettled(
-    remoteFetches.map(r => fetch(r.url).then(res => res.json()).then(gd => ({ ...r, gd })))
-  );
-
-  // Build a lookup: item index → geojson
-  const geoLookup = {};
-  fetched.forEach(result => { if (result.status === 'fulfilled') geoLookup[result.value.i] = result.value.gd; });
-
-  data.forEach((item, i) => {
-    const key = tab + '_' + item.id;
-
-    if (tab === 'wildlife') {
-      if (item.coords && item.coords[0]) {
-        const m = L.circleMarker([item.coords[0], item.coords[1]], {
-          radius: 8, color: '#fff', weight: 2, fillColor: '#5b2db5', fillOpacity: 0.9
-        }).addTo(wlL).bindPopup(`<b>${item.case_no}</b><br>${item.location || ''}`).on('click', () => selectCase(i));
-        mapReg[key] = m;
-      }
-      return;
-    }
-
-    let geoData = geoLookup[i] !== undefined ? geoLookup[i] : null;
-    if (!geoData && item.geojson_data && !String(item.geojson_data).startsWith('http')) {
-      try { geoData = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data; } catch {}
-    }
-    if (!geoData) return;
-
-    const color = item.is_finished ? '#1a5c2e' : '#c0392b';
-    const fill = item.is_finished ? '#22c55e' : '#ef4444';
-    const ml = L.geoJSON(geoData, {
-      style: { color, weight: 2, fillColor: fill, fillOpacity: item.is_finished ? 0.25 : 0.45 },
-      onEachFeature: (f, l) => {
-        l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`);
-        l.on('click', () => selectCase(i));
-      }
-    }).addTo(target);
-    mapReg[key] = ml;
+    let gd = geo[i] || null;
+    if (!gd && item.geojson_data && !String(item.geojson_data).startsWith('http')) { try { gd = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data; } catch {} }
+    if (!gd) return;
+    const color = item.is_finished ? '#1a5c2e' : '#c0392b', fill = item.is_finished ? '#22c55e' : '#ef4444';
+    const ml = L.geoJSON(gd, { style: { color, weight: 2, fillColor: fill, fillOpacity: item.is_finished ? .2 : .42 }, onEachFeature: (f, l) => { l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`); l.on('click', () => selectCase(i)); } }).addTo(target);
+    mapReg[tab + '_' + item.id] = ml;
   });
 }
 
-/* ════════════════════════════════════════════
-   SELECT CASE
-════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SELECT + DETAIL
+══════════════════════════════════════════ */
 function selectCase(i) {
   document.querySelectorAll('.case-row').forEach(r => r.classList.remove('active'));
   document.getElementById(`crow-${i}`)?.classList.add('active');
-  const item = _allData[i]; if (!item) return;
-  const key = currentTab + '_' + item.id;
-  const layer = mapReg[key];
-  if (layer) {
-    if (layer.getBounds) mapInstance.fitBounds(layer.getBounds(), { maxZoom: 16, padding: [24, 24] });
-    else mapInstance.setView(layer.getLatLng(), 15);
-    layer.openPopup();
-  } else if (item.coords?.[0]) {
-    mapInstance.setView([item.coords[0], item.coords[1]], 15);
-  }
+  const item = allData[i]; if (!item) return;
+  const layer = mapReg[curTab + '_' + item.id];
+  if (layer) { if (layer.getBounds) mapInst.fitBounds(layer.getBounds(), { maxZoom: 16, padding: [28, 28] }); else mapInst.setView(layer.getLatLng(), 15); layer.openPopup(); }
+  else if (item.coords?.[0]) mapInst.setView([item.coords[0], item.coords[1]], 15);
   showDetail(item, i);
-  closeMobileSidebar();
+  closeMobileSB();
 }
-
-/* ════════════════════════════════════════════
-   DETAIL PANEL
-════════════════════════════════════════════ */
-function showDetail(item, index) {
-  detailOpen = true;
-
-  let caseNoHtml = '';
-  if (currentTab === 'encroachment') {
-    caseNoHtml = `
-      <div class="det-item"><label>เลขคำแจ้งความ</label><span>${item.complaint_no || '–'}</span></div>
-      <div class="det-item"><label>เลขคดีอาญา</label><span>${item.criminal_no || '–'}</span></div>
-      <div class="det-item"><label>ยึดทรัพย์ที่</label><span>${item.seizure_no || '–'}</span></div>`;
-  } else {
-    caseNoHtml = `<div class="det-item"><label>เลขคดีที่</label><span>${item.case_no || '–'}</span></div>`;
-  }
-
-  const statusColor = item.is_finished ? 'color:var(--primary);' : 'color:var(--gold);';
-  const statusText = item.is_finished ? '✅ สิ้นสุดแล้ว' : '🔶 อยู่ระหว่างดำเนินการ';
-
-  let extraHtml = '';
-  if (currentTab === 'encroachment') {
-    extraHtml = `<div class="det-item"><label>พื้นที่บุกรุก</label><span>${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
-  } else if (currentTab === 'timber' && item.timber_type) {
-    extraHtml = `<div class="det-item"><label>ชนิดไม้</label><span>${item.timber_type}</span></div>
-      <div class="det-item"><label>ปริมาตร (ท่อน/แปรรูป)</label><span>${item.vol_logs||0} / ${item.vol_processed||0} ลบ.ม.</span></div>`;
-  } else if (currentTab === 'wildlife') {
-    extraHtml = `<div class="det-item"><label>ชนิดสัตว์ป่า</label><span>${item.wildlife_type||'–'}</span></div>
-      <div class="det-item"><label>อุปกรณ์กระทำผิด</label><span>${item.equipment||'–'}</span></div>`;
-  }
-
-  let dlBtn = '';
-  if (currentTab !== 'wildlife' && item.geojson_data) {
-    dlBtn = `<div style="margin-top:14px;"><button class="btn-download" onclick="triggerDownload(${index})"><i class="fa-solid fa-download"></i> ดาวน์โหลด GeoJSON (ผังแปลง)</button></div>`;
-  }
-  if (item.pdf_url) {
-    dlBtn += `<div style="margin-top:8px;"><a href="${item.pdf_url}" target="_blank" rel="noopener" class="btn-download"><i class="fa-solid fa-file-pdf" style="color:var(--danger);"></i> เปิดเอกสาร PDF</a></div>`;
-  }
-
-  document.getElementById('detail-content').innerHTML = `
-    <div class="det-grid">
-      ${caseNoHtml}
-      <div class="det-item"><label>วันที่เกิดเหตุ</label><span>${item.case_date||'–'}</span></div>
-      <div class="det-item"><label>สถานที่</label><span>${item.location||'–'}</span></div>
-      <div class="det-item"><label>สถานะ</label><span style="${statusColor}font-weight:700;">${statusText}</span></div>
-      <div class="det-item"><label>ผู้ต้องหา</label><span>${item.suspects_count||0} ราย</span></div>
-      <div class="det-item"><label>หน่วยงาน</label><span>${item.agency||'–'}</span></div>
-      ${extraHtml}
-      <div class="det-item det-full"><label>บันทึกความคืบหน้า</label><span style="white-space:pre-wrap;font-weight:500;line-height:1.7;">${item.case_status||'–'}</span></div>
-    </div>
-    ${dlBtn}`;
-
-  document.getElementById('detail-panel').classList.add('open');
+function showDetail(item, idx) {
+  detOpen = true;
+  document.getElementById('det-title').textContent = getCaseLabel(item) + ' · ' + (item.location || '');
+  const ds = document.getElementById('det-st');
+  ds.className = 'det-st ' + (item.is_finished ? 'done' : 'pend');
+  ds.innerHTML = item.is_finished ? '<i class="fa-solid fa-circle-check" style="font-size:.66rem"></i> คดีสิ้นสุดแล้ว' : '<i class="fa-solid fa-circle-half-stroke" style="font-size:.66rem"></i> อยู่ระหว่างดำเนินการ';
+  let cells = '';
+  if (curTab === 'encroachment') cells += `<div class="det-cell"><label>เลขคำแจ้ง</label><span>${item.complaint_no || '–'}</span></div><div class="det-cell"><label>เลขคดีอาญา</label><span>${item.criminal_no || '–'}</span></div><div class="det-cell"><label>ยึดทรัพย์ที่</label><span>${item.seizure_no || '–'}</span></div>`;
+  else cells += `<div class="det-cell"><label>เลขคดีที่</label><span>${item.case_no || '–'}</span></div>`;
+  cells += `<div class="det-cell"><label>วันที่เกิดเหตุ</label><span>${item.case_date || '–'}</span></div><div class="det-cell"><label>หน่วยงาน</label><span>${item.agency || '–'}</span></div><div class="det-cell"><label>ผู้ต้องหา</label><span>${item.suspects_count || 0} ราย</span></div>`;
+  if (curTab === 'encroachment') cells += `<div class="det-cell"><label>พื้นที่บุกรุก</label><span>${item.rai || 0} ไร่ ${item.ngarn || 0} งาน ${item.wa || 0} ตร.ว.</span></div>`;
+  else if (curTab === 'timber' && item.timber_type) cells += `<div class="det-cell"><label>ชนิดไม้</label><span>${item.timber_type}</span></div><div class="det-cell"><label>ท่อน/แปรรูป</label><span>${item.vol_logs || 0}/${item.vol_processed || 0} ลบ.ม.</span></div>`;
+  else if (curTab === 'wildlife') cells += `<div class="det-cell"><label>ชนิดสัตว์ป่า</label><span>${item.wildlife_type || '–'}</span></div><div class="det-cell"><label>อุปกรณ์</label><span>${item.equipment || '–'}</span></div>`;
+  cells += `<div class="det-cell det-full"><label>บันทึกความคืบหน้า</label><span style="white-space:pre-wrap;line-height:1.7">${item.case_status || '–'}</span></div>`;
+  document.getElementById('det-grid').innerHTML = cells;
+  let acts = '';
+  if (curTab !== 'wildlife' && item.geojson_data) acts += `<button class="det-btn" onclick="dlGeoJSON(${idx})"><i class="fa-solid fa-download"></i>GeoJSON</button>`;
+  if (item.shapefile_url) acts += `<a href="${item.shapefile_url}" target="_blank" rel="noopener" class="det-btn"><i class="fa-solid fa-file-zipper"></i>Shapefile</a>`;
+  if (item.pdf_url) acts += `<a href="${item.pdf_url}" target="_blank" rel="noopener" class="det-btn pdf"><i class="fa-solid fa-file-pdf"></i>PDF</a>`;
+  document.getElementById('det-actions').innerHTML = acts;
+  document.getElementById('det-panel').classList.add('open');
 }
-
 function closeDetail() {
-  detailOpen = false;
-  document.getElementById('detail-panel').classList.remove('open');
+  detOpen = false;
+  document.getElementById('det-panel').classList.remove('open');
   document.querySelectorAll('.case-row').forEach(r => r.classList.remove('active'));
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    DOWNLOAD GEOJSON
-════════════════════════════════════════════ */
-async function triggerDownload(index) {
-  const item = _allData[index];
-  if (!item?.geojson_data) { toast('ไม่พบข้อมูลพิกัดสำหรับคดีนี้', 'error'); return; }
-  const safeName = (item.complaint_no || item.criminal_no || item.case_no || 'case').replace(/\//g, '-');
+══════════════════════════════════════════ */
+async function dlGeoJSON(idx) {
+  const item = allData[idx];
+  if (!item?.geojson_data) { toast('ไม่พบข้อมูลพิกัด', 'error'); return; }
+  const safe = (item.complaint_no || item.criminal_no || item.case_no || 'case').replace(/\//g, '-');
   try {
-    let geoData;
-    if (typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
-      const res = await fetch(item.geojson_data);
-      geoData = await res.json();
-    } else {
-      geoData = typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data;
-    }
+    let gd = typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')
+      ? await fetch(item.geojson_data).then(r => r.json())
+      : (typeof item.geojson_data === 'string' ? JSON.parse(item.geojson_data) : item.geojson_data);
     const a = document.createElement('a');
-    a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(geoData));
-    a.download = `DNP_สบอ13_คดี_${safeName}.json`;
+    a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(gd));
+    a.download = `DNP_สบอ13_${safe}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     toast('ดาวน์โหลด GeoJSON สำเร็จ');
-  } catch (err) { toast('ดาวน์โหลดล้มเหลว: ' + err.message, 'error'); }
+  } catch (e) { toast('ดาวน์โหลดล้มเหลว: ' + e.message, 'error'); }
 }
 
-/* ════════════════════════════════════════════
-   MODAL OPEN/CLOSE
-════════════════════════════════════════════ */
-function openFormModal() {
-  if (currentTab === 'wildlife') { document.getElementById('wildlifeModal').classList.add('open'); return; }
-  document.getElementById('formModal').classList.add('open');
-  if (currentTab === 'timber') {
-    document.getElementById('modalTitle').textContent = 'บันทึกคดีไม้ผิดกฎหมาย';
-    document.getElementById('modalIcon').innerHTML = '<i class="fa-solid fa-cubes-wood"></i>';
-    document.getElementById('modalIcon').className = 'modal-icon icon-tim';
-    document.getElementById('timberSection').classList.add('show');
-    document.getElementById('areaSection').style.display = 'none';
-    document.getElementById('submitBtn').className = 'btn-submit green';
-  } else {
-    document.getElementById('modalTitle').textContent = 'บันทึกคดีบุกรุกพื้นที่ป่า';
-    document.getElementById('modalIcon').innerHTML = '<i class="fa-solid fa-tree"></i>';
-    document.getElementById('modalIcon').className = 'modal-icon icon-enc';
-    document.getElementById('timberSection').classList.remove('show');
-    document.getElementById('areaSection').style.display = '';
-    document.getElementById('submitBtn').className = 'btn-submit green';
-  }
-}
+/* ══════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════ */
+async function renderDashboard() {
+  /* Load all 3 tabs if not cached */
+  const types = ['enc', 'tim', 'wl'];
+  const apiMap = { enc: 'encroachment', tim: 'timber', wl: 'wildlife' };
+  toast('กำลังโหลดข้อมูล Dashboard...', 'info', 2000);
+  await Promise.allSettled(types.map(async t => {
+    if (dashCache[t]) return;
+    try {
+      const res = await fetch(`${API}/get-cases/${apiMap[t]}?limit=200&page=1`);
+      if (!res.ok) return;
+      const json = await res.json();
+      dashCache[t] = Array.isArray(json) ? json : (json.data ?? []);
+    } catch {}
+  }));
 
-function closeFormModal() {
-  document.getElementById('formModal').classList.remove('open');
-  document.getElementById('unifiedForm').reset();
-  document.getElementById('dropLabel').textContent = 'ลากไฟล์ หรือ คลิก';
-  document.getElementById('dropStatus').textContent = '';
-  document.getElementById('utm_result_main').style.display = 'none';
-  document.getElementById('utm_error_main').style.display = 'none';
-  if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
-}
+  const enc = dashCache.enc || [], tim = dashCache.tim || [], wl = dashCache.wl || [];
+  const all = [...enc.map(i => ({ ...i, _type: 'บุกรุกป่า' })), ...tim.map(i => ({ ...i, _type: 'ไม้ผิดกฎหมาย' })), ...wl.map(i => ({ ...i, _type: 'สัตว์ป่า' }))];
 
-function closeWildlifeModal() {
-  document.getElementById('wildlifeModal').classList.remove('open');
-  document.getElementById('wildlifeForm').reset();
-  document.getElementById('utm_result_wl').style.display = 'none';
-  document.getElementById('utm_error_wl').style.display = 'none';
-  const wa = document.getElementById('wl_utm_actions'); if(wa) wa.style.display = 'none';
-  if (previewMarker) { mapInstance.removeLayer(previewMarker); previewMarker = null; }
-}
+  /* KPI */
+  document.getElementById('kpi-enc').textContent = enc.length;
+  document.getElementById('kpi-enc-sub').textContent = `ระหว่างคดี ${enc.filter(i => !i.is_finished).length} · สิ้นสุด ${enc.filter(i => i.is_finished).length}`;
+  document.getElementById('kpi-tim').textContent = tim.length;
+  document.getElementById('kpi-tim-sub').textContent = `ระหว่างคดี ${tim.filter(i => !i.is_finished).length} · สิ้นสุด ${tim.filter(i => i.is_finished).length}`;
+  document.getElementById('kpi-wl').textContent = wl.length;
+  document.getElementById('kpi-wl-sub').textContent = `ระหว่างคดี ${wl.filter(i => !i.is_finished).length} · สิ้นสุด ${wl.filter(i => i.is_finished).length}`;
+  document.getElementById('kpi-susp').textContent = all.reduce((s, i) => s + (+i.suspects_count || 0), 0);
 
-// Close modal on backdrop click
-['formModal','wildlifeModal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', function(e) {
-    if (e.target === this) {
-      id === 'formModal' ? closeFormModal() : closeWildlifeModal();
+  /* Donut chart */
+  const totalPend = all.filter(i => !i.is_finished).length;
+  const totalDone = all.filter(i => i.is_finished).length;
+  if (chartDonut) chartDonut.destroy();
+  chartDonut = new Chart(document.getElementById('chart-donut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['อยู่ระหว่างคดี', 'สิ้นสุดแล้ว'],
+      datasets: [{ data: [totalPend, totalDone], backgroundColor: ['#e8a020', '#1a5c2e'], borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: { legend: { position: 'bottom', labels: { font: { family: 'Sarabun', size: 12 }, padding: 16 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} คดี` } } }
     }
   });
-});
 
-/* ════════════════════════════════════════════
-   SHAPEFILE UPLOAD
-════════════════════════════════════════════ */
-async function handleShpSelect() {
-  const fileInput = document.getElementById('shpZipFile');
-  const f = fileInput.files[0]; if (!f) return;
-  const statusEl = document.getElementById('dropStatus');
-  const labelEl = document.getElementById('dropLabel');
-  labelEl.textContent = f.name;
-  statusEl.textContent = 'กำลังวิเคราะห์...';
-  statusEl.className = 'drop-status';
+  /* Bar chart */
+  if (chartBar) chartBar.destroy();
+  chartBar = new Chart(document.getElementById('chart-bar'), {
+    type: 'bar',
+    data: {
+      labels: ['บุกรุกป่า', 'ไม้ผิดกฎหมาย', 'สัตว์ป่า'],
+      datasets: [
+        { label: 'ระหว่างคดี', data: [enc.filter(i => !i.is_finished).length, tim.filter(i => !i.is_finished).length, wl.filter(i => !i.is_finished).length], backgroundColor: '#e8a020', borderRadius: 4 },
+        { label: 'สิ้นสุดแล้ว', data: [enc.filter(i => i.is_finished).length, tim.filter(i => i.is_finished).length, wl.filter(i => i.is_finished).length], backgroundColor: '#1a5c2e', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { family: 'Sarabun', size: 12 }, padding: 16 } } },
+      scales: { x: { stacked: false, grid: { display: false }, ticks: { font: { family: 'Sarabun', size: 12 } } }, y: { beginAtZero: true, ticks: { font: { family: 'Sarabun', size: 11 }, precision: 0 } } }
+    }
+  });
 
+  /* Recent table — last 10 across all types */
+  const recent = all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).slice(0, 10);
+  const typeBadge = { 'บุกรุกป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">บุกรุกป่า</span>`, 'ไม้ผิดกฎหมาย': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ไม้ผิดกฎหมาย</span>`, 'สัตว์ป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--violet-bg);color:var(--violet);font-weight:700">สัตว์ป่า</span>` };
+  document.getElementById('dash-tbl-body').innerHTML = recent.map(i => `<tr>
+    <td style="font-weight:600">${i.complaint_no || i.case_no || '–'}</td>
+    <td>${typeBadge[i._type] || i._type}</td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.location || '–'}</td>
+    <td>${i.case_date || '–'}</td>
+    <td style="text-align:center">${i.suspects_count || 0}</td>
+    <td>${i.is_finished ? '<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">สิ้นสุด</span>' : '<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ดำเนินการ</span>'}</td>
+  </tr>`).join('');
+}
+
+/* ══════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════ */
+function openAdd() {
+  if (curTab === 'wildlife') { document.getElementById('modal-wl').classList.add('open'); return; }
+  const isTim = curTab === 'timber';
+  document.getElementById('m-title').textContent = isTim ? 'บันทึกคดีไม้ผิดกฎหมาย' : 'บันทึกคดีบุกรุกพื้นที่ป่า';
+  const ic = document.getElementById('m-icon');
+  ic.className = isTim ? 'm-icon tim' : 'm-icon enc';
+  ic.innerHTML = isTim ? '<i class="fa-solid fa-cubes-stacked"></i>' : '<i class="fa-solid fa-tree"></i>';
+  document.getElementById('timber-sec').style.display = isTim ? 'block' : 'none';
+  document.getElementById('area-sec').style.display = isTim ? 'none' : '';
+  document.getElementById('modal-form').classList.add('open');
+}
+function resetInputs(id) {
+  document.querySelectorAll(`#${id} input[type=text],#${id} input[type=number],#${id} textarea`).forEach(el => el.value = el.type === 'number' ? '0' : '');
+  document.querySelectorAll(`#${id} select`).forEach(el => el.selectedIndex = 0);
+}
+function closeForm() {
+  document.getElementById('modal-form').classList.remove('open');
+  resetInputs('modal-form');
+  document.getElementById('drop-lbl').textContent = 'ลากไฟล์ หรือ คลิก';
+  document.getElementById('drop-st').textContent = ''; document.getElementById('drop-st').className = 'drop-st';
+  document.getElementById('utm-res-main').style.display = 'none'; document.getElementById('utm-err-main').style.display = 'none';
+  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker = null; }
+}
+function closeWL() {
+  document.getElementById('modal-wl').classList.remove('open');
+  resetInputs('modal-wl');
+  document.getElementById('utm-res-wl').style.display = 'none'; document.getElementById('utm-err-wl').style.display = 'none';
+  const wa = document.getElementById('wl-map-actions'); if (wa) wa.style.display = 'none';
+  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker = null; }
+}
+['modal-form', 'modal-wl'].forEach(id => { document.getElementById(id).addEventListener('click', function (e) { if (e.target === this) id === 'modal-form' ? closeForm() : closeWL(); }); });
+
+/* ══════════════════════════════════════════
+   SHAPEFILE ANALYZE
+══════════════════════════════════════════ */
+async function handleShp() {
+  const fileEl = document.getElementById('f-shp');
+  const f = fileEl.files[0]; if (!f) return;
+  const st = document.getElementById('drop-st'), lbl = document.getElementById('drop-lbl');
+  lbl.textContent = f.name; st.textContent = 'กำลังวิเคราะห์ GIS...'; st.className = 'drop-st';
   const fd = new FormData(); fd.append('file', f);
   try {
     const res = await fetch(`${API}/analyze-shapefile/`, { method: 'POST', body: fd });
     const r = await res.json();
     if (res.ok && r.success) {
-      statusEl.textContent = `✓ วิเคราะห์แล้ว · ${r.rai} ไร่ ${r.ngarn} งาน ${r.wa?.toFixed(0)} ตร.ว.`;
-      statusEl.className = 'drop-status ok';
-      if (currentTab === 'encroachment') {
-        document.getElementById('rai').value = Math.floor(r.rai) || 0;
-        document.getElementById('ngarn').value = Math.floor(r.ngarn) || 0;
-        document.getElementById('wa').value = r.wa ? r.wa.toFixed(1) : 0;
-      }
-      document.getElementById('converted_lat').value = r.lat;
-      document.getElementById('converted_lon').value = r.lon;
-      if (previewMarker) mapInstance.removeLayer(previewMarker);
-      previewMarker = L.marker([r.lat, r.lon]).addTo(mapInstance)
-        .bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
-      mapInstance.setView([r.lat, r.lon], 14);
-      closeMobileSidebar();
-    } else {
-      statusEl.textContent = '✗ ไฟล์ไม่รองรับ หรือไม่มีพิกัด';
-      statusEl.className = 'drop-status err';
-      fileInput.value = '';
-    }
-  } catch {
-    statusEl.textContent = '✗ เชื่อมต่อบริการวิเคราะห์ไม่ได้';
-    statusEl.className = 'drop-status err';
-  }
+      st.textContent = `✓ พื้นที่ ${r.rai} ไร่ ${r.ngarn} งาน ${r.wa?.toFixed(0) || 0} ตร.ว.`;
+      st.className = 'drop-st ok';
+      if (curTab === 'encroachment') { document.getElementById('f-rai').value = Math.floor(r.rai) || 0; document.getElementById('f-ngarn').value = Math.floor(r.ngarn) || 0; document.getElementById('f-wa').value = r.wa?.toFixed(1) || 0; }
+      document.getElementById('f-lat').value = r.lat; document.getElementById('f-lon').value = r.lon;
+      if (prevMarker) mapInst.removeLayer(prevMarker);
+      prevMarker = L.marker([r.lat, r.lon]).addTo(mapInst).bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
+      mapInst.setView([r.lat, r.lon], 14);
+    } else { st.textContent = '✗ ไฟล์ไม่รองรับ หรือไม่มีพิกัด'; st.className = 'drop-st err'; fileEl.value = ''; }
+  } catch { st.textContent = '✗ เชื่อมต่อไม่ได้'; st.className = 'drop-st err'; }
 }
+const dz = document.getElementById('drop-zone');
+['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', e => { document.getElementById('f-shp').files = e.dataTransfer.files; handleShp(); });
 
-// Drag & Drop
-const dropZone = document.getElementById('dropZone');
-if (dropZone) {
-  ['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('over'); }));
-  ['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('over'); }));
-  dropZone.addEventListener('drop', e => { document.getElementById('shpZipFile').files = e.dataTransfer.files; handleShpSelect(); });
-}
-
-/* ════════════════════════════════════════════
-   SUBMIT: คดีบุกรุก / ไม้
-════════════════════════════════════════════ */
-async function submitEncForm() {
-  const complaintNo = document.getElementById('complaintNo').value.trim();
-  const criminalNo = document.getElementById('criminalNo').value.trim();
-  if (!complaintNo && !criminalNo) {
-    toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา อย่างน้อย 1 ฟิลด์', 'error'); return;
-  }
-  const shpFile = document.getElementById('shpZipFile').files[0];
-  if (!shpFile) { toast('กรุณาแนบไฟล์ Shapefile (.zip)', 'error'); return; }
-
-  const btn = document.getElementById('submitBtn');
+/* ══════════════════════════════════════════
+   SUBMIT: บุกรุก / ไม้
+══════════════════════════════════════════ */
+async function submitForm() {
+  const complaint = document.getElementById('f-complaint').value.trim();
+  const criminal = document.getElementById('f-criminal').value.trim();
+  if (!complaint && !criminal) { toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา', 'error'); return; }
+  if (!document.getElementById('f-shp').files[0]) { toast('กรุณาแนบไฟล์ Shapefile (.zip)', 'error'); return; }
+  if (!document.getElementById('f-date').value) { toast('กรุณาระบุวันที่เกิดเหตุ', 'error'); return; }
+  if (!document.getElementById('f-location').value) { toast('กรุณาระบุสถานที่', 'error'); return; }
+  const btn = document.getElementById('btn-submit');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-
   const fd = new FormData();
-  fd.append('case_type', currentTab);
-  fd.append('complaint_no', complaintNo);
-  fd.append('criminal_no', criminalNo);
-  fd.append('seizure_no', document.getElementById('seizureNo').value.trim());
-  fd.append('case_date', document.getElementById('caseDate').value);
-  fd.append('location', document.getElementById('location').value);
-  fd.append('status', document.getElementById('status').value);
-  fd.append('case_status', document.getElementById('caseStatus').value);
-  fd.append('agency', document.getElementById('agency').value);
-  fd.append('suspects_count', document.getElementById('suspectsCount').value);
-  fd.append('utm_zone', document.getElementById('utm_zone').value);
-  fd.append('utm_easting', document.getElementById('utm_e').value || '0');
-  fd.append('utm_northing', document.getElementById('utm_n').value || '0');
-  fd.append('file', shpFile);
-  const pdfF = document.getElementById('pdfFile').files[0];
-  if (pdfF) fd.append('pdf_file', pdfF);
-  if (currentTab === 'encroachment') {
-    fd.append('rai', document.getElementById('rai').value || '0');
-    fd.append('ngarn', document.getElementById('ngarn').value || '0');
-    fd.append('wa', document.getElementById('wa').value || '0');
-  } else if (currentTab === 'timber') {
-    fd.append('timber_type', document.getElementById('timberType').value);
-    fd.append('vol1', document.getElementById('vol1').value || '0');
-    fd.append('vol2', document.getElementById('vol2').value || '0');
-  }
-
+  ['case_type:'+curTab,'complaint_no:'+complaint,'criminal_no:'+criminal,'seizure_no:f-seizure','case_date:f-date','location:f-location','status:f-status','case_status:f-case-status','agency:f-agency','suspects_count:f-suspects','utm_zone:f-utm-zone','utm_easting:f-utm-e|0','utm_northing:f-utm-n|0'].forEach(pair => {
+    const [k, vOrId] = pair.split(':');
+    if (vOrId.startsWith('f-')) { const el = document.getElementById(vOrId.split('|')[0]); fd.append(k, el ? el.value || vOrId.split('|')[1] || '' : ''); }
+    else fd.append(k, vOrId);
+  });
+  fd.append('file', document.getElementById('f-shp').files[0]);
+  const pdfF = document.getElementById('f-pdf').files[0]; if (pdfF) fd.append('pdf_file', pdfF);
+  if (curTab === 'encroachment') { ['rai:f-rai', 'ngarn:f-ngarn', 'wa:f-wa'].forEach(p => { const [k, id] = p.split(':'); fd.append(k, document.getElementById(id).value || '0'); }); }
+  else if (curTab === 'timber') { fd.append('timber_type', document.getElementById('f-timber-type').value); ['vol1:f-vol1', 'vol2:f-vol2'].forEach(p => { const [k, id] = p.split(':'); fd.append(k, document.getElementById(id).value || '0'); }); }
   try {
     const res = await fetch(`${API}/process-shapefile/`, { method: 'POST', body: fd });
-    const result = await res.json();
-    if (result.success) {
-      toast('บันทึกคดีสำเร็จ ข้อมูลขึ้นระบบคลาวด์แล้ว');
-      closeFormModal(); loadData();
-    } else {
-      toast('บันทึกล้มเหลว: ' + (result.error || 'ไม่ทราบสาเหตุ'), 'error');
-    }
-  } catch (err) {
-    toast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกขึ้นคลาวด์';
-  }
+    const r = await res.json();
+    if (r.success) { toast('บันทึกคดีสำเร็จ'); closeForm(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
+    else toast('บันทึกล้มเหลว: ' + (r.error || ''), 'error');
+  } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'error'); }
+  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์'; }
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    SUBMIT: สัตว์ป่า
-════════════════════════════════════════════ */
-async function submitWildlifeForm() {
-  const btn = document.getElementById('wl_submitBtn');
+══════════════════════════════════════════ */
+async function submitWL() {
+  if (!document.getElementById('wl-case-no').value) { toast('กรุณาระบุเลขคดี', 'error'); return; }
+  if (!document.getElementById('wl-location').value) { toast('กรุณาระบุสถานที่', 'error'); return; }
+  const btn = document.getElementById('wl-submit');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-
   const fd = new FormData();
-  fd.append('case_no', document.getElementById('wl_caseNo').value);
-  fd.append('case_date', document.getElementById('wl_caseDate').value);
-  fd.append('location', document.getElementById('wl_location').value);
-  fd.append('status', document.getElementById('wl_status').value);
-  fd.append('case_status', document.getElementById('wl_caseStatus').value);
-  fd.append('agency', document.getElementById('wl_agency').value);
-  fd.append('suspects_count', document.getElementById('wl_suspectsCount').value);
-  fd.append('wildlife_type', document.getElementById('wl_wildlifeType').value);
-  fd.append('equipment', document.getElementById('wl_equipment').value);
-  fd.append('coords_lat', document.getElementById('wl_lat').value || '0');
-  fd.append('coords_lon', document.getElementById('wl_lon').value || '0');
-  const pdfF = document.getElementById('wl_pdfFile').files[0];
-  if (pdfF) fd.append('pdf_file', pdfF);
-
+  [['case_no', 'wl-case-no'], ['case_date', 'wl-date'], ['location', 'wl-location'], ['status', 'wl-status'], ['case_status', 'wl-case-status'], ['agency', 'wl-agency'], ['suspects_count', 'wl-suspects'], ['wildlife_type', 'wl-wildlife-type'], ['equipment', 'wl-equipment'], ['coords_lat', 'wl-lat'], ['coords_lon', 'wl-lon']].forEach(([k, id]) => fd.append(k, document.getElementById(id)?.value || '0'));
+  const pdfF = document.getElementById('wl-pdf').files[0]; if (pdfF) fd.append('pdf_file', pdfF);
   try {
     const res = await fetch(`${API}/process-wildlife/`, { method: 'POST', body: fd });
-    const result = await res.json();
-    if (result.success) {
-      toast('บันทึกคดีสัตว์ป่าสำเร็จ');
-      closeWildlifeModal(); loadData();
-    } else {
-      toast('บันทึกล้มเหลว: ' + (result.error || 'ไม่ทราบสาเหตุ'), 'error');
-    }
-  } catch (err) {
-    toast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล';
-  }
+    const r = await res.json();
+    if (r.success) { toast('บันทึกคดีสัตว์ป่าสำเร็จ'); closeWL(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
+    else toast('บันทึกล้มเหลว: ' + (r.error || ''), 'error');
+  } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'error'); }
+  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล'; }
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    DELETE
-════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 async function deleteCase(cNo) {
-  if (!confirm(`⚠️ ลบคดีหมายเลข ${cNo} ?\nข้อมูลและไฟล์จะถูกลบถาวรจากคลาวด์`)) return;
+  if (!confirm(`⚠️ ลบคดีหมายเลข ${cNo} ?\nข้อมูลจะถูกลบถาวร`)) return;
   try {
-    const res = await fetch(`${API}/delete-case/${currentTab}/${cNo}`, { method: 'DELETE' });
-    if (res.ok) {
-      toast('ลบข้อมูลคดีเรียบร้อย');
-      if (detailOpen) closeDetail();
-      loadData();
-    } else {
-      toast('ลบไม่สำเร็จ เซิร์ฟเวอร์ตอบผิดพลาด', 'error');
-    }
-  } catch { toast('เชื่อมต่อเพื่อลบล้มเหลว', 'error'); }
+    const res = await fetch(`${API}/delete-case/${curTab}/${encodeURIComponent(cNo)}`, { method: 'DELETE' });
+    if (res.ok) { toast('ลบข้อมูลคดีเรียบร้อย'); if (detOpen) closeDetail(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
+    else toast('ลบไม่สำเร็จ', 'error');
+  } catch { toast('เชื่อมต่อไม่ได้', 'error'); }
 }
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    KEYBOARD
-════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if (document.getElementById('formModal').classList.contains('open')) closeFormModal();
-    else if (document.getElementById('wildlifeModal').classList.contains('open')) closeWildlifeModal();
-    else if (detailOpen) closeDetail();
+    if (document.getElementById('modal-form').classList.contains('open')) closeForm();
+    else if (document.getElementById('modal-wl').classList.contains('open')) closeWL();
+    else if (detOpen) closeDetail();
   }
 });
 
-/* ════════════════════════════════════════════
+/* ══════════════════════════════════════════
    INIT
-════════════════════════════════════════════ */
+══════════════════════════════════════════ */
 window.onload = () => {
   setupMap();
   checkDevice();
-  switchTab('encroachment');
+  switchTab('encroachment', document.getElementById('tab-enc'));
 };
 window.onresize = checkDevice;
 </script>
