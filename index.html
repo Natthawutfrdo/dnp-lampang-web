@@ -966,7 +966,7 @@ async function loadData(retries = 3) {
       const ctrl = new AbortController();
       const tid = setTimeout(() => ctrl.abort(), 15000);
       /* ✅ FIX 1: ส่ง limit=200 เพื่อดึงข้อมูลทั้งหมดก่อน แล้ว paginate ฝั่ง client */
-      const res = await fetch(`${API}/get-cases/${curTab}?limit=200&page=1`, { signal: ctrl.signal });
+      const res = await fetch(`${API}/get-cases/${curTab}?limit=200`, { signal: ctrl.signal });
       clearTimeout(tid);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
