@@ -68,7 +68,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .nav-sub{font-size:.66rem;color:var(--text-3);margin-top:1px}
 .nav-sep{width:1px;height:22px;background:var(--border-md);flex-shrink:0}
 
-/* View switcher */
 .view-sw{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border)}
 .vsw-btn{
   padding:5px 12px;border-radius:26px;font-family:inherit;font-size:.75rem;font-weight:600;
@@ -79,7 +78,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .vsw-btn:hover{color:var(--primary)}
 .vsw-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,.22)}
 
-/* Tab pills */
 .nav-tabs{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border);flex:1;max-width:420px}
 .ntab{
   flex:1;padding:5px 10px;border-radius:26px;font-family:inherit;font-size:.76rem;font-weight:600;
@@ -119,7 +117,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .sb-head{padding:12px 14px 10px;flex-shrink:0;border-bottom:1px solid var(--border)}
 .sb-label{font-size:.64rem;font-weight:700;color:var(--primary);letter-spacing:.09em;text-transform:uppercase;margin-bottom:8px}
 
-/* Stats */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
 .stat-c{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad);padding:8px 10px}
 .sl{font-size:.62rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
@@ -127,7 +124,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .sv.cg{color:var(--primary)}.sv.ca{color:var(--gold)}.sv.cb{color:var(--blue)}.sv.cr{color:var(--danger)}
 .ss{font-size:.62rem;color:var(--text-3);margin-top:1px}
 
-/* Search */
 .sb-srch{padding:8px 14px;flex-shrink:0;border-bottom:1px solid var(--border);position:relative}
 .sb-srch i.srch-ic{position:absolute;left:24px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:.76rem;pointer-events:none}
 .sb-srch input{width:100%;padding:7px 30px 7px 32px;background:var(--surface-2);border:1px solid var(--border);border-radius:30px;font-family:inherit;font-size:.82rem;color:var(--text);outline:none;transition:all var(--trans)}
@@ -136,12 +132,10 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 #srch-clear{position:absolute;right:22px;top:50%;transform:translateY(-50%);display:none;border:none;background:none;color:var(--text-3);cursor:pointer;font-size:.73rem;padding:2px}
 #srch-clear.show{display:block}
 
-/* List */
 .sb-list{flex:1;overflow-y:auto;overscroll-behavior:contain}
 .sb-list::-webkit-scrollbar{width:3px}
 .sb-list::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
 
-/* Skeleton */
 .sk-row{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px}
 .sk{background:linear-gradient(90deg,#edf3ed 25%,#e2ece2 50%,#edf3ed 75%);background-size:200% 100%;border-radius:5px;animation:shimmer 1.4s infinite}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -149,7 +143,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .sk-ln{flex:1;display:flex;flex-direction:column;gap:6px}
 .sk-h{height:12px;width:60%}.sk-p{height:11px;width:84%}.sk-s{height:10px;width:42%}
 
-/* Case row */
 .case-row{
   padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;
   transition:background var(--trans);display:flex;align-items:flex-start;gap:9px;position:relative;
@@ -174,7 +167,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .case-row:hover .row-del{opacity:1}
 .row-del:hover{color:var(--danger);background:var(--danger-bg)}
 
-/* Pagination */
 .sb-pager{
   padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0;
   display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -190,7 +182,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .pager-btn:disabled{opacity:.38;cursor:not-allowed}
 .pager-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-/* Empty/Error */
 .state-box{padding:36px 18px;text-align:center}
 .state-icon{font-size:2rem;opacity:.28;margin-bottom:10px}
 .state-title{font-size:.86rem;font-weight:700;color:var(--text-2);margin-bottom:5px}
@@ -207,7 +198,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .leaflet-popup-content-wrapper{border-radius:var(--rad)!important;border:1px solid var(--border)!important;box-shadow:var(--shadow)!important}
 .leaflet-popup-content{font-family:'Sarabun',sans-serif!important;font-size:.82rem!important;line-height:1.6!important}
 
-/* Legend */
 #legend{
   position:absolute;top:12px;right:12px;background:rgba(255,255,255,.94);
   border:1px solid var(--border);border-radius:var(--rad);padding:10px 12px;
@@ -221,7 +211,6 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 #map-ver{position:absolute;bottom:8px;left:12px;font-size:.58rem;color:rgba(0,0,0,.25);z-index:40;pointer-events:none}
 
-/* Connection banner */
 #conn-banner{
   position:absolute;top:12px;left:50%;transform:translateX(-50%);
   background:rgba(0,0,0,.76);color:#fff;font-size:.73rem;font-weight:600;
@@ -344,7 +333,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .m-body{padding:20px}
 .m-ft{position:sticky;bottom:0;background:var(--surface);display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
 
-/* Form */
 .fsec{margin-bottom:16px}
 .fsec-ttl{font-size:.64rem;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
 .fg{margin-bottom:10px}.fg:last-child{margin-bottom:0}
@@ -442,7 +430,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   </div>
   <div class="nav-sep"></div>
 
-  <!-- View: map / dashboard -->
   <div class="view-sw">
     <button class="vsw-btn active" id="vsw-map" onclick="switchView('map')">
       <i class="fa-solid fa-map"></i><span class="vsw-lbl">แผนที่</span>
@@ -453,7 +440,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   </div>
   <div class="nav-sep"></div>
 
-  <!-- Tabs -->
   <div class="nav-tabs">
     <button class="ntab active" id="tab-enc" onclick="switchTab('encroachment',this)">
       <i class="fa-solid fa-tree-city"></i><span class="tab-lbl">บุกรุกป่า</span>
@@ -481,7 +467,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
      APP BODY
 ══════════════════════════════════════════ -->
 <div id="app">
-  <!-- Sidebar -->
   <aside id="sidebar">
     <div class="sb-head">
       <div class="sb-label" id="sb-label">สารบบคดีบุกรุกพื้นที่ป่า</div>
@@ -498,14 +483,12 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       </div>
     </div>
     <div class="sb-list" id="sb-list"></div>
-    <!-- Pagination -->
     <div class="sb-pager" id="pager" style="display:none">
       <span class="pager-info" id="pager-info"></span>
       <div class="pager-btns" id="pager-btns"></div>
     </div>
   </aside>
 
-  <!-- Map -->
   <div id="map-wrap">
     <div id="map"></div>
     <div id="legend">
@@ -517,7 +500,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="leg-row"><div class="leg-line" style="background:rgba(219,39,119,.25);border:1px solid #db2777"></div>ป่าสงวนฯ</div>
     </div>
     <div id="conn-banner"><i class="fa-solid fa-circle-notch fa-spin"></i><span id="conn-msg">กำลังเชื่อมต่อ...</span></div>
-    <!-- Detail panel -->
     <div id="det-panel">
       <div class="det-drag"></div>
       <div class="det-hd">
@@ -530,12 +512,10 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="det-grid" id="det-grid"></div>
       <div class="det-actions" id="det-actions"></div>
     </div>
-    <div id="map-ver">DNP GeoIndex v4.0 · สบอ.13 ลำปาง</div>
+    <div id="map-ver">DNP GeoIndex v4.1 · สบอ.13 ลำปาง</div>
   </div>
 
-  <!-- Dashboard -->
   <div id="dash-wrap">
-    <!-- KPI cards -->
     <div class="dash-title"><i class="fa-solid fa-chart-line"></i>ภาพรวมสถิติคดีทั้งหมด</div>
     <div class="kpi-row">
       <div class="kpi-card green">
@@ -563,7 +543,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <i class="fa-solid fa-user-slash kpi-icon"></i>
       </div>
     </div>
-    <!-- Charts -->
     <div class="charts-grid">
       <div class="chart-card">
         <div class="chart-title"><i class="fa-solid fa-chart-donut"></i>สัดส่วนสถานะคดี (แยกประเภท)</div>
@@ -574,7 +553,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <div class="chart-box"><canvas id="chart-bar"></canvas></div>
       </div>
     </div>
-    <!-- Recent table -->
     <div class="table-card">
       <div class="table-hd"><i class="fa-solid fa-clock-rotate-left"></i>รายการคดีล่าสุด (ทุกประเภท)</div>
       <div style="overflow-x:auto">
@@ -589,7 +567,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   </div>
 </div>
 
-<!-- FAB -->
 <button id="fab" onclick="toggleFab()">
   <i class="fa-solid fa-map-marked-alt" id="fab-icon"></i>
   <span id="fab-label">ดูแผนที่</span>
@@ -625,7 +602,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
         <div class="fg"><label class="fl">สถานที่เกิดเหตุ / ชื่อป่า <span style="color:var(--danger)">*</span></label><input type="text" id="f-location" placeholder="ต.เมือง อ.เมือง จ.ลำปาง" class="fi"></div>
       </div>
-      <!-- Timber section -->
       <div id="timber-sec" class="fbox amber fsec" style="display:none">
         <div class="fbox-ttl amber"><i class="fa-solid fa-cubes-stacked"></i>ข้อมูลไม้ผิดกฎหมาย</div>
         <div class="fg-row fg-2" style="margin-top:4px">
@@ -651,7 +627,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
         <div class="fg"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="f-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
       </div>
-      <!-- UTM -->
       <div class="fbox green fsec">
         <div class="fbox-hd">
           <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (Zone 47N)</div>
@@ -662,14 +637,13 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <div><label class="fl">E (X)</label><input type="number" id="f-utm-e" placeholder="534500" oninput="liveUTM('main')" class="fi"></div>
           <div><label class="fl">N (Y)</label><input type="number" id="f-utm-n" placeholder="2023000" oninput="liveUTM('main')" class="fi"></div>
         </div>
-        <div id="utm-res-main" style="display:none;margin-top:7px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;display:none">
+        <div id="utm-res-main" style="display:none;margin-top:7px;gap:7px;align-items:center;flex-wrap:wrap">
           <span class="utm-res utm-ok" id="utm-res-main-txt"></span>
           <button type="button" onclick="prevUTM('main')" class="btn-mprev"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
         </div>
         <div id="utm-err-main" style="display:none" class="utm-res utm-err"></div>
         <input type="hidden" id="f-lat"><input type="hidden" id="f-lon">
       </div>
-      <!-- Files -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-paperclip"></i>ไฟล์แนบ</div>
         <div class="fg-row fg-2">
@@ -773,12 +747,10 @@ let detOpen = false;
 let srchTimer = null;
 let fabOpen = false;
 
-/* Pagination */
 const PAGE_SIZE = 20;
 let curPage = 1;
 let totalItems = 0;
 
-/* Dashboard cache */
 let dashCache = { enc: null, tim: null, wl: null };
 let chartDonut = null, chartBar = null;
 
@@ -826,10 +798,12 @@ function utmToLL(e, n, zone) {
   const lon = (lon0 * Math.PI / 180) + (D - (1 + 2 * T1 + C1) * D ** 3 / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 ** 2 + 8 * e2 * cp ** 2 / (1 - e2) + 24 * T1 ** 2) * D ** 5 / 120) / cp;
   return { lat: lat * 180 / Math.PI, lon: lon * 180 / Math.PI };
 }
+
 function getUF(p) {
   if (p === 'main') return { zone: +document.getElementById('f-utm-zone').value, e: +document.getElementById('f-utm-e').value, n: +document.getElementById('f-utm-n').value, rDiv: 'utm-res-main', rTxt: 'utm-res-main-txt', eDiv: 'utm-err-main', latF: 'f-lat', lonF: 'f-lon' };
   return { zone: +document.getElementById('wl-utm-zone').value, e: +document.getElementById('wl-utm-e').value, n: +document.getElementById('wl-utm-n').value, rDiv: 'utm-res-wl', rTxt: 'utm-res-wl-txt', eDiv: 'utm-err-wl', latF: 'wl-cvt-lat', lonF: 'wl-cvt-lon' };
 }
+
 function convertUTM(p) {
   const f = getUF(p);
   const rd = document.getElementById(f.rDiv), ed = document.getElementById(f.eDiv);
@@ -846,11 +820,13 @@ function convertUTM(p) {
     if (p === 'wl') { const wa = document.getElementById('wl-map-actions'); if (wa) wa.style.display = 'block'; }
   } catch { ed.textContent = '⚠ ค่าพิกัดไม่ถูกต้อง'; ed.style.display = 'inline-flex'; }
 }
+
 const _utmDb = {};
 function liveUTM(p) {
   clearTimeout(_utmDb[p]);
   _utmDb[p] = setTimeout(() => { const f = getUF(p); if (f.e && f.n && f.e > 100000 && f.n > 1000000) convertUTM(p); }, 600);
 }
+
 function prevUTM(p) {
   const f = getUF(p);
   const lat = +document.getElementById(f.latF).value, lon = +document.getElementById(f.lonF).value;
@@ -878,13 +854,14 @@ function setupMap() {
   fetch(STORAGE_BASE + '/conservation_forest.geojson').then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: { color: '#1a5c2e', weight: 1, fillColor: '#22c55e', fillOpacity: .12, interactive: false } }).addTo(layerCon); }).catch(() => {});
   fetch(STORAGE_BASE + '/reserve_forest.geojson').then(r => r.ok ? r.json() : null).then(d => { if (d) L.geoJSON(d, { style: { color: '#db2777', weight: 1, fillColor: '#db2777', fillOpacity: .08, interactive: false } }).addTo(layerRes); }).catch(() => {});
 }
+
 function clearMapLayers() {
   layerEnc.clearLayers(); layerTim.clearLayers(); layerWL.clearLayers(); mapReg = {};
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker = null; }
 }
 
 /* ══════════════════════════════════════════
-   VIEW SWITCH: map / dashboard
+   VIEW SWITCH
 ══════════════════════════════════════════ */
 function switchView(v) {
   curView = v;
@@ -957,7 +934,7 @@ function filterAndRender(q) {
 }
 
 /* ══════════════════════════════════════════
-   LOAD DATA (bug-fixed: uses json.data)
+   LOAD DATA
 ══════════════════════════════════════════ */
 async function loadData(retries = 3) {
   showSkeleton(); clearMapLayers(); showBanner('กำลังโหลดข้อมูล...');
@@ -965,12 +942,10 @@ async function loadData(retries = 3) {
     try {
       const ctrl = new AbortController();
       const tid = setTimeout(() => ctrl.abort(), 15000);
-      /* ✅ FIX 1: ส่ง limit=200 เพื่อดึงข้อมูลทั้งหมดก่อน แล้ว paginate ฝั่ง client */
       const res = await fetch(`${API}/get-cases/${curTab}?limit=200`, { signal: ctrl.signal });
       clearTimeout(tid);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
-      /* ✅ FIX 2: API คืน {data,total,page,limit} — ต้องดึง .data */
       allData = Array.isArray(json) ? json : (Array.isArray(json.data) ? json.data : []);
       totalItems = allData.length;
       hideBanner();
@@ -979,7 +954,6 @@ async function loadData(retries = 3) {
       renderMap(allData);
       updateStats(allData);
       updateTabCnt(curTab, totalItems);
-      /* Cache for dashboard */
       dashCache[curTab === 'encroachment' ? 'enc' : curTab === 'timber' ? 'tim' : 'wl'] = allData;
       return;
     } catch (err) {
@@ -1046,17 +1020,17 @@ function renderPager(total, q = '') {
   btns.innerHTML = html;
 }
 function goPage(p, q = '') {
-  const pages = Math.ceil((q ? allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location].some(v => v && v.toLowerCase().includes(q.toLowerCase()))) : allData).length / PAGE_SIZE);
+  const data = q ? allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location].some(v => v && v.toLowerCase().includes(q.toLowerCase()))) : allData;
+  const pages = Math.ceil(data.length / PAGE_SIZE);
   if (p < 1 || p > pages) return;
   curPage = p;
-  const data = q ? allData.filter(i => [i.case_no, i.complaint_no, i.criminal_no, i.location].some(v => v && v.toLowerCase().includes(q.toLowerCase()))) : allData;
   renderSidebar(data);
   renderPager(data.length, q);
   document.getElementById('sb-list').scrollTop = 0;
 }
 
 /* ══════════════════════════════════════════
-   RENDER SIDEBAR (with pagination)
+   RENDER SIDEBAR
 ══════════════════════════════════════════ */
 function renderSidebar(data) {
   if (!Array.isArray(data) || !data.length) {
@@ -1178,7 +1152,6 @@ async function dlGeoJSON(idx) {
    DASHBOARD
 ══════════════════════════════════════════ */
 async function renderDashboard() {
-  /* Load all 3 tabs if not cached */
   const types = ['enc', 'tim', 'wl'];
   const apiMap = { enc: 'encroachment', tim: 'timber', wl: 'wildlife' };
   toast('กำลังโหลดข้อมูล Dashboard...', 'info', 2000);
@@ -1195,7 +1168,6 @@ async function renderDashboard() {
   const enc = dashCache.enc || [], tim = dashCache.tim || [], wl = dashCache.wl || [];
   const all = [...enc.map(i => ({ ...i, _type: 'บุกรุกป่า' })), ...tim.map(i => ({ ...i, _type: 'ไม้ผิดกฎหมาย' })), ...wl.map(i => ({ ...i, _type: 'สัตว์ป่า' }))];
 
-  /* KPI */
   document.getElementById('kpi-enc').textContent = enc.length;
   document.getElementById('kpi-enc-sub').textContent = `ระหว่างคดี ${enc.filter(i => !i.is_finished).length} · สิ้นสุด ${enc.filter(i => i.is_finished).length}`;
   document.getElementById('kpi-tim').textContent = tim.length;
@@ -1204,7 +1176,6 @@ async function renderDashboard() {
   document.getElementById('kpi-wl-sub').textContent = `ระหว่างคดี ${wl.filter(i => !i.is_finished).length} · สิ้นสุด ${wl.filter(i => i.is_finished).length}`;
   document.getElementById('kpi-susp').textContent = all.reduce((s, i) => s + (+i.suspects_count || 0), 0);
 
-  /* Donut chart */
   const totalPend = all.filter(i => !i.is_finished).length;
   const totalDone = all.filter(i => i.is_finished).length;
   if (chartDonut) chartDonut.destroy();
@@ -1220,7 +1191,6 @@ async function renderDashboard() {
     }
   });
 
-  /* Bar chart */
   if (chartBar) chartBar.destroy();
   chartBar = new Chart(document.getElementById('chart-bar'), {
     type: 'bar',
@@ -1238,9 +1208,12 @@ async function renderDashboard() {
     }
   });
 
-  /* Recent table — last 10 across all types */
   const recent = all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).slice(0, 10);
-  const typeBadge = { 'บุกรุกป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">บุกรุกป่า</span>`, 'ไม้ผิดกฎหมาย': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ไม้ผิดกฎหมาย</span>`, 'สัตว์ป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--violet-bg);color:var(--violet);font-weight:700">สัตว์ป่า</span>` };
+  const typeBadge = {
+    'บุกรุกป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">บุกรุกป่า</span>`,
+    'ไม้ผิดกฎหมาย': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ไม้ผิดกฎหมาย</span>`,
+    'สัตว์ป่า': `<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--violet-bg);color:var(--violet);font-weight:700">สัตว์ป่า</span>`
+  };
   document.getElementById('dash-tbl-body').innerHTML = recent.map(i => `<tr>
     <td style="font-weight:600">${i.complaint_no || i.case_no || '–'}</td>
     <td>${typeBadge[i._type] || i._type}</td>
@@ -1284,7 +1257,11 @@ function closeWL() {
   const wa = document.getElementById('wl-map-actions'); if (wa) wa.style.display = 'none';
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker = null; }
 }
-['modal-form', 'modal-wl'].forEach(id => { document.getElementById(id).addEventListener('click', function (e) { if (e.target === this) id === 'modal-form' ? closeForm() : closeWL(); }); });
+['modal-form', 'modal-wl'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function (e) {
+    if (e.target === this) id === 'modal-form' ? closeForm() : closeWL();
+  });
+});
 
 /* ══════════════════════════════════════════
    SHAPEFILE ANALYZE
@@ -1294,21 +1271,41 @@ async function handleShp() {
   const f = fileEl.files[0]; if (!f) return;
   const st = document.getElementById('drop-st'), lbl = document.getElementById('drop-lbl');
   lbl.textContent = f.name; st.textContent = 'กำลังวิเคราะห์ GIS...'; st.className = 'drop-st';
-  const fd = new FormData(); fd.append('file', f);
+
+  // 🔧 FIX Bug 3: ไม่กำหนด Content-Type header เอง — ให้ browser จัดการ multipart boundary อัตโนมัติ
+  const fd = new FormData();
+  fd.append('file', f);
   try {
-    const res = await fetch(`${API}/analyze-shapefile/`, { method: 'POST', body: fd });
+    const res = await fetch(`${API}/analyze-shapefile/`, {
+      method: 'POST',
+      body: fd
+      // ❌ ห้ามใส่ headers: { 'Content-Type': 'multipart/form-data' } เด็ดขาด
+    });
     const r = await res.json();
     if (res.ok && r.success) {
       st.textContent = `✓ พื้นที่ ${r.rai} ไร่ ${r.ngarn} งาน ${r.wa?.toFixed(0) || 0} ตร.ว.`;
       st.className = 'drop-st ok';
-      if (curTab === 'encroachment') { document.getElementById('f-rai').value = Math.floor(r.rai) || 0; document.getElementById('f-ngarn').value = Math.floor(r.ngarn) || 0; document.getElementById('f-wa').value = r.wa?.toFixed(1) || 0; }
-      document.getElementById('f-lat').value = r.lat; document.getElementById('f-lon').value = r.lon;
+      if (curTab === 'encroachment') {
+        document.getElementById('f-rai').value = Math.floor(r.rai) || 0;
+        document.getElementById('f-ngarn').value = Math.floor(r.ngarn) || 0;
+        document.getElementById('f-wa').value = r.wa?.toFixed(1) || 0;
+      }
+      document.getElementById('f-lat').value = r.lat;
+      document.getElementById('f-lon').value = r.lon;
       if (prevMarker) mapInst.removeLayer(prevMarker);
       prevMarker = L.marker([r.lat, r.lon]).addTo(mapInst).bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
       mapInst.setView([r.lat, r.lon], 14);
-    } else { st.textContent = '✗ ไฟล์ไม่รองรับ หรือไม่มีพิกัด'; st.className = 'drop-st err'; fileEl.value = ''; }
-  } catch { st.textContent = '✗ เชื่อมต่อไม่ได้'; st.className = 'drop-st err'; }
+    } else {
+      st.textContent = `✗ ${r.detail || 'ไฟล์ไม่รองรับ หรือไม่มีพิกัด'}`;
+      st.className = 'drop-st err';
+      fileEl.value = '';
+    }
+  } catch (e) {
+    st.textContent = '✗ เชื่อมต่อไม่ได้: ' + e.message;
+    st.className = 'drop-st err';
+  }
 }
+
 const dz = document.getElementById('drop-zone');
 ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
@@ -1316,33 +1313,93 @@ dz.addEventListener('drop', e => { document.getElementById('f-shp').files = e.da
 
 /* ══════════════════════════════════════════
    SUBMIT: บุกรุก / ไม้
+   🔧 FIX Bug 2: ใช้ indexOf(':') แทน split(':') เพื่อรองรับค่าที่มี ':' อยู่ด้วย
 ══════════════════════════════════════════ */
 async function submitForm() {
   const complaint = document.getElementById('f-complaint').value.trim();
-  const criminal = document.getElementById('f-criminal').value.trim();
+  const criminal  = document.getElementById('f-criminal').value.trim();
   if (!complaint && !criminal) { toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา', 'error'); return; }
   if (!document.getElementById('f-shp').files[0]) { toast('กรุณาแนบไฟล์ Shapefile (.zip)', 'error'); return; }
   if (!document.getElementById('f-date').value) { toast('กรุณาระบุวันที่เกิดเหตุ', 'error'); return; }
   if (!document.getElementById('f-location').value) { toast('กรุณาระบุสถานที่', 'error'); return; }
+
   const btn = document.getElementById('btn-submit');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+
   const fd = new FormData();
-  ['case_type:'+curTab,'complaint_no:'+complaint,'criminal_no:'+criminal,'seizure_no:f-seizure','case_date:f-date','location:f-location','status:f-status','case_status:f-case-status','agency:f-agency','suspects_count:f-suspects','utm_zone:f-utm-zone','utm_easting:f-utm-e|0','utm_northing:f-utm-n|0'].forEach(pair => {
-    const [k, vOrId] = pair.split(':');
-    if (vOrId.startsWith('f-')) { const el = document.getElementById(vOrId.split('|')[0]); fd.append(k, el ? el.value || vOrId.split('|')[1] || '' : ''); }
-    else fd.append(k, vOrId);
+
+  // 🔧 FIX Bug 2: แยก key:value ด้วย indexOf เพื่อรองรับ value ที่มี ':' ได้ถูกต้อง
+  const fields = [
+    'case_type:' + curTab,
+    'complaint_no:' + complaint,
+    'criminal_no:' + criminal,
+    'seizure_no:f-seizure',
+    'case_date:f-date',
+    'location:f-location',
+    'status:f-status',
+    'case_status:f-case-status',
+    'agency:f-agency',
+    'suspects_count:f-suspects',
+    'utm_zone:f-utm-zone',
+    'utm_easting:f-utm-e|0',
+    'utm_northing:f-utm-n|0',
+  ];
+
+  fields.forEach(pair => {
+    // 🔧 ใช้ indexOf แทน split(':') เพื่อให้ค่าที่มี ':' ไม่แตก เช่น "อ.456:2569"
+    const colonIdx = pair.indexOf(':');
+    const k = pair.substring(0, colonIdx);
+    const vOrId = pair.substring(colonIdx + 1);
+
+    if (vOrId.startsWith('f-')) {
+      // เป็น element id — อาจมี |fallback ต่อท้าย
+      const pipeIdx = vOrId.indexOf('|');
+      const elId    = pipeIdx >= 0 ? vOrId.substring(0, pipeIdx) : vOrId;
+      const fallback = pipeIdx >= 0 ? vOrId.substring(pipeIdx + 1) : '';
+      const el = document.getElementById(elId);
+      fd.append(k, el ? (el.value || fallback) : fallback);
+    } else {
+      // เป็นค่าตรงๆ (เช่น curTab)
+      fd.append(k, vOrId);
+    }
   });
+
+  // แนบไฟล์ Shapefile
   fd.append('file', document.getElementById('f-shp').files[0]);
-  const pdfF = document.getElementById('f-pdf').files[0]; if (pdfF) fd.append('pdf_file', pdfF);
-  if (curTab === 'encroachment') { ['rai:f-rai', 'ngarn:f-ngarn', 'wa:f-wa'].forEach(p => { const [k, id] = p.split(':'); fd.append(k, document.getElementById(id).value || '0'); }); }
-  else if (curTab === 'timber') { fd.append('timber_type', document.getElementById('f-timber-type').value); ['vol1:f-vol1', 'vol2:f-vol2'].forEach(p => { const [k, id] = p.split(':'); fd.append(k, document.getElementById(id).value || '0'); }); }
+
+  // แนบ PDF (ถ้ามี)
+  const pdfF = document.getElementById('f-pdf').files[0];
+  if (pdfF) fd.append('pdf_file', pdfF);
+
+  // Fields เฉพาะประเภท
+  if (curTab === 'encroachment') {
+    fd.append('rai',   document.getElementById('f-rai').value   || '0');
+    fd.append('ngarn', document.getElementById('f-ngarn').value || '0');
+    fd.append('wa',    document.getElementById('f-wa').value    || '0');
+  } else if (curTab === 'timber') {
+    fd.append('timber_type', document.getElementById('f-timber-type').value || '');
+    fd.append('vol1', document.getElementById('f-vol1').value || '0');
+    fd.append('vol2', document.getElementById('f-vol2').value || '0');
+  }
+
   try {
+    // 🔧 FIX Bug 3: ไม่กำหนด Content-Type — ให้ browser จัดการ boundary อัตโนมัติ
     const res = await fetch(`${API}/process-shapefile/`, { method: 'POST', body: fd });
     const r = await res.json();
-    if (r.success) { toast('บันทึกคดีสำเร็จ'); closeForm(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
-    else toast('บันทึกล้มเหลว: ' + (r.error || ''), 'error');
-  } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์'; }
+    if (r.success) {
+      toast('บันทึกคดีสำเร็จ');
+      closeForm();
+      dashCache = { enc: null, tim: null, wl: null };
+      loadData();
+    } else {
+      toast('บันทึกล้มเหลว: ' + (r.error || r.detail || ''), 'error');
+    }
+  } catch (e) {
+    toast('เชื่อมต่อไม่ได้: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์';
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -1351,18 +1408,48 @@ async function submitForm() {
 async function submitWL() {
   if (!document.getElementById('wl-case-no').value) { toast('กรุณาระบุเลขคดี', 'error'); return; }
   if (!document.getElementById('wl-location').value) { toast('กรุณาระบุสถานที่', 'error'); return; }
+
   const btn = document.getElementById('wl-submit');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+
   const fd = new FormData();
-  [['case_no', 'wl-case-no'], ['case_date', 'wl-date'], ['location', 'wl-location'], ['status', 'wl-status'], ['case_status', 'wl-case-status'], ['agency', 'wl-agency'], ['suspects_count', 'wl-suspects'], ['wildlife_type', 'wl-wildlife-type'], ['equipment', 'wl-equipment'], ['coords_lat', 'wl-lat'], ['coords_lon', 'wl-lon']].forEach(([k, id]) => fd.append(k, document.getElementById(id)?.value || '0'));
-  const pdfF = document.getElementById('wl-pdf').files[0]; if (pdfF) fd.append('pdf_file', pdfF);
+  [
+    ['case_no',       'wl-case-no'],
+    ['case_date',     'wl-date'],
+    ['location',      'wl-location'],
+    ['status',        'wl-status'],
+    ['case_status',   'wl-case-status'],
+    ['agency',        'wl-agency'],
+    ['suspects_count','wl-suspects'],
+    ['wildlife_type', 'wl-wildlife-type'],
+    ['equipment',     'wl-equipment'],
+    ['coords_lat',    'wl-lat'],
+    ['coords_lon',    'wl-lon'],
+  ].forEach(([k, id]) => {
+    const el = document.getElementById(id);
+    fd.append(k, el ? (el.value || '0') : '0');
+  });
+
+  const pdfF = document.getElementById('wl-pdf').files[0];
+  if (pdfF) fd.append('pdf_file', pdfF);
+
   try {
     const res = await fetch(`${API}/process-wildlife/`, { method: 'POST', body: fd });
     const r = await res.json();
-    if (r.success) { toast('บันทึกคดีสัตว์ป่าสำเร็จ'); closeWL(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
-    else toast('บันทึกล้มเหลว: ' + (r.error || ''), 'error');
-  } catch (e) { toast('เชื่อมต่อไม่ได้: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล'; }
+    if (r.success) {
+      toast('บันทึกคดีสัตว์ป่าสำเร็จ');
+      closeWL();
+      dashCache = { enc: null, tim: null, wl: null };
+      loadData();
+    } else {
+      toast('บันทึกล้มเหลว: ' + (r.error || r.detail || ''), 'error');
+    }
+  } catch (e) {
+    toast('เชื่อมต่อไม่ได้: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล';
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -1372,8 +1459,14 @@ async function deleteCase(cNo) {
   if (!confirm(`⚠️ ลบคดีหมายเลข ${cNo} ?\nข้อมูลจะถูกลบถาวร`)) return;
   try {
     const res = await fetch(`${API}/delete-case/${curTab}/${encodeURIComponent(cNo)}`, { method: 'DELETE' });
-    if (res.ok) { toast('ลบข้อมูลคดีเรียบร้อย'); if (detOpen) closeDetail(); dashCache = { enc: null, tim: null, wl: null }; loadData(); }
-    else toast('ลบไม่สำเร็จ', 'error');
+    if (res.ok) {
+      toast('ลบข้อมูลคดีเรียบร้อย');
+      if (detOpen) closeDetail();
+      dashCache = { enc: null, tim: null, wl: null };
+      loadData();
+    } else {
+      toast('ลบไม่สำเร็จ', 'error');
+    }
   } catch { toast('เชื่อมต่อไม่ได้', 'error'); }
 }
 
