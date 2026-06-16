@@ -351,7 +351,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .btn-mprev:hover{background:var(--primary-pale);color:var(--primary);border-color:rgba(26,92,46,.3)}
 
 /* ══════════════════════════════════════════
-   SHAPEFILE UPLOAD ZONE (v5 — แยกไฟล์)
+   SHAPEFILE UPLOAD ZONE (v5)
 ══════════════════════════════════════════ */
 .shp-upload-box{
   background:var(--surface-2);border:1px solid var(--border);
@@ -478,7 +478,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   <div class="nav-logo"><i class="fa-solid fa-tree"></i></div>
   <div class="nav-title-w">
     <div class="nav-title">DNP GeoIndex</div>
-    <div class="nav-sub">สบอ.13 สาขาลำปาง · v5.0</div>
+    <div class="nav-sub">สบอ.13 สาขาลำปาง · v5.0.1</div>
   </div>
   <div class="nav-sep"></div>
   <div class="view-sw">
@@ -559,7 +559,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="det-grid" id="det-grid"></div>
       <div class="det-actions" id="det-actions"></div>
     </div>
-    <div id="map-ver">DNP GeoIndex v5.0 · สบอ.13 ลำปาง</div>
+    <div id="map-ver">DNP GeoIndex v5.0.1 · สบอ.13 ลำปาง</div>
   </div>
 
   <div id="dash-wrap">
@@ -592,7 +592,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 </button>
 
 <!-- ══════════════════════════════════════════
-     MODAL: บุกรุก / ไม้  (v5 — แยกไฟล์)
+     MODAL: บุกรุก / ไม้  (v5)
 ══════════════════════════════════════════ -->
 <div id="modal-form" class="overlay">
   <div class="modal-box">
@@ -682,18 +682,15 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <input type="hidden" id="f-lat"><input type="hidden" id="f-lon">
       </div>
 
-      <!-- ══ SHAPEFILE UPLOAD — แยกไฟล์ (v5) ══ -->
+      <!-- SHAPEFILE UPLOAD -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-map-marked"></i>Shapefile — แนบแยกไฟล์</div>
-
         <div class="shp-upload-box">
           <div class="shp-upload-title">
             <i class="fa-solid fa-layer-group"></i>
             เลือกไฟล์แต่ละส่วนของ Shapefile
           </div>
-
           <div class="shp-parts-grid">
-            <!-- .shp -->
             <div class="shp-part" id="part-shp">
               <input type="file" accept=".shp" id="f-shp" onchange="handleShpPart('shp', this)">
               <div class="shp-part-ext ext-shp">.SHP</div>
@@ -703,8 +700,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               </div>
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-shp"></i>
             </div>
-
-            <!-- .dbf -->
             <div class="shp-part" id="part-dbf">
               <input type="file" accept=".dbf" id="f-dbf" onchange="handleShpPart('dbf', this)">
               <div class="shp-part-ext ext-dbf">.DBF</div>
@@ -714,8 +709,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               </div>
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-dbf"></i>
             </div>
-
-            <!-- .shx -->
             <div class="shp-part" id="part-shx">
               <input type="file" accept=".shx" id="f-shx" onchange="handleShpPart('shx', this)">
               <div class="shp-part-ext ext-shx">.SHX</div>
@@ -725,8 +718,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               </div>
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-shx"></i>
             </div>
-
-            <!-- .prj -->
             <div class="shp-part" id="part-prj">
               <input type="file" accept=".prj" id="f-prj" onchange="handleShpPart('prj', this)">
               <div class="shp-part-ext ext-prj">.PRJ</div>
@@ -736,8 +727,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               </div>
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-prj"></i>
             </div>
-
-            <!-- .cpg -->
             <div class="shp-part" id="part-cpg">
               <input type="file" accept=".cpg" id="f-cpg" onchange="handleShpPart('cpg', this)">
               <div class="shp-part-ext ext-cpg">.CPG</div>
@@ -747,8 +736,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               </div>
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-cpg"></i>
             </div>
-
-            <!-- PDF -->
             <div class="shp-part" id="part-pdf">
               <input type="file" accept=".pdf" id="f-pdf" onchange="handleShpPart('pdf', this)">
               <div class="shp-part-ext ext-opt" style="font-size:.55rem">PDF</div>
@@ -759,8 +746,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
               <i class="fa-solid fa-circle-minus shp-part-check" id="chk-pdf"></i>
             </div>
           </div>
-
-          <!-- Analyze bar -->
           <div class="shp-analyze-bar" id="analyze-bar">
             <i class="fa-solid fa-circle-check analyze-icon" id="analyze-icon"></i>
             <span class="analyze-text" id="analyze-text">รอการวิเคราะห์...</span>
@@ -771,7 +756,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
       </div>
 
-    </div><!-- /m-body -->
+    </div>
     <div class="m-ft">
       <button class="btn-cancel" onclick="closeForm()">ยกเลิก</button>
       <button class="btn-submit green" id="btn-submit" onclick="submitForm()">
@@ -782,7 +767,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 </div>
 
 <!-- ══════════════════════════════════════════
-     MODAL: สัตว์ป่า (ไม่มี shapefile — ไม่เปลี่ยน)
+     MODAL: สัตว์ป่า — v5.0.1 (เพิ่ม complaint/criminal/seizure)
 ══════════════════════════════════════════ -->
 <div id="modal-wl" class="overlay">
   <div class="modal-box">
@@ -792,21 +777,74 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <button class="m-close" onclick="closeWL()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="m-body">
-      <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">เลขคดีที่ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-case-no" placeholder="5/2569" class="fi"></div>
-        <div class="fg"><label class="fl">วันที่เกิดเหตุ</label><input type="text" id="wl-date" placeholder="04/06/2569" class="fi"></div>
+
+      <!-- ══ หมายเลขคดี (ใหม่) ══ -->
+      <div class="fsec">
+        <div class="fsec-ttl"><i class="fa-solid fa-file-signature"></i>หมายเลขคดี</div>
+        <div class="fg-row fg-3">
+          <div class="fg">
+            <label class="fl">เลขคำแจ้งความ <span class="badge-new">ใหม่</span></label>
+            <input type="text" id="wl-complaint" placeholder="123/2569" class="fi">
+          </div>
+          <div class="fg">
+            <label class="fl">เลขคดีอาญา <span class="badge-new">ใหม่</span></label>
+            <input type="text" id="wl-criminal" placeholder="อ.456/2569" class="fi">
+          </div>
+          <div class="fg">
+            <label class="fl">ยึดทรัพย์ที่ <span class="badge-new">ใหม่</span></label>
+            <input type="text" id="wl-seizure" placeholder="ยท.78/2569" class="fi">
+          </div>
+        </div>
       </div>
-      <div class="fg"><label class="fl">สถานที่เกิดเหตุ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-location" placeholder="ตำบล อำเภอ จังหวัด..." class="fi"></div>
-      <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">ชนิดสัตว์ป่า / ซาก</label><input type="text" id="wl-wildlife-type" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi"></div>
-        <div class="fg"><label class="fl">อุปกรณ์กระทำผิด</label><input type="text" id="wl-equipment" placeholder="ตาข่ายดักนก, ปืนแก๊ป" class="fi"></div>
+
+      <!-- ══ ข้อมูลคดีเดิม ══ -->
+      <div class="fg-row fg-2" style="margin-bottom:10px">
+        <div class="fg">
+          <label class="fl">เลขคดีที่ <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="wl-case-no" placeholder="5/2569" class="fi">
+        </div>
+        <div class="fg">
+          <label class="fl">วันที่เกิดเหตุ</label>
+          <input type="text" id="wl-date" placeholder="04/06/2569" class="fi">
+        </div>
       </div>
-      <div class="fg-row fg-2">
-        <div class="fg"><label class="fl">ผลการดำเนินคดี</label><select id="wl-status" class="fs"><option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option><option value="คดีสิ้นสุด">คดีสิ้นสุด</option></select></div>
-        <div class="fg"><label class="fl">จำนวนผู้ต้องหา (ราย)</label><input type="number" id="wl-suspects" min="0" value="0" class="fi"></div>
+      <div class="fg" style="margin-bottom:10px">
+        <label class="fl">สถานที่เกิดเหตุ <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="wl-location" placeholder="ตำบล อำเภอ จังหวัด..." class="fi">
       </div>
-      <div class="fg"><label class="fl">หน่วยงาน <span style="color:var(--danger)">*</span></label><input type="text" id="wl-agency" placeholder="สายตรวจ สบอ.13, เขตฯ..." class="fi"></div>
-      <div class="fg"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="wl-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
+      <div class="fg-row fg-2" style="margin-bottom:10px">
+        <div class="fg">
+          <label class="fl">ชนิดสัตว์ป่า / ซาก</label>
+          <input type="text" id="wl-wildlife-type" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi">
+        </div>
+        <div class="fg">
+          <label class="fl">อุปกรณ์กระทำผิด</label>
+          <input type="text" id="wl-equipment" placeholder="ตาข่ายดักนก, ปืนแก๊ป" class="fi">
+        </div>
+      </div>
+      <div class="fg-row fg-2" style="margin-bottom:10px">
+        <div class="fg">
+          <label class="fl">ผลการดำเนินคดี</label>
+          <select id="wl-status" class="fs">
+            <option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option>
+            <option value="คดีสิ้นสุด">คดีสิ้นสุด</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">จำนวนผู้ต้องหา (ราย)</label>
+          <input type="number" id="wl-suspects" min="0" value="0" class="fi">
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:10px">
+        <label class="fl">หน่วยงาน <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="wl-agency" placeholder="สายตรวจ สบอ.13, เขตฯ..." class="fi">
+      </div>
+      <div class="fg" style="margin-bottom:10px">
+        <label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label>
+        <textarea id="wl-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea>
+      </div>
+
+      <!-- UTM -->
       <div class="fbox violet" style="margin-bottom:12px">
         <div class="fbox-hd">
           <div class="fbox-ttl violet"><i class="fa-solid fa-location-crosshairs"></i>พิกัดที่เกิดเหตุ</div>
@@ -831,11 +869,19 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
         <input type="hidden" id="wl-cvt-lat"><input type="hidden" id="wl-cvt-lon">
       </div>
-      <div class="fg"><label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger)"></i> เอกสาร PDF (ถ้ามี)</label><input type="file" id="wl-pdf" accept=".pdf" class="fi" style="cursor:pointer;padding:6px 9px"></div>
+
+      <!-- PDF -->
+      <div class="fg">
+        <label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger)"></i> เอกสาร PDF (ถ้ามี)</label>
+        <input type="file" id="wl-pdf" accept=".pdf" class="fi" style="cursor:pointer;padding:6px 9px">
+      </div>
+
     </div>
     <div class="m-ft">
       <button class="btn-cancel" onclick="closeWL()">ยกเลิก</button>
-      <button class="btn-submit violet" id="wl-submit" onclick="submitWL()"><i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล</button>
+      <button class="btn-submit violet" id="wl-submit" onclick="submitWL()">
+        <i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล
+      </button>
     </div>
   </div>
 </div>
@@ -867,11 +913,9 @@ let totalItems = 0;
 let dashCache = { enc: null, tim: null, wl: null };
 let chartDonut = null, chartBar = null;
 
-// ── Shapefile parts state ──────────────────────
-// เก็บ File object แต่ละส่วน + สถานะ analyze
 const shpState = {
   shp: null, dbf: null, shx: null, prj: null, cpg: null, pdf: null,
-  analyzed: false,   // true เมื่อ analyze สำเร็จ
+  analyzed: false,
   lat: 0, lon: 0,
   rai: 0, ngarn: 0, wa: 0,
   utm_zone: 47, utm_easting: 0, utm_northing: 0,
@@ -916,7 +960,7 @@ function hideBanner() {
 }
 
 /* ══════════════════════════════════════════
-   UTM CONVERTER (client-side)
+   UTM CONVERTER
 ══════════════════════════════════════════ */
 function utmToLL(e, n, zone) {
   const a=6378137, f=1/298.257223563, e2=2*f-f*f, k0=0.9996;
@@ -1016,7 +1060,6 @@ function setupMap() {
     { 'พื้นที่บุกรุก':layerEnc, 'ไม้ผิดกฎหมาย':layerTim, 'คดีสัตว์ป่า':layerWL, 'ป่าอนุรักษ์':layerCon, 'ป่าสงวนฯ':layerRes },
     { collapsed:true, position:'bottomright' }
   ).addTo(mapInst);
-
   fetch(STORAGE_BASE + '/conservation_forest.geojson').then(r=>r.ok?r.json():null)
     .then(d=>{ if(d) L.geoJSON(d,{style:{color:'#1a5c2e',weight:1,fillColor:'#22c55e',fillOpacity:.12,interactive:false}}).addTo(layerCon); }).catch(()=>{});
   fetch(STORAGE_BASE + '/reserve_forest.geojson').then(r=>r.ok?r.json():null)
@@ -1273,6 +1316,7 @@ function selectCase(i) {
   showDetail(item, i);
   closeMobileSB();
 }
+
 function showDetail(item, idx) {
   detOpen=true;
   document.getElementById('det-title').textContent=getCaseLabel(item)+' · '+(item.location||'');
@@ -1282,10 +1326,16 @@ function showDetail(item, idx) {
     ?'<i class="fa-solid fa-circle-check" style="font-size:.66rem"></i> คดีสิ้นสุดแล้ว'
     :'<i class="fa-solid fa-circle-half-stroke" style="font-size:.66rem"></i> อยู่ระหว่างดำเนินการ';
   let cells='';
-  if (curTab==='encroachment')
-    cells+=`<div class="det-cell"><label>เลขคำแจ้ง</label><span>${item.complaint_no||'–'}</span></div><div class="det-cell"><label>เลขคดีอาญา</label><span>${item.criminal_no||'–'}</span></div><div class="det-cell"><label>ยึดทรัพย์ที่</label><span>${item.seizure_no||'–'}</span></div>`;
-  else cells+=`<div class="det-cell"><label>เลขคดีที่</label><span>${item.case_no||'–'}</span></div>`;
-  cells+=`<div class="det-cell"><label>วันที่เกิดเหตุ</label><span>${item.case_date||'–'}</span></div><div class="det-cell"><label>หน่วยงาน</label><span>${item.agency||'–'}</span></div><div class="det-cell"><label>ผู้ต้องหา</label><span>${item.suspects_count||0} ราย</span></div>`;
+  // แสดงฟิลด์ complaint/criminal/seizure สำหรับทั้ง 3 ประเภท
+  cells+=`<div class="det-cell"><label>เลขคำแจ้ง</label><span>${item.complaint_no||'–'}</span></div>`;
+  cells+=`<div class="det-cell"><label>เลขคดีอาญา</label><span>${item.criminal_no||'–'}</span></div>`;
+  cells+=`<div class="det-cell"><label>ยึดทรัพย์ที่</label><span>${item.seizure_no||'–'}</span></div>`;
+  if (curTab !== 'encroachment') {
+    cells+=`<div class="det-cell"><label>เลขคดีที่</label><span>${item.case_no||'–'}</span></div>`;
+  }
+  cells+=`<div class="det-cell"><label>วันที่เกิดเหตุ</label><span>${item.case_date||'–'}</span></div>`;
+  cells+=`<div class="det-cell"><label>หน่วยงาน</label><span>${item.agency||'–'}</span></div>`;
+  cells+=`<div class="det-cell"><label>ผู้ต้องหา</label><span>${item.suspects_count||0} ราย</span></div>`;
   if (curTab==='encroachment')
     cells+=`<div class="det-cell"><label>พื้นที่บุกรุก</label><span>${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
   else if (curTab==='timber'&&item.timber_type)
@@ -1401,11 +1451,14 @@ function openAdd() {
   document.getElementById('area-sec').style.display=isTim?'none':'';
   document.getElementById('modal-form').classList.add('open');
 }
+
 function resetInputs(id) {
   document.querySelectorAll(`#${id} input[type=text],#${id} input[type=number],#${id} textarea`)
     .forEach(el=>el.value=el.type==='number'?'0':'');
   document.querySelectorAll(`#${id} select`).forEach(el=>el.selectedIndex=0);
+  document.querySelectorAll(`#${id} input[type=file]`).forEach(el=>el.value='');
 }
+
 function resetShpState() {
   Object.assign(shpState, {
     shp:null,dbf:null,shx:null,prj:null,cpg:null,pdf:null,
@@ -1415,17 +1468,15 @@ function resetShpState() {
   ['shp','dbf','shx','prj','cpg','pdf'].forEach(ext=>{
     const nameEl=document.getElementById(`name-${ext}`);
     const chkEl=document.getElementById(`chk-${ext}`);
-    if (nameEl) nameEl.textContent='คลิกเพื่อเลือกไฟล์';
-    if (nameEl) nameEl.className='shp-part-name';
+    if (nameEl) { nameEl.textContent='คลิกเพื่อเลือกไฟล์'; nameEl.className='shp-part-name'; }
     if (chkEl) { chkEl.className='fa-solid fa-circle-minus shp-part-check'; }
-    const fileEl=document.getElementById(`f-${ext}`);
-    if (fileEl) fileEl.value='';
   });
   const bar=document.getElementById('analyze-bar');
   if (bar) bar.classList.remove('show','ok','err');
   const btn=document.getElementById('btn-analyze');
   if (btn) btn.disabled=true;
 }
+
 function closeForm() {
   document.getElementById('modal-form').classList.remove('open');
   resetInputs('modal-form');
@@ -1434,6 +1485,7 @@ function closeForm() {
   document.getElementById('utm-err-main').style.display='none';
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
 }
+
 function closeWL() {
   document.getElementById('modal-wl').classList.remove('open');
   resetInputs('modal-wl');
@@ -1442,6 +1494,7 @@ function closeWL() {
   const wa=document.getElementById('wl-map-actions'); if (wa) wa.style.display='none';
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
 }
+
 ['modal-form','modal-wl'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){
     if(e.target===this) id==='modal-form'?closeForm():closeWL();
@@ -1449,20 +1502,18 @@ function closeWL() {
 });
 
 /* ══════════════════════════════════════════
-   SHAPEFILE PARTS HANDLER  (v5)
+   SHAPEFILE PARTS HANDLER
 ══════════════════════════════════════════ */
 function handleShpPart(ext, input) {
   const file = input.files[0];
   const nameEl = document.getElementById(`name-${ext}`);
   const chkEl  = document.getElementById(`chk-${ext}`);
-
   if (!file) {
     shpState[ext] = null;
     nameEl.textContent = 'คลิกเพื่อเลือกไฟล์';
     nameEl.className = 'shp-part-name';
     chkEl.className = 'fa-solid fa-circle-minus shp-part-check';
   } else {
-    // ตรวจนามสกุล
     const expectedExt = ext === 'pdf' ? '.pdf' : `.${ext}`;
     if (!file.name.toLowerCase().endsWith(expectedExt)) {
       nameEl.textContent = `⚠ ต้องเป็นไฟล์ ${expectedExt}`;
@@ -1477,8 +1528,6 @@ function handleShpPart(ext, input) {
       chkEl.className = 'fa-solid fa-circle-check shp-part-check ok';
     }
   }
-
-  // รีเซ็ต analyze เมื่อเปลี่ยนไฟล์
   shpState.analyzed = false;
   updateAnalyzeBar();
 }
@@ -1487,14 +1536,11 @@ function updateAnalyzeBar() {
   const required = shpState.shp && shpState.dbf && shpState.shx;
   const btn = document.getElementById('btn-analyze');
   const bar = document.getElementById('analyze-bar');
-
   bar.classList.add('show');
   bar.classList.remove('ok','err');
-
   if (!required) {
     document.getElementById('analyze-icon').className = 'fa-solid fa-circle-info analyze-icon';
-    document.getElementById('analyze-text').textContent =
-      'กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อนวิเคราะห์';
+    document.getElementById('analyze-text').textContent = 'กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อนวิเคราะห์';
     btn.disabled = true;
   } else if (!shpState.analyzed) {
     document.getElementById('analyze-icon').className = 'fa-solid fa-map-location-dot analyze-icon';
@@ -1511,19 +1557,16 @@ async function analyzeShpParts() {
   const bar=document.getElementById('analyze-bar');
   const icon=document.getElementById('analyze-icon');
   const txt=document.getElementById('analyze-text');
-
   btn.disabled=true;
   btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์...';
   bar.classList.remove('ok','err');
   txt.textContent='กำลังส่งไฟล์ไปวิเคราะห์...';
-
   const fd=new FormData();
   fd.append('shp_file', shpState.shp);
   fd.append('dbf_file', shpState.dbf);
   fd.append('shx_file', shpState.shx);
   if (shpState.prj) fd.append('prj_file', shpState.prj);
   if (shpState.cpg) fd.append('cpg_file', shpState.cpg);
-
   try {
     const res = await fetch(`${API}/analyze-shapefile/`, { method:'POST', body:fd });
     const r = await res.json();
@@ -1534,8 +1577,6 @@ async function analyzeShpParts() {
       shpState.utm_zone = r.utm_zone;
       shpState.utm_easting = r.utm_easting;
       shpState.utm_northing = r.utm_northing;
-
-      // กรอกพื้นที่อัตโนมัติ (encroachment)
       if (curTab==='encroachment') {
         document.getElementById('f-rai').value  = Math.floor(r.rai)||0;
         document.getElementById('f-ngarn').value= Math.floor(r.ngarn)||0;
@@ -1543,13 +1584,10 @@ async function analyzeShpParts() {
       }
       document.getElementById('f-lat').value=r.lat;
       document.getElementById('f-lon').value=r.lon;
-
-      // แสดงบนแผนที่
       if (prevMarker) mapInst.removeLayer(prevMarker);
       prevMarker=L.marker([r.lat,r.lon]).addTo(mapInst)
         .bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
       mapInst.setView([r.lat,r.lon],14);
-
       bar.classList.add('ok');
       icon.className='fa-solid fa-circle-check analyze-icon';
       txt.textContent=`✓ พื้นที่ ${r.rai} ไร่ ${r.ngarn} งาน ${Math.round(r.wa||0)} ตร.ว. · Lat ${r.lat.toFixed(5)}, Lon ${r.lon.toFixed(5)}`;
@@ -1572,7 +1610,7 @@ async function analyzeShpParts() {
 }
 
 /* ══════════════════════════════════════════
-   SUBMIT: บุกรุก / ไม้  (v5)
+   SUBMIT: บุกรุก / ไม้
 ══════════════════════════════════════════ */
 async function submitForm() {
   const complaint = document.getElementById('f-complaint').value.trim();
@@ -1581,21 +1619,15 @@ async function submitForm() {
   if (!shpState.shp||!shpState.dbf||!shpState.shx) { toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบ','error'); return; }
   if (!document.getElementById('f-date').value) { toast('กรุณาระบุวันที่เกิดเหตุ','error'); return; }
   if (!document.getElementById('f-location').value) { toast('กรุณาระบุสถานที่','error'); return; }
-
   const btn=document.getElementById('btn-submit');
   btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
-
   const fd=new FormData();
-
-  // ── ไฟล์ Shapefile แยกส่วน ──────────────────────
   fd.append('shp_file', shpState.shp);
   fd.append('dbf_file', shpState.dbf);
   fd.append('shx_file', shpState.shx);
   if (shpState.prj) fd.append('prj_file', shpState.prj);
   if (shpState.cpg) fd.append('cpg_file', shpState.cpg);
   if (shpState.pdf) fd.append('pdf_file', shpState.pdf);
-
-  // ── Form fields ──────────────────────────────────
   fd.append('case_type',      curTab);
   fd.append('complaint_no',   complaint);
   fd.append('criminal_no',    criminal);
@@ -1609,7 +1641,6 @@ async function submitForm() {
   fd.append('utm_zone',       document.getElementById('f-utm-zone').value||'47');
   fd.append('utm_easting',    document.getElementById('f-utm-e').value||'0');
   fd.append('utm_northing',   document.getElementById('f-utm-n').value||'0');
-
   if (curTab==='encroachment') {
     fd.append('rai',   document.getElementById('f-rai').value||'0');
     fd.append('ngarn', document.getElementById('f-ngarn').value||'0');
@@ -1622,7 +1653,6 @@ async function submitForm() {
     fd.append('vol1',        document.getElementById('f-vol1').value||'0');
     fd.append('vol2',        document.getElementById('f-vol2').value||'0');
   }
-
   try {
     const res=await fetch(`${API}/process-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
@@ -1643,30 +1673,67 @@ async function submitForm() {
 }
 
 /* ══════════════════════════════════════════
-   SUBMIT: สัตว์ป่า
+   SUBMIT: สัตว์ป่า — v5.0.1
+   เพิ่ม complaint_no, criminal_no, seizure_no
 ══════════════════════════════════════════ */
 async function submitWL() {
-  if (!document.getElementById('wl-case-no').value) { toast('กรุณาระบุเลขคดี','error'); return; }
-  if (!document.getElementById('wl-location').value) { toast('กรุณาระบุสถานที่','error'); return; }
+  if (!document.getElementById('wl-case-no').value.trim()) {
+    toast('กรุณาระบุเลขคดีที่','error'); return;
+  }
+  if (!document.getElementById('wl-location').value.trim()) {
+    toast('กรุณาระบุสถานที่','error'); return;
+  }
+  if (!document.getElementById('wl-agency').value.trim()) {
+    toast('กรุณาระบุหน่วยงาน','error'); return;
+  }
+
   const btn=document.getElementById('wl-submit');
   btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+
   const fd=new FormData();
-  [['case_no','wl-case-no'],['case_date','wl-date'],['location','wl-location'],
-   ['status','wl-status'],['case_status','wl-case-status'],['agency','wl-agency'],
-   ['suspects_count','wl-suspects'],['wildlife_type','wl-wildlife-type'],
-   ['equipment','wl-equipment'],['coords_lat','wl-lat'],['coords_lon','wl-lon'],
-  ].forEach(([k,id])=>{ const el=document.getElementById(id); fd.append(k,el?(el.value||'0'):'0'); });
+
+  // ── ฟิลด์เดิม ────────────────────────────────────────────────────────────
+  fd.append('case_no',        document.getElementById('wl-case-no').value.trim());
+  fd.append('case_date',      document.getElementById('wl-date').value||'');
+  fd.append('location',       document.getElementById('wl-location').value.trim());
+  fd.append('status',         document.getElementById('wl-status').value||'อยู่ระหว่างคดี');
+  fd.append('case_status',    document.getElementById('wl-case-status').value||'');
+  fd.append('agency',         document.getElementById('wl-agency').value.trim());
+  fd.append('suspects_count', document.getElementById('wl-suspects').value||'0');
+  fd.append('wildlife_type',  document.getElementById('wl-wildlife-type').value||'');
+  fd.append('equipment',      document.getElementById('wl-equipment').value||'');
+  fd.append('coords_lat',     document.getElementById('wl-lat').value||'0');
+  fd.append('coords_lon',     document.getElementById('wl-lon').value||'0');
+  fd.append('utm_zone',       document.getElementById('wl-utm-zone').value||'47');
+  fd.append('utm_easting',    document.getElementById('wl-utm-e').value||'0');
+  fd.append('utm_northing',   document.getElementById('wl-utm-n').value||'0');
+
+  // ── ฟิลด์ใหม่ v5.0.1 ─────────────────────────────────────────────────────
+  fd.append('complaint_no',   document.getElementById('wl-complaint').value.trim());
+  fd.append('criminal_no',    document.getElementById('wl-criminal').value.trim());
+  fd.append('seizure_no',     document.getElementById('wl-seizure').value.trim());
+
+  // ── PDF ──────────────────────────────────────────────────────────────────
   const pdfF=document.getElementById('wl-pdf').files[0];
-  if (pdfF) fd.append('pdf_file',pdfF);
+  if (pdfF) fd.append('pdf_file', pdfF);
+
   try {
     const res=await fetch(`${API}/process-wildlife/`,{method:'POST',body:fd});
     const r=await res.json();
     if (r.success) {
       toast('บันทึกคดีสัตว์ป่าสำเร็จ');
-      closeWL(); dashCache={enc:null,tim:null,wl:null}; loadData();
-    } else { toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error'); }
-  } catch(e) { toast('เชื่อมต่อไม่ได้: '+e.message,'error'); }
-  finally { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล'; }
+      closeWL();
+      dashCache={enc:null,tim:null,wl:null};
+      loadData();
+    } else {
+      toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error');
+    }
+  } catch(e) {
+    toast('เชื่อมต่อไม่ได้: '+e.message,'error');
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล';
+  }
 }
 
 /* ══════════════════════════════════════════
