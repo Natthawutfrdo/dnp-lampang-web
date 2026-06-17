@@ -532,11 +532,11 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <!-- UTM -->
       <div class="fbox green fsec">
         <div class="fbox-hd">
-          <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (Zone 47N)</div>
+          <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (47N / 47Q / 48N / 48Q)</div>
           <button type="button" onclick="convertUTM('main')" class="btn-utm green"><i class="fa-solid fa-arrows-rotate"></i> แปลง</button>
         </div>
         <div class="fg-row fg-3">
-          <div><label class="fl">Zone</label><select id="f-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
+          <div><label class="fl">Zone</label><select id="f-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option><option value="47">47Q</option><option value="48">48Q</option></select></div>
           <div><label class="fl">E (X)</label><input type="number" id="f-utm-e" placeholder="534500" oninput="liveUTM('main')" class="fi"></div>
           <div><label class="fl">N (Y)</label><input type="number" id="f-utm-n" placeholder="2023000" oninput="liveUTM('main')" class="fi"></div>
         </div>
@@ -637,7 +637,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <button type="button" onclick="convertUTM('wl')" class="btn-utm violet"><i class="fa-solid fa-arrows-rotate"></i> แปลง UTM</button>
         </div>
         <div class="fg-row fg-3" style="margin-bottom:9px">
-          <div><label class="fl">Zone</label><select id="wl-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
+          <div><label class="fl">Zone</label><select id="wl-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option><option value="47">47Q</option><option value="48">48Q</option></select></div>
           <div><label class="fl">E (X)</label><input type="number" id="wl-utm-e" placeholder="534500" oninput="liveUTM('wl')" class="fi"></div>
           <div><label class="fl">N (Y)</label><input type="number" id="wl-utm-n" placeholder="2023000" oninput="liveUTM('wl')" class="fi"></div>
         </div>
@@ -686,7 +686,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
    CONFIG
 ══════════════════════════════════════ */
 const API = 'https://dnp-lampang-api-2.onrender.com';
-const STORAGE_BASE = 'https://nymbkrycrfwzqqmmkkra.supabase.co/storage/v1/object/public/dnp-shapefiles';
+const STORAGE_BASE = 'https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles';
 
 /* ══════════════════════════════════════
    STATE
