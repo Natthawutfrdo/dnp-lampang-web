@@ -994,7 +994,32 @@ async function renderMap(data) {
     if (!gd&&item.geojson_data&&!String(item.geojson_data).startsWith('http')) {
       try { gd=typeof item.geojson_data==='string'?JSON.parse(item.geojson_data):item.geojson_data; } catch {}
     }
-    if (!gd) return;
+   if (!gd) {
+
+  if (item.coords?.[0] && item.coords?.[1]) {
+
+    const m = L.circleMarker(
+      [item.coords[0], item.coords[1]],
+      {
+        radius:8,
+        color:'#fff',
+        weight:2,
+        fillColor:item.is_finished?'#1a5c2e':'#c0392b',
+        fillOpacity:.9
+      }
+    )
+    .addTo(target)
+    .bindPopup(
+      `<b>${getCaseLabel(item)}</b><br>${item.location||''}`
+    )
+    .on('click',()=>selectCase(i));
+
+    mapReg[tab+'_'+item.id]=m;
+
+  }
+
+  return;
+}
     const color=item.is_finished?'#1a5c2e':'#c0392b', fill=item.is_finished?'#22c55e':'#ef4444';
     const ml=L.geoJSON(gd,{
       style:{color,weight:2,fillColor:fill,fillOpacity:item.is_finished?.2:.42},
