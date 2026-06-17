@@ -1052,21 +1052,34 @@ async function showDetail(item, idx) {
   document.getElementById('det-suspects-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดผู้ต้องหา...</div>';
   document.getElementById('det-exhibits-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดของกลาง...</div>';
 
+  // เปิดแผงรายละเอียดข้อมูล
   document.getElementById('det-panel').classList.add('open');
 
-  // แก้ปัญหาแผนที่เทา: สั่งให้แผนที่คำนวณพื้นที่การวาดใหม่หลังจากแท็บขยับเสร็จ (.32s)
+  // แก้ไขอาการแผนที่แหว่ง/สีเทา และดึงแปลง GeoJSON ให้มาแสดงและโฟกัสอย่างถูกต้อง
   setTimeout(() => {
     if (typeof mapInst !== 'undefined' && mapInst) {
       mapInst.invalidateSize();
-      // ดึงแปลงในแผนที่ให้กลับมาแสดงและซูมโฟกัสอีกครั้ง
-      const layer = mapReg[curTab+'_'+item.id];
+      
+      // ค้นหาแปลงในหน่วยความจำระบุตำแหน่ง
+      let layer = mapReg[curTab+'_'+item.id];
+      if (!layer && item.id) {
+        // ดักควานหากรณี Key ลงทะเบียนคลาดเคลื่อน
+        layer = mapReg[item.id] || mapReg[curTab+'_'+item.complaint_no];
+      }
+      
       if (layer) {
-        if (layer.getBounds) mapInst.fitBounds(layer.getBounds(), {maxZoom:16, padding:[28,28]});
-        else mapInst.setView(layer.getLatLng(), 15);
+        if (layer.getBounds) {
+          mapInst.fitBounds(layer.getBounds(), {maxZoom:16, padding:[40,40]});
+        } else if (layer.getLatLng) {
+          mapInst.setView(layer.getLatLng(), 16);
+        }
         layer.openPopup();
+      } else if (item.coords && item.coords[0] && item.coords[1]) {
+        // ถ้าไม่เจอ Polygon แปลงดิน ให้กระโดดไปหาจุดพิกัดไข่ปลา (Marker) แทน
+        mapInst.setView([item.coords[0], item.coords[1]], 16);
       }
     }
-  }, 320);
+  }, 350);
 
   if (item.id) {
     const [susRes, exRes] = await Promise.allSettled([
@@ -1079,8 +1092,6 @@ async function showDetail(item, idx) {
     document.getElementById('det-suspects-wrap').innerHTML='';
     document.getElementById('det-exhibits-wrap').innerHTML='';
   }
-}
-
 function renderDetSuspects(suspects, caseId) {
   const wrap = document.getElementById('det-suspects-wrap');
   if (!suspects.length) { wrap.innerHTML=''; return; }
