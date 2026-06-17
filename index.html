@@ -1054,6 +1054,20 @@ async function showDetail(item, idx) {
 
   document.getElementById('det-panel').classList.add('open');
 
+  // แก้ปัญหาแผนที่เทา: สั่งให้แผนที่คำนวณพื้นที่การวาดใหม่หลังจากแท็บขยับเสร็จ (.32s)
+  setTimeout(() => {
+    if (typeof mapInst !== 'undefined' && mapInst) {
+      mapInst.invalidateSize();
+      // ดึงแปลงในแผนที่ให้กลับมาแสดงและซูมโฟกัสอีกครั้ง
+      const layer = mapReg[curTab+'_'+item.id];
+      if (layer) {
+        if (layer.getBounds) mapInst.fitBounds(layer.getBounds(), {maxZoom:16, padding:[28,28]});
+        else mapInst.setView(layer.getLatLng(), 15);
+        layer.openPopup();
+      }
+    }
+  }, 320);
+
   if (item.id) {
     const [susRes, exRes] = await Promise.allSettled([
       fetch(`${API}/get-suspects/${curTab}/${item.id}`).then(r=>r.json()),
