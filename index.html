@@ -95,6 +95,7 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .badge{display:inline-flex;align-items:center;font-size:.61rem;font-weight:700;padding:2px 6px;border-radius:20px}
 .badge-ok{background:var(--primary-pale);color:var(--primary);border:1px solid rgba(26,92,46,.15)}
 .badge-pend{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border)}
+.badge-nocoord{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);gap:4px;margin-left:4px}
 .row-del{flex-shrink:0;width:24px;height:24px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center;font-size:.72rem;opacity:0;transition:all var(--trans)}
 .case-row:hover .row-del{opacity:1}
 .row-del:hover{color:var(--danger);background:var(--danger-bg)}
@@ -952,6 +953,9 @@ function selectCase(i) {
       const ll = utmToLL(item.utm_easting, item.utm_northing, item.utm_zone || 47);
       if (ll && isFinite(ll.lat)) mapInst.setView([ll.lat, ll.lon], 15);
     } catch {}
+  } else {
+    /* 🆕 ไม่มีพิกัดเลย — แจ้งผู้ใช้ตรงๆ แทนการเงียบ */
+    toast('คดีนี้ไม่มีพิกัดผูกอยู่ จึงไม่สามารถแสดงตำแหน่งบนแผนที่ได้', 'error');
   }
 
   showDetail(item, i);
@@ -1078,6 +1082,15 @@ function getCaseLabel(item) {
 }
 
 /* ══════════════════════════════════════
+   COORDS HELPER (🆕 ตรวจคดีที่ไม่มีพิกัดจริง)
+══════════════════════════════════════ */
+function hasNoCoords(item) {
+  const hasLatLon = !!(item.coords && item.coords[0] && item.coords[1]);
+  const hasUTM    = !!(item.utm_easting && item.utm_easting > 0);
+  return !hasLatLon && !hasUTM;
+}
+
+/* ══════════════════════════════════════
    PAGINATION
 ══════════════════════════════════════ */
 function getPage(data,page) { return data.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE); }
@@ -1120,6 +1133,7 @@ function renderSidebar(data) {
     const i=globalOffset+pi;
     const dot=item.is_finished?'d-done':dotMap[tab];
     const badge=item.is_finished?'<span class="badge badge-ok">สิ้นสุดแล้ว</span>':'<span class="badge badge-pend">ดำเนินการ</span>';
+    const noCoordsBadge=hasNoCoords(item)?'<span class="badge badge-nocoord" title="ไม่พบพิกัดผูกกับคดีนี้"><i class="fa-solid fa-triangle-exclamation"></i> ไม่มีพิกัด</span>':'';
     const lbl=getCaseLabel(item);
     const delKey=item.case_no||item.complaint_no||item.id;
     return `<div class="case-row" onclick="selectCase(${i})" id="crow-${i}">
@@ -1127,7 +1141,7 @@ function renderSidebar(data) {
       <div class="cinfo">
         <div class="cno">${lbl}</div>
         <div class="cloc">${item.location||'–'}</div>
-        <div class="cmeta">${item.case_date?`<span>${item.case_date}</span><span>·</span>`:''}<span>ผู้ต้องหา ${item.suspects_count||0} ราย</span><span>·</span>${badge}</div>
+        <div class="cmeta">${item.case_date?`<span>${item.case_date}</span><span>·</span>`:''}<span>ผู้ต้องหา ${item.suspects_count||0} ราย</span><span>·</span>${badge}${noCoordsBadge}</div>
       </div>
       <button onclick="event.stopPropagation();deleteCase('${delKey}')" class="row-del" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
     </div>`;
@@ -1572,7 +1586,7 @@ async function analyzeShpParts() {
   try {
     const res=await fetch(`${API}/analyze-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
-    if (res.ok&&r.success) {
+    if (res.ok&&r.success&&r.geometry_ok!==false) {
       shpState.analyzed=true; shpState.lat=r.lat; shpState.lon=r.lon; shpState.rai=r.rai; shpState.ngarn=r.ngarn; shpState.wa=r.wa; shpState.utm_zone=r.utm_zone; shpState.utm_easting=r.utm_easting; shpState.utm_northing=r.utm_northing;
       if (curTab==='encroachment') { document.getElementById('f-rai').value=Math.floor(r.rai)||0; document.getElementById('f-ngarn').value=Math.floor(r.ngarn)||0; document.getElementById('f-wa').value=r.wa?.toFixed(1)||0; }
       document.getElementById('f-lat').value=r.lat; document.getElementById('f-lon').value=r.lon;
@@ -1582,6 +1596,12 @@ async function analyzeShpParts() {
       bar.classList.add('ok'); icon.className='fa-solid fa-circle-check analyze-icon';
       txt.textContent=`✓ พื้นที่ ${r.rai} ไร่ ${r.ngarn} งาน ${Math.round(r.wa||0)} ตร.ว. · Lat ${r.lat.toFixed(5)}, Lon ${r.lon.toFixed(5)}`;
       toast('วิเคราะห์ Shapefile สำเร็จ');
+    } else if (res.ok&&r.success&&r.geometry_ok===false) {
+      /* 🆕 API ตอบสำเร็จ แต่คำนวณตำแหน่งจริงไม่ได้ (geometry ผิดรูป/ว่างเปล่า) — ห้ามใช้พิกัด placeholder */
+      shpState.analyzed=false;
+      bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon';
+      txt.textContent='✗ ไม่สามารถคำนวณตำแหน่งจริงจากไฟล์นี้ได้ (geometry ผิดรูป/ว่างเปล่า)';
+      toast('Shapefile นี้ไม่มีพิกัดที่ใช้งานได้จริง กรุณาตรวจสอบไฟล์','error');
     } else { bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon'; txt.textContent='✗ '+(r.detail||r.error||'ไฟล์ไม่รองรับ'); toast('วิเคราะห์ล้มเหลว: '+(r.detail||r.error||''),'error'); }
   } catch(e) { bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon'; txt.textContent='✗ เชื่อมต่อไม่ได้: '+e.message; toast('เชื่อมต่อ API ไม่ได้','error'); }
   finally { btn.innerHTML='<i class="fa-solid fa-magnifying-glass-location"></i> วิเคราะห์พิกัด'; btn.disabled=false; }
@@ -1620,6 +1640,11 @@ async function submitForm() {
   const criminal =document.getElementById('f-criminal').value.trim();
   if (!complaint&&!criminal) { toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา','error'); return; }
   if (!shpState.shp||!shpState.dbf||!shpState.shx) { toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบ','error'); return; }
+  if (!shpState.analyzed) {
+    toast('กรุณากด "วิเคราะห์พิกัด" ให้สำเร็จก่อนบันทึก เพื่อยืนยันว่า Shapefile มีพิกัดถูกต้อง','error');
+    document.getElementById('analyze-bar')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if (!document.getElementById('f-date').value) { toast('กรุณาระบุวันที่เกิดเหตุ','error'); return; }
   if (!document.getElementById('f-location').value) { toast('กรุณาระบุสถานที่','error'); return; }
 
@@ -1641,9 +1666,17 @@ async function submitForm() {
   fd.append('case_status',    document.getElementById('f-case-status').value||'');
   fd.append('agency',         document.getElementById('f-agency').value||'');
   fd.append('suspects_count', susCount.main || 0);
-  fd.append('utm_zone',       document.getElementById('f-utm-zone').value||'47');
-  fd.append('utm_easting',    document.getElementById('f-utm-e').value||'0');
-  fd.append('utm_northing',   document.getElementById('f-utm-n').value||'0');
+  /* ใช้ค่า UTM จากกล่องสีเขียว ถ้าผู้ใช้กรอกมือ (ไม่เท่ากับ 0)
+     ไม่งั้น fallback เป็นค่าที่ได้จากการวิเคราะห์ Shapefile (shpState) แทน
+     — เดิมจุดนี้ถ้าผู้ใช้ไม่กรอกกล่องสีเขียว ค่าจะหลุดไปเป็น 0,0 เสมอ */
+  const manualE = parseFloat(document.getElementById('f-utm-e').value);
+  const manualN = parseFloat(document.getElementById('f-utm-n').value);
+  const fUtmZone = (manualE || manualN) ? (document.getElementById('f-utm-zone').value||'47') : (shpState.utm_zone||47);
+  const fUtmE    = manualE || shpState.utm_easting  || 0;
+  const fUtmN    = manualN || shpState.utm_northing || 0;
+  fd.append('utm_zone',       fUtmZone);
+  fd.append('utm_easting',    fUtmE);
+  fd.append('utm_northing',   fUtmN);
   if (curTab==='encroachment') {
     fd.append('rai',   document.getElementById('f-rai').value||'0');
     fd.append('ngarn', document.getElementById('f-ngarn').value||'0');
@@ -1680,6 +1713,15 @@ async function submitWL() {
   if (!document.getElementById('wl-case-no').value.trim()) { toast('กรุณาระบุเลขคดีที่','error'); return; }
   if (!document.getElementById('wl-location').value.trim()) { toast('กรุณาระบุสถานที่','error'); return; }
   if (!document.getElementById('wl-agency').value.trim()) { toast('กรุณาระบุหน่วยงาน','error'); return; }
+
+  const wlLat=parseFloat(document.getElementById('wl-lat').value)||0;
+  const wlLon=parseFloat(document.getElementById('wl-lon').value)||0;
+  const wlE  =parseFloat(document.getElementById('wl-utm-e').value)||0;
+  const wlN  =parseFloat(document.getElementById('wl-utm-n').value)||0;
+  if (!(wlLat||wlLon) && !(wlE||wlN)) {
+    toast('กรุณาระบุพิกัด Lat/Lon หรือ UTM E/N อย่างน้อยทางใดทางหนึ่ง','error');
+    return;
+  }
 
   const btn=document.getElementById('wl-submit');
   btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
