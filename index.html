@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DNP GeoIndex v5.1 · สบอ.13 ลำปาง</title>
+<title>Department of National Parks, Wildlife and Plant Conservation · สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -468,9 +468,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   <span id="fab-label">ดูแผนที่</span>
 </button>
 
-<!-- ══════════════════════════════════════
-     MODAL: บุกรุก / ไม้ (v5.1)
-══════════════════════════════════════ -->
+<!-- MODAL: บุกรุก / ไม้ -->
 <div id="modal-form" class="overlay">
   <div class="modal-box">
     <div class="m-hd">
@@ -479,8 +477,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <button class="m-close" onclick="closeForm()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="m-body">
-
-      <!-- หมายเลขคดี -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-file-signature"></i>หมายเลขคดี</div>
         <div class="fg-row fg-3">
@@ -489,8 +485,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <div class="fg"><label class="fl">ยึดทรัพย์ที่</label><input type="text" id="f-seizure" placeholder="ยท.78/2569" class="fi"></div>
         </div>
       </div>
-
-      <!-- ข้อมูลคดี -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-circle-info"></i>ข้อมูลคดี</div>
         <div class="fg-row fg-2">
@@ -499,8 +493,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
         <div class="fg"><label class="fl">สถานที่เกิดเหตุ / ชื่อป่า <span style="color:var(--danger)">*</span></label><input type="text" id="f-location" placeholder="ต.เมือง อ.เมือง จ.ลำปาง" class="fi"></div>
       </div>
-
-      <!-- ข้อมูลไม้ (timber เท่านั้น) -->
       <div id="timber-sec" class="fbox amber fsec" style="display:none">
         <div class="fbox-ttl amber"><i class="fa-solid fa-cubes-stacked"></i>ข้อมูลไม้ผิดกฎหมาย</div>
         <div class="fg-row fg-2" style="margin-top:4px">
@@ -519,8 +511,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <div class="fg"><label class="fl">แปรรูป (ลบ.ม.)</label><input type="number" id="f-vol2" value="0" class="fi"></div>
         </div>
       </div>
-
-      <!-- สถานะ -->
       <div class="fsec">
         <div class="fg-row fg-2">
           <div class="fg"><label class="fl">ผลการดำเนินคดี</label><select id="f-status" class="fs"><option value="อยู่ระหว่างคดี">อยู่ระหว่างคดี</option><option value="คดีสิ้นสุด">คดีสิ้นสุด</option></select></div>
@@ -528,8 +518,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         </div>
         <div class="fg"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="f-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
       </div>
-
-      <!-- UTM -->
       <div class="fbox green fsec">
         <div class="fbox-hd">
           <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (47N / 47Q / 48N / 48Q)</div>
@@ -547,8 +535,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <div id="utm-err-main" style="display:none" class="utm-res utm-err"></div>
         <input type="hidden" id="f-lat"><input type="hidden" id="f-lon">
       </div>
-
-      <!-- SHAPEFILE -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-map-marked"></i>Shapefile — แนบแยกไฟล์</div>
         <div class="shp-upload-box">
@@ -568,8 +554,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           </div>
         </div>
       </div>
-
-      <!-- ผู้ต้องหา -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-users"></i>ผู้ต้องหา <span class="badge-new">ใหม่</span></div>
         <div id="suspects-container"></div>
@@ -577,8 +561,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (รองรับสูงสุด 5 คน)
         </button>
       </div>
-
-      <!-- ของกลาง -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-boxes-stacked"></i>ของกลาง <span class="badge-new">ใหม่</span></div>
         <div id="exhibits-container"></div>
@@ -586,7 +568,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <i class="fa-solid fa-plus"></i> เพิ่มของกลาง (รองรับสูงสุด 10 รายการ)
         </button>
       </div>
-
     </div>
     <div class="m-ft">
       <button class="btn-cancel" onclick="closeForm()">ยกเลิก</button>
@@ -595,9 +576,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: สัตว์ป่า (v5.1)
-══════════════════════════════════════ -->
+<!-- MODAL: สัตว์ป่า -->
 <div id="modal-wl" class="overlay">
   <div class="modal-box">
     <div class="m-hd">
@@ -606,7 +585,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <button class="m-close" onclick="closeWL()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="m-body">
-
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-file-signature"></i>หมายเลขคดี</div>
         <div class="fg-row fg-3">
@@ -615,7 +593,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <div class="fg"><label class="fl">ยึดทรัพย์ที่</label><input type="text" id="wl-seizure" placeholder="ยท.78/2569" class="fi"></div>
         </div>
       </div>
-
       <div class="fg-row fg-2" style="margin-bottom:10px">
         <div class="fg"><label class="fl">เลขคดีที่ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-case-no" placeholder="5/2569" class="fi"></div>
         <div class="fg"><label class="fl">วันที่เกิดเหตุ</label><input type="text" id="wl-date" placeholder="04/06/2569" class="fi"></div>
@@ -630,7 +607,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <div class="fg"><label class="fl">หน่วยงาน <span style="color:var(--danger)">*</span></label><input type="text" id="wl-agency" placeholder="สายตรวจ สบอ.13..." class="fi"></div>
       </div>
       <div class="fg" style="margin-bottom:10px"><label class="fl">สถานะ / ความคืบหน้า <span style="color:var(--danger)">*</span></label><textarea id="wl-case-status" placeholder="รายละเอียดการดำเนินคดี..." class="ft"></textarea></div>
-
       <div class="fbox violet" style="margin-bottom:16px">
         <div class="fbox-hd">
           <div class="fbox-ttl violet"><i class="fa-solid fa-location-crosshairs"></i>พิกัดที่เกิดเหตุ</div>
@@ -653,26 +629,20 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <div id="wl-map-actions" style="display:none;margin-top:6px"><button type="button" onclick="prevUTM('wl')" class="btn-mprev"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button></div>
         <input type="hidden" id="wl-cvt-lat"><input type="hidden" id="wl-cvt-lon">
       </div>
-
       <div class="fg" style="margin-bottom:16px">
         <label class="fl"><i class="fa-solid fa-file-pdf" style="color:var(--danger)"></i> เอกสาร PDF (ถ้ามี)</label>
         <input type="file" id="wl-pdf" accept=".pdf" class="fi" style="cursor:pointer;padding:6px 9px">
       </div>
-
-      <!-- ผู้ต้องหา (wildlife) -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-users"></i>ผู้ต้องหา <span class="badge-new">ใหม่</span></div>
         <div id="wl-suspects-container"></div>
         <button type="button" class="btn-add-item" onclick="addSuspect('wl')"><i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (รองรับสูงสุด 5 คน)</button>
       </div>
-
-      <!-- ของกลาง (wildlife) -->
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-boxes-stacked"></i>ของกลาง <span class="badge-new">ใหม่</span></div>
         <div id="wl-exhibits-container"></div>
         <button type="button" class="btn-add-item violet" onclick="addExhibit('wl')"><i class="fa-solid fa-plus"></i> เพิ่มของกลาง (รองรับสูงสุด 10 รายการ)</button>
       </div>
-
     </div>
     <div class="m-ft">
       <button class="btn-cancel" onclick="closeWL()">ยกเลิก</button>
@@ -706,7 +676,6 @@ const shpState = {
   utm_zone:47, utm_easting:0, utm_northing:0,
 };
 
-// suspects & exhibits counters per modal
 const susCount = { main: 0, wl: 0 };
 const exCount  = { main: 0, wl: 0 };
 
@@ -759,10 +728,12 @@ function utmToLL(e, n, zone) {
   const lon=(lon0*Math.PI/180)+(D-(1+2*T1+C1)*D**3/6+(5-2*C1+28*T1-3*C1**2+8*e2*cp**2/(1-e2)+24*T1**2)*D**5/120)/cp;
   return {lat:lat*180/Math.PI, lon:lon*180/Math.PI};
 }
+
 function getUF(p) {
   if (p==='main') return {zone:+document.getElementById('f-utm-zone').value,e:+document.getElementById('f-utm-e').value,n:+document.getElementById('f-utm-n').value,rDiv:'utm-res-main',rTxt:'utm-res-main-txt',eDiv:'utm-err-main',latF:'f-lat',lonF:'f-lon'};
   return {zone:+document.getElementById('wl-utm-zone').value,e:+document.getElementById('wl-utm-e').value,n:+document.getElementById('wl-utm-n').value,rDiv:'utm-res-wl',rTxt:'utm-res-wl-txt',eDiv:'utm-err-wl',latF:'wl-cvt-lat',lonF:'wl-cvt-lon'};
 }
+
 function convertUTM(p) {
   const f=getUF(p);
   const rd=document.getElementById(f.rDiv), ed=document.getElementById(f.eDiv);
@@ -779,11 +750,13 @@ function convertUTM(p) {
     if (p==='wl') { const wa=document.getElementById('wl-map-actions'); if(wa) wa.style.display='block'; }
   } catch { ed.textContent='⚠ ค่าพิกัดไม่ถูกต้อง'; ed.style.display='inline-flex'; }
 }
+
 const _utmDb = {};
 function liveUTM(p) {
   clearTimeout(_utmDb[p]);
   _utmDb[p]=setTimeout(()=>{ const f=getUF(p); if(f.e&&f.n&&f.e>100000&&f.n>1000000) convertUTM(p); },600);
 }
+
 function prevUTM(p) {
   const f=getUF(p);
   const lat=+document.getElementById(f.latF).value, lon=+document.getElementById(f.lonF).value;
@@ -795,7 +768,7 @@ function prevUTM(p) {
 }
 
 /* ══════════════════════════════════════
-   MAP
+   MAP SETUP
 ══════════════════════════════════════ */
 function setupMap() {
   mapInst=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
@@ -808,9 +781,181 @@ function setupMap() {
   fetch(STORAGE_BASE+'/conservation_forest.geojson').then(r=>r.ok?r.json():null).then(d=>{if(d) L.geoJSON(d,{style:{color:'#1a5c2e',weight:1,fillColor:'#22c55e',fillOpacity:.12,interactive:false}}).addTo(layerCon);}).catch(()=>{});
   fetch(STORAGE_BASE+'/reserve_forest.geojson').then(r=>r.ok?r.json():null).then(d=>{if(d) L.geoJSON(d,{style:{color:'#db2777',weight:1,fillColor:'#db2777',fillOpacity:.08,interactive:false}}).addTo(layerRes);}).catch(()=>{});
 }
+
 function clearMapLayers() {
   layerEnc.clearLayers(); layerTim.clearLayers(); layerWL.clearLayers(); mapReg={};
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
+}
+
+/* ══════════════════════════════════════
+   RENDER MAP (แก้ไขหลัก)
+   - แยก fetch → parse → validate เป็น 3 ขั้น
+   - fallback circleMarker ทุก step ที่ล้มเหลว
+   - รองรับ geojson_data เป็น URL / JSON string / object
+   - ใช้ AbortSignal.timeout() ป้องกัน fetch ค้าง
+══════════════════════════════════════ */
+async function renderMap(data) {
+  const tab = curTab;
+  const target = tab === 'encroachment' ? layerEnc
+               : tab === 'timber'       ? layerTim
+               : layerWL;
+
+  /* helper: สร้าง circleMarker fallback */
+  function addFallbackMarker(item, i) {
+    if (!item.coords || !item.coords[0] || !item.coords[1]) {
+      /* ไม่มี coords เลย → ลอง UTM */
+      if (item.utm_easting && item.utm_easting > 0) {
+        try {
+          const ll = utmToLL(item.utm_easting, item.utm_northing, item.utm_zone || 47);
+          if (ll && isFinite(ll.lat) && isFinite(ll.lon)) {
+            item._lat = ll.lat; item._lon = ll.lon;
+          }
+        } catch {}
+      }
+      if (!item._lat) return;
+    }
+    const lat = item._lat || item.coords[0];
+    const lon = item._lon || item.coords[1];
+    const fillColor = tab === 'wildlife' ? '#4a2aa0'
+                    : item.is_finished  ? '#1a5c2e'
+                    : '#c0392b';
+    const m = L.circleMarker([lat, lon], {
+      radius: 8, color: '#fff', weight: 2,
+      fillColor, fillOpacity: 0.9,
+    })
+    .addTo(target)
+    .bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`)
+    .on('click', () => selectCase(i));
+    mapReg[tab + '_' + item.id] = m;
+  }
+
+  /* Wildlife → circleMarker เท่านั้น */
+  if (tab === 'wildlife') {
+    data.forEach((item, i) => addFallbackMarker(item, i));
+    return;
+  }
+
+  /* Encroachment / Timber → พยายาม load GeoJSON, fallback circleMarker */
+  const tasks = data.map(async (item, i) => {
+    let gd = null;
+
+    /* 1. geojson_data เป็น URL → fetch */
+    if (item.geojson_data && typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
+      try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(item.geojson_data, { signal: controller.signal });
+        clearTimeout(tid);
+        if (res.ok) {
+          const text = await res.text();
+          try { gd = JSON.parse(text); } catch { gd = null; }
+        }
+      } catch { gd = null; }
+    }
+    /* 2. geojson_data เป็น JSON string ดิบ */
+    else if (item.geojson_data && typeof item.geojson_data === 'string') {
+      try { gd = JSON.parse(item.geojson_data); } catch { gd = null; }
+    }
+    /* 3. geojson_data เป็น object อยู่แล้ว */
+    else if (item.geojson_data && typeof item.geojson_data === 'object') {
+      gd = item.geojson_data;
+    }
+
+    /* ตรวจ valid GeoJSON */
+    const isValid = gd && (
+      gd.type === 'FeatureCollection' ||
+      gd.type === 'Feature' ||
+      gd.geometry
+    );
+    if (!isValid) gd = null;
+
+    return { item, i, gd };
+  });
+
+  const results = await Promise.allSettled(tasks);
+
+  results.forEach(result => {
+    if (result.status !== 'fulfilled') return;
+    const { item, i, gd } = result.value;
+
+    if (gd) {
+      try {
+        const ml = L.geoJSON(gd, {
+          style: {
+            color:       item.is_finished ? '#1a5c2e' : '#c0392b',
+            weight:      2,
+            fillColor:   item.is_finished ? '#22c55e' : '#ef4444',
+            fillOpacity: item.is_finished ? 0.2       : 0.42,
+          },
+          onEachFeature: (f, l) => {
+            l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`);
+            l.on('click', () => selectCase(i));
+          },
+        }).addTo(target);
+        mapReg[tab + '_' + item.id] = ml;
+      } catch {
+        /* GeoJSON structure แปลก → fallback */
+        addFallbackMarker(item, i);
+      }
+    } else {
+      /* ไม่มี GeoJSON → ใช้ coords */
+      addFallbackMarker(item, i);
+    }
+  });
+}
+
+/* ══════════════════════════════════════
+   SELECT CASE (แก้ไขหลัก)
+   - แยกเช็ค CircleMarker vs GeoJSON LayerGroup
+   - fallback 3 ชั้น: layer → coords → UTM
+   - bounds.isValid() ก่อน fitBounds
+══════════════════════════════════════ */
+function selectCase(i) {
+  document.querySelectorAll('.case-row').forEach(r => r.classList.remove('active'));
+  document.getElementById(`crow-${i}`)?.classList.add('active');
+
+  const item = allData[i];
+  if (!item) return;
+
+  const layer = mapReg[curTab + '_' + item.id];
+
+  if (layer) {
+    try {
+      if (typeof layer.getLatLng === 'function') {
+        /* CircleMarker / Marker */
+        mapInst.setView(layer.getLatLng(), 15);
+        layer.openPopup();
+      } else if (typeof layer.getBounds === 'function') {
+        /* GeoJSON LayerGroup */
+        const bounds = layer.getBounds();
+        if (bounds && bounds.isValid()) {
+          mapInst.fitBounds(bounds, { maxZoom: 16, padding: [28, 28] });
+        } else if (item.coords?.[0]) {
+          mapInst.setView([item.coords[0], item.coords[1]], 15);
+        }
+        /* เปิด popup feature แรก */
+        let opened = false;
+        layer.eachLayer(l => {
+          if (!opened && l.openPopup) { l.openPopup(); opened = true; }
+        });
+      }
+    } catch {
+      /* layer มีปัญหา → fallback coords */
+      if (item.coords?.[0]) mapInst.setView([item.coords[0], item.coords[1]], 15);
+    }
+  } else if (item.coords?.[0] && item.coords?.[1]) {
+    /* ไม่มี layer → zoom coords */
+    mapInst.setView([item.coords[0], item.coords[1]], 15);
+  } else if (item.utm_easting && item.utm_easting > 0) {
+    /* fallback UTM */
+    try {
+      const ll = utmToLL(item.utm_easting, item.utm_northing, item.utm_zone || 47);
+      if (ll && isFinite(ll.lat)) mapInst.setView([ll.lat, ll.lon], 15);
+    } catch {}
+  }
+
+  showDetail(item, i);
+  closeMobileSB();
 }
 
 /* ══════════════════════════════════════
@@ -824,21 +969,30 @@ function switchView(v) {
   document.getElementById('dash-wrap').style.display=v==='dashboard'?'block':'none';
   if (v==='dashboard') renderDashboard();
 }
+
 function closeMobileSB() {
-  if (window.innerWidth<=768) { document.getElementById('sidebar').classList.add('hidden'); document.getElementById('fab-icon').className='fa-solid fa-map-marked-alt'; document.getElementById('fab-label').textContent='ดูแผนที่'; fabOpen=false; }
+  if (window.innerWidth<=768) {
+    document.getElementById('sidebar').classList.add('hidden');
+    document.getElementById('fab-icon').className='fa-solid fa-map-marked-alt';
+    document.getElementById('fab-label').textContent='ดูแผนที่';
+    fabOpen=false;
+  }
 }
+
 function toggleFab() {
   fabOpen=!fabOpen;
   document.getElementById('sidebar').classList.toggle('hidden',!fabOpen);
   document.getElementById('fab-icon').className=fabOpen?'fa-solid fa-list-ul':'fa-solid fa-map-marked-alt';
   document.getElementById('fab-label').textContent=fabOpen?'รายการคดี':'ดูแผนที่';
 }
+
 function checkDevice() {
   const mob=window.innerWidth<=768;
   document.getElementById('sidebar').classList.toggle('hidden',mob);
   document.getElementById('fab').style.display=mob?'flex':'none';
   if (mob) fabOpen=false;
 }
+
 function switchTab(mode,btn) {
   curTab=mode; curPage=1;
   document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active')); btn.classList.add('active');
@@ -847,16 +1001,19 @@ function switchTab(mode,btn) {
   if (detOpen) closeDetail();
   clearSearch(); loadData();
 }
+
 document.getElementById('srch-inp').addEventListener('input',function(){
   const q=this.value;
   document.getElementById('srch-clear').classList.toggle('show',q.length>0);
   clearTimeout(srchTimer); srchTimer=setTimeout(()=>{curPage=1;filterAndRender(q);},220);
 });
+
 function clearSearch() {
   document.getElementById('srch-inp').value='';
   document.getElementById('srch-clear').classList.remove('show');
   renderSidebar(allData); renderPager(allData.length);
 }
+
 function filterAndRender(q) {
   if (!q) { renderSidebar(allData); renderPager(allData.length); return; }
   const lq=q.toLowerCase();
@@ -889,14 +1046,17 @@ async function loadData(retries=3) {
     }
   }
 }
+
 function showSkeleton() {
   document.getElementById('sb-list').innerHTML=`<div style="padding:6px 0">${Array(5).fill('').map(()=>`<div class="sk-row"><div class="sk sk-d"></div><div class="sk-ln"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>`).join('')}</div>`;
   document.getElementById('pager').style.display='none';
 }
+
 function showError(err) {
   document.getElementById('sb-list').innerHTML=`<div class="state-box"><div class="state-icon"><i class="fa-solid fa-wifi-slash" style="color:var(--danger)"></i></div><div class="state-title">เชื่อมต่อ API ไม่ได้</div><div class="state-desc">Render free tier อาจกำลัง wake up<br>รอ 30–60 วิ แล้วลองใหม่<br><span style="font-size:.68rem;color:var(--text-3)">${err?.message||''}</span></div><button class="btn-retry" onclick="loadData()"><i class="fa-solid fa-arrows-rotate"></i> ลองอีกครั้ง</button></div>`;
   document.getElementById('pager').style.display='none';
 }
+
 function updateStats(data) {
   if (!Array.isArray(data)) return;
   document.getElementById('s-total').textContent=data.length;
@@ -904,10 +1064,12 @@ function updateStats(data) {
   document.getElementById('s-done').textContent=data.filter(d=>d.is_finished).length;
   document.getElementById('s-susp').textContent=data.reduce((s,d)=>s+(+d.suspects_count||0),0);
 }
+
 function updateTabCnt(tab,n) {
   const ids={encroachment:'cnt-enc',timber:'cnt-timber',wildlife:'cnt-wildlife'};
   const el=document.getElementById(ids[tab]); if(el) el.textContent=n;
 }
+
 function getCaseLabel(item) {
   const parts=[];
   if (item.complaint_no) parts.push(`แจ้ง: ${item.complaint_no}`);
@@ -919,6 +1081,7 @@ function getCaseLabel(item) {
    PAGINATION
 ══════════════════════════════════════ */
 function getPage(data,page) { return data.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE); }
+
 function renderPager(total,q='') {
   const pages=Math.ceil(total/PAGE_SIZE), pager=document.getElementById('pager');
   if (total===0||pages<=1) { pager.style.display='none'; return; }
@@ -933,6 +1096,7 @@ function renderPager(total,q='') {
   html+=`<button class="pager-btn" onclick="goPage(${curPage+1},'${q}')" ${curPage>=pages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>`;
   btns.innerHTML=html;
 }
+
 function goPage(p,q='') {
   const data=q?allData.filter(i=>[i.case_no,i.complaint_no,i.criminal_no,i.location].some(v=>v&&v.toLowerCase().includes(q.toLowerCase()))):allData;
   const pages=Math.ceil(data.length/PAGE_SIZE);
@@ -972,80 +1136,8 @@ function renderSidebar(data) {
 }
 
 /* ══════════════════════════════════════
-   RENDER MAP
+   DETAIL PANEL
 ══════════════════════════════════════ */
-async function renderMap(data) {
-  const tab=curTab;
-  if (tab==='wildlife') {
-    data.forEach((item,i)=>{
-      if (!item.coords?.[0]) return;
-      const m=L.circleMarker([item.coords[0],item.coords[1]],{radius:8,color:'#fff',weight:2,fillColor:'#4a2aa0',fillOpacity:.9})
-        .addTo(layerWL).bindPopup(`<b>${item.case_no||'–'}</b><br>${item.location||''}`).on('click',()=>selectCase(i));
-      mapReg[tab+'_'+item.id]=m;
-    });
-    return;
-  }
-  const remote=data.map((item,i)=>({i,item,url:item.geojson_data})).filter(r=>r.url&&typeof r.url==='string'&&r.url.startsWith('http'));
-  const results=await Promise.allSettled(remote.map(r=>fetch(r.url).then(res=>res.json()).then(gd=>({...r,gd}))));
-  const geo={}; results.forEach(r=>{if(r.status==='fulfilled') geo[r.value.i]=r.value.gd;});
-  const target=tab==='encroachment'?layerEnc:layerTim;
-  data.forEach((item,i)=>{
-    let gd=geo[i]||null;
-    if (!gd&&item.geojson_data&&!String(item.geojson_data).startsWith('http')) {
-      try { gd=typeof item.geojson_data==='string'?JSON.parse(item.geojson_data):item.geojson_data; } catch {}
-    }
-   if (!gd) {
-
-  if (item.coords?.[0] && item.coords?.[1]) {
-
-    const m = L.circleMarker(
-      [item.coords[0], item.coords[1]],
-      {
-        radius:8,
-        color:'#fff',
-        weight:2,
-        fillColor:item.is_finished?'#1a5c2e':'#c0392b',
-        fillOpacity:.9
-      }
-    )
-    .addTo(target)
-    .bindPopup(
-      `<b>${getCaseLabel(item)}</b><br>${item.location||''}`
-    )
-    .on('click',()=>selectCase(i));
-
-    mapReg[tab+'_'+item.id]=m;
-
-  }
-
-  return;
-}
-    const color=item.is_finished?'#1a5c2e':'#c0392b', fill=item.is_finished?'#22c55e':'#ef4444';
-    const ml=L.geoJSON(gd,{
-      style:{color,weight:2,fillColor:fill,fillOpacity:item.is_finished?.2:.42},
-      onEachFeature:(f,l)=>{ l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location||''}`); l.on('click',()=>selectCase(i)); }
-    }).addTo(target);
-    mapReg[tab+'_'+item.id]=ml;
-  });
-}
-
-/* ══════════════════════════════════════
-   SELECT + DETAIL
-══════════════════════════════════════ */
-function selectCase(i) {
-  document.querySelectorAll('.case-row').forEach(r=>r.classList.remove('active'));
-  document.getElementById(`crow-${i}`)?.classList.add('active');
-  const item=allData[i]; if (!item) return;
-  const layer=mapReg[curTab+'_'+item.id];
-  if (layer) {
-    if (layer.getBounds) mapInst.fitBounds(layer.getBounds(),{maxZoom:16,padding:[28,28]});
-    else mapInst.setView(layer.getLatLng(),15);
-    layer.openPopup();
-  } else if (item.coords?.[0]) mapInst.setView([item.coords[0],item.coords[1]],15);
-  showDetail(item,i);
-  closeMobileSB();
-}
-
 async function showDetail(item, idx) {
   detOpen=true;
   document.getElementById('det-title').textContent=getCaseLabel(item)+' · '+(item.location||'');
@@ -1073,10 +1165,8 @@ async function showDetail(item, idx) {
   if (item.pdf_url) acts+=`<a href="${item.pdf_url}" target="_blank" rel="noopener" class="det-btn pdf"><i class="fa-solid fa-file-pdf"></i>PDF</a>`;
   document.getElementById('det-actions').innerHTML=acts;
 
-  // load suspects & exhibits
   document.getElementById('det-suspects-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดผู้ต้องหา...</div>';
   document.getElementById('det-exhibits-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดของกลาง...</div>';
-
   document.getElementById('det-panel').classList.add('open');
 
   if (item.id) {
@@ -1200,7 +1290,7 @@ async function renderDashboard() {
 }
 
 /* ══════════════════════════════════════
-   SUSPECTS FORM BUILDER
+   SUSPECTS FORM
 ══════════════════════════════════════ */
 function addSuspect(modal) {
   const prefix = modal==='main' ? '' : 'wl-';
@@ -1248,7 +1338,7 @@ function removeSuspect(modal, n) {
   const prefix = modal==='main' ? '' : 'wl-';
   const el = document.getElementById(`${prefix}suspect-card-${n}`);
   if (el) el.remove();
-  susCount[modal]--;
+  susCount[modal] = Math.max(0, susCount[modal] - 1);
 }
 
 function previewPhoto(modal, n, input) {
@@ -1286,7 +1376,6 @@ function collectSuspects(modal) {
 }
 
 async function uploadSuspectPhotos(suspects, caseRefId, modal) {
-  const prefix = modal==='main' ? '' : 'wl-';
   const updated = [];
   for (let i=0; i<suspects.length; i++) {
     const s = {...suspects[i]};
@@ -1299,7 +1388,7 @@ async function uploadSuspectPhotos(suspects, caseRefId, modal) {
         const res = await fetch(`${API}/upload-suspect-photo/`,{method:'POST',body:fd});
         const r = await res.json();
         if (r.success) s.photo_url = r.photo_url;
-      } catch(e) { log.warn('photo upload error',e); }
+      } catch {}
     }
     delete s._photoFile;
     updated.push(s);
@@ -1308,7 +1397,7 @@ async function uploadSuspectPhotos(suspects, caseRefId, modal) {
 }
 
 /* ══════════════════════════════════════
-   EXHIBITS FORM BUILDER
+   EXHIBITS FORM
 ══════════════════════════════════════ */
 function addExhibit(modal) {
   const prefix = modal==='main' ? '' : 'wl-';
@@ -1346,7 +1435,7 @@ function removeExhibit(modal, n) {
   const prefix = modal==='main' ? '' : 'wl-';
   const el = document.getElementById(`${prefix}exhibit-card-${n}`);
   if (el) el.remove();
-  exCount[modal]--;
+  exCount[modal] = Math.max(0, exCount[modal] - 1);
 }
 
 function collectExhibits(modal) {
@@ -1385,11 +1474,13 @@ function openAdd() {
   document.getElementById('area-sec').style.display=isTim?'none':'';
   document.getElementById('modal-form').classList.add('open');
 }
+
 function resetInputs(id) {
   document.querySelectorAll(`#${id} input[type=text],#${id} input[type=number],#${id} textarea`).forEach(el=>el.value=el.type==='number'?'0':'');
   document.querySelectorAll(`#${id} select`).forEach(el=>el.selectedIndex=0);
   document.querySelectorAll(`#${id} input[type=file]`).forEach(el=>el.value='');
 }
+
 function resetShpState() {
   Object.assign(shpState,{shp:null,dbf:null,shx:null,prj:null,cpg:null,pdf:null,analyzed:false,lat:0,lon:0,rai:0,ngarn:0,wa:0,utm_zone:47,utm_easting:0,utm_northing:0});
   ['shp','dbf','shx','prj','cpg','pdf'].forEach(ext=>{
@@ -1400,18 +1491,19 @@ function resetShpState() {
   const bar=document.getElementById('analyze-bar'); if(bar) bar.classList.remove('show','ok','err');
   const btn=document.getElementById('btn-analyze'); if(btn) btn.disabled=true;
 }
+
 function resetSuspects(modal) {
-  const prefix=modal==='main'?'':'wl-';
   const containerId=modal==='main'?'suspects-container':'wl-suspects-container';
   document.getElementById(containerId).innerHTML='';
   susCount[modal]=0;
 }
+
 function resetExhibits(modal) {
-  const prefix=modal==='main'?'':'wl-';
   const containerId=modal==='main'?'exhibits-container':'wl-exhibits-container';
   document.getElementById(containerId).innerHTML='';
   exCount[modal]=0;
 }
+
 function closeForm() {
   document.getElementById('modal-form').classList.remove('open');
   resetInputs('modal-form'); resetShpState(); resetSuspects('main'); resetExhibits('main');
@@ -1419,6 +1511,7 @@ function closeForm() {
   document.getElementById('utm-err-main').style.display='none';
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
 }
+
 function closeWL() {
   document.getElementById('modal-wl').classList.remove('open');
   resetInputs('modal-wl'); resetSuspects('wl'); resetExhibits('wl');
@@ -1427,12 +1520,13 @@ function closeWL() {
   const wa=document.getElementById('wl-map-actions'); if(wa) wa.style.display='none';
   if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
 }
+
 ['modal-form','modal-wl'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){ if(e.target===this) id==='modal-form'?closeForm():closeWL(); });
 });
 
 /* ══════════════════════════════════════
-   SHAPEFILE PARTS HANDLER
+   SHAPEFILE PARTS
 ══════════════════════════════════════ */
 function handleShpPart(ext, input) {
   const file=input.files[0];
@@ -1449,6 +1543,7 @@ function handleShpPart(ext, input) {
   }
   shpState.analyzed=false; updateAnalyzeBar();
 }
+
 function updateAnalyzeBar() {
   const required=shpState.shp&&shpState.dbf&&shpState.shx;
   const btn=document.getElementById('btn-analyze'), bar=document.getElementById('analyze-bar');
@@ -1463,6 +1558,7 @@ function updateAnalyzeBar() {
     btn.disabled=false;
   }
 }
+
 async function analyzeShpParts() {
   if (!shpState.shp||!shpState.dbf||!shpState.shx) { toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อน','error'); return; }
   const btn=document.getElementById('btn-analyze'), bar=document.getElementById('analyze-bar');
@@ -1492,22 +1588,19 @@ async function analyzeShpParts() {
 }
 
 /* ══════════════════════════════════════
-   SAVE SUSPECTS & EXHIBITS HELPER
+   SAVE SUSPECTS & EXHIBITS
 ══════════════════════════════════════ */
 async function saveSuspectsAndExhibits(caseId, caseType, modal) {
   const suspects = collectSuspects(modal);
   const exhibits = collectExhibits(modal);
 
   if (suspects.length > 0) {
-    // อัปโหลดรูปก่อน
     const suspectsWithPhotos = await uploadSuspectPhotos(suspects, caseId, modal);
     const fd = new FormData();
     fd.append('case_type', caseType);
     fd.append('case_ref_id', caseId);
     fd.append('suspects_json', JSON.stringify(suspectsWithPhotos));
-    try {
-      await fetch(`${API}/save-suspects/`, {method:'POST', body:fd});
-    } catch(e) { console.warn('save suspects error:', e); }
+    try { await fetch(`${API}/save-suspects/`, {method:'POST', body:fd}); } catch {}
   }
 
   if (exhibits.length > 0) {
@@ -1515,9 +1608,7 @@ async function saveSuspectsAndExhibits(caseId, caseType, modal) {
     fd.append('case_type', caseType);
     fd.append('case_ref_id', caseId);
     fd.append('exhibits_json', JSON.stringify(exhibits));
-    try {
-      await fetch(`${API}/save-exhibits/`, {method:'POST', body:fd});
-    } catch(e) { console.warn('save exhibits error:', e); }
+    try { await fetch(`${API}/save-exhibits/`, {method:'POST', body:fd}); } catch {}
   }
 }
 
@@ -1570,7 +1661,6 @@ async function submitForm() {
     const res=await fetch(`${API}/process-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
     if (r.success) {
-      // บันทึกผู้ต้องหาและของกลาง
       if (r.case_id) {
         btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> บันทึกผู้ต้องหา...';
         await saveSuspectsAndExhibits(r.case_id, curTab, 'main');
