@@ -21,7 +21,7 @@
   --violet:#4a2aa0;--violet-bg:#f3f0fc;--violet-border:rgba(74,42,160,.15);
   --danger:#b5281e;--danger-bg:#fdf0ef;--danger-border:rgba(181,40,30,.15);
   --blue:#1550a0;--blue-bg:#eaf1fc;
-  --nav:52px;--sb:340px;--rad:8px;--rad-lg:12px;--rad-xl:16px;
+  --nav:52px;--sb:320px;--rad:8px;--rad-lg:12px;--rad-xl:16px;
   --trans:.18s cubic-bezier(.4,0,.2,1);
   --shadow-xs:0 1px 3px rgba(0,0,0,.06);--shadow:0 2px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 28px rgba(0,0,0,.1);
 }
@@ -32,40 +32,56 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .nav-logo{width:30px;height:30px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-logo i{color:#fff;font-size:13px}
 .nav-title-w{flex-shrink:0}
-.nav-title{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.2}
-.nav-sub{font-size:.66rem;color:var(--text-3);margin-top:1px}
+.nav-title{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.2}
+.nav-sub{font-size:.62rem;color:var(--text-3);margin-top:1px}
 .nav-sep{width:1px;height:22px;background:var(--border-md);flex-shrink:0}
 .view-sw{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border)}
 .vsw-btn{padding:5px 12px;border-radius:26px;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--text-3);border:none;background:transparent;cursor:pointer;transition:all var(--trans);display:flex;align-items:center;gap:5px;white-space:nowrap}
 .vsw-btn i{font-size:.73rem}
 .vsw-btn:hover{color:var(--primary)}
 .vsw-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,.22)}
-.nav-tabs{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border);flex:1;max-width:420px}
-.ntab{flex:1;padding:5px 10px;border-radius:26px;font-family:inherit;font-size:.76rem;font-weight:600;color:var(--text-3);border:none;background:transparent;cursor:pointer;transition:all var(--trans);display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
-.ntab i{font-size:.72rem}
+.nav-tabs{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:30px;border:1px solid var(--border);flex:1;max-width:400px}
+.ntab{flex:1;padding:5px 8px;border-radius:26px;font-family:inherit;font-size:.74rem;font-weight:600;color:var(--text-3);border:none;background:transparent;cursor:pointer;transition:all var(--trans);display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.ntab i{font-size:.70rem}
 .ntab:hover{color:var(--primary)}
 .ntab.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(26,92,46,.22)}
-.ntab .cnt{font-size:.62rem;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
+.ntab .cnt{font-size:.60rem;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
 .ntab.active .cnt{background:rgba(255,255,255,.25);color:#fff}
 .ntab:not(.active) .cnt{background:var(--border);color:var(--text-3)}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nav-time{font-size:.72rem;color:var(--text-3);font-weight:500}
+.nav-time{font-size:.70rem;color:var(--text-3);font-weight:500}
 .btn-add{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:30px;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer;transition:all var(--trans);white-space:nowrap}
 .btn-add:hover{background:var(--primary-h);transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,92,46,.28)}
 
-/* LAYOUT */
-#app{display:flex;height:100vh;padding-top:var(--nav)}
+/* === LAYOUT FIX: ป้องกัน sidebar บังแผนที่ === */
+#app{
+  display:flex;
+  height:100vh;
+  padding-top:var(--nav);
+  overflow:hidden; /* สำคัญ: ป้องกัน children overflow */
+}
 
 /* SIDEBAR */
-#sidebar{width:var(--sb);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:transform var(--trans)}
+#sidebar{
+  width:var(--sb);
+  flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  transition:width var(--trans), transform var(--trans);
+  position:relative; /* ไม่ใช้ absolute บน desktop */
+  z-index:10;
+}
 .sb-head{padding:12px 14px 10px;flex-shrink:0;border-bottom:1px solid var(--border)}
 .sb-label{font-size:.64rem;font-weight:700;color:var(--primary);letter-spacing:.09em;text-transform:uppercase;margin-bottom:8px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
 .stat-c{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad);padding:8px 10px}
-.sl{font-size:.62rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-.sv{font-size:1.45rem;font-weight:700;line-height:1;letter-spacing:-.03em}
+.sl{font-size:.60rem;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.sv{font-size:1.35rem;font-weight:700;line-height:1;letter-spacing:-.03em}
 .sv.cg{color:var(--primary)}.sv.ca{color:var(--gold)}.sv.cb{color:var(--blue)}.sv.cr{color:var(--danger)}
-.ss{font-size:.62rem;color:var(--text-3);margin-top:1px}
+.ss{font-size:.60rem;color:var(--text-3);margin-top:1px}
 .sb-srch{padding:8px 14px;flex-shrink:0;border-bottom:1px solid var(--border);position:relative}
 .sb-srch i.srch-ic{position:absolute;left:24px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:.76rem;pointer-events:none}
 .sb-srch input{width:100%;padding:7px 30px 7px 32px;background:var(--surface-2);border:1px solid var(--border);border-radius:30px;font-family:inherit;font-size:.82rem;color:var(--text);outline:none;transition:all var(--trans)}
@@ -95,7 +111,7 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .badge{display:inline-flex;align-items:center;font-size:.61rem;font-weight:700;padding:2px 6px;border-radius:20px}
 .badge-ok{background:var(--primary-pale);color:var(--primary);border:1px solid rgba(26,92,46,.15)}
 .badge-pend{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border)}
-.badge-nocoord{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);gap:4px;margin-left:4px}
+.badge-nocoord{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);gap:4px}
 .row-del{flex-shrink:0;width:24px;height:24px;border-radius:6px;border:none;background:transparent;cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center;font-size:.72rem;opacity:0;transition:all var(--trans)}
 .case-row:hover .row-del{opacity:1}
 .row-del:hover{color:var(--danger);background:var(--danger-bg)}
@@ -112,8 +128,13 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .state-desc{font-size:.75rem;color:var(--text-3);line-height:1.75}
 .btn-retry{margin-top:12px;padding:6px 16px;border-radius:30px;background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer}
 
-/* MAP */
-#map-wrap{flex:1;position:relative;overflow:hidden}
+/* === MAP AREA FIX === */
+#map-wrap{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  min-width:0; /* สำคัญ: ป้องกัน flex child overflow */
+}
 #map{width:100%;height:100%;background:#e6efe6}
 .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--rad)!important;overflow:hidden;box-shadow:var(--shadow-xs)!important}
 .leaflet-control-zoom a{font-size:13px!important;color:var(--text)!important}
@@ -129,19 +150,33 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 #conn-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.76);color:#fff;font-size:.73rem;font-weight:600;padding:6px 14px;border-radius:30px;z-index:50;display:none;align-items:center;gap:7px;white-space:nowrap}
 #conn-banner.show{display:flex}
 
-/* DETAIL PANEL */
-#det-panel{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);border-top:1px solid var(--border);border-radius:var(--rad-xl) var(--rad-xl) 0 0;padding:18px 20px 22px;transform:translateY(100%);transition:transform .32s cubic-bezier(.16,1,.3,1);z-index:2000;max-height:68%;overflow-y:auto;backdrop-filter:blur(16px);box-shadow:0 -5px 20px rgba(0,0,0,.06)}
+/* === DETAIL PANEL: แก้ให้ลอยเหนือ sidebar ไม่ได้บัง === */
+#det-panel{
+  position:absolute; /* relative ต่อ #map-wrap เท่านั้น */
+  bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.97);
+  border-top:1px solid var(--border);
+  border-radius:var(--rad-xl) var(--rad-xl) 0 0;
+  padding:18px 20px 22px;
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.16,1,.3,1);
+  z-index:200; /* สูงกว่า map layers แต่ต่ำกว่า modal */
+  max-height:60%;
+  overflow-y:auto;
+  backdrop-filter:blur(16px);
+  box-shadow:0 -5px 20px rgba(0,0,0,.08);
+}
 #det-panel.open{transform:translateY(0)}
 #det-panel::-webkit-scrollbar{width:3px}
 #det-panel::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
 .det-drag{width:30px;height:3px;background:var(--border-md);border-radius:2px;margin:0 auto 12px}
 .det-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
-.det-title{font-size:.96rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.35}
+.det-title{font-size:.92rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.35}
 .det-st{margin-top:3px;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700}
 .det-st.pend{color:var(--gold)}.det-st.done{color:var(--primary)}
 .det-close{flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);color:var(--text-3);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;transition:all var(--trans)}
 .det-close:hover{background:var(--border-md)}
-.det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:7px;margin-bottom:10px}
+.det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px;margin-bottom:10px}
 .det-cell{background:var(--surface-2);padding:8px 11px;border-radius:var(--rad);border:1px solid var(--border)}
 .det-cell label{font-size:.59rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;font-weight:700}
 .det-cell span{font-size:.81rem;color:var(--text);font-weight:600;line-height:1.5}
@@ -150,13 +185,11 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .det-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--surface);color:var(--text);border:1px solid var(--border-md);border-radius:30px;font-family:inherit;font-size:.73rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all var(--trans)}
 .det-btn:hover{background:var(--primary-pale);border-color:rgba(26,92,46,.25);color:var(--primary)}
 .det-btn.pdf:hover{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger)}
-
-/* SUSPECTS/EXHIBITS IN DETAIL */
 .det-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .det-sec-title{font-size:.64rem;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .det-sec-title i{color:var(--primary)}
 .suspect-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad-lg);padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
-.suspect-photo{width:52px;height:52px;border-radius:var(--rad);object-fit:cover;flex-shrink:0;border:1px solid var(--border-md);background:var(--surface-3)}
+.suspect-photo{width:52px;height:52px;border-radius:var(--rad);object-fit:cover;flex-shrink:0;border:1px solid var(--border-md)}
 .suspect-photo-placeholder{width:52px;height:52px;border-radius:var(--rad);flex-shrink:0;border:1px solid var(--border);background:var(--surface-3);display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:1.1rem}
 .suspect-info{flex:1;min-width:0}
 .suspect-name{font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:4px}
@@ -170,7 +203,7 @@ html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);colo
 .exhibit-val{font-size:.75rem;font-weight:700;color:var(--gold);text-align:right;white-space:nowrap}
 
 /* DASHBOARD */
-#dash-wrap{flex:1;overflow-y:auto;padding:20px;display:none;background:var(--bg)}
+#dash-wrap{flex:1;overflow-y:auto;padding:20px;display:none;background:var(--bg);min-width:0}
 #dash-wrap::-webkit-scrollbar{width:4px}
 #dash-wrap::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:4px}
 .dash-title{font-size:.65rem;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
@@ -230,7 +263,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .m-body{padding:20px}
 .m-ft{position:sticky;bottom:0;background:var(--surface);display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
 
-/* FORM ELEMENTS */
+/* FORM */
 .fsec{margin-bottom:16px}
 .fsec-ttl{font-size:.64rem;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
 .fg{margin-bottom:10px}.fg:last-child{margin-bottom:0}
@@ -258,8 +291,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .utm-vl{background:var(--violet-bg);color:var(--violet);border:1px solid var(--violet-border)}
 .btn-mprev{font-size:.65rem;font-family:inherit;font-weight:700;cursor:pointer;border-radius:20px;padding:4px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);transition:all var(--trans)}
 .btn-mprev:hover{background:var(--primary-pale);color:var(--primary);border-color:rgba(26,92,46,.3)}
-
-/* SHAPEFILE UPLOAD */
 .shp-upload-box{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad-lg);padding:14px}
 .shp-upload-title{font-size:.64rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px;margin-bottom:12px}
 .shp-parts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -291,8 +322,6 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .btn-analyze{padding:4px 11px;border-radius:20px;font-family:inherit;font-size:.7rem;font-weight:700;background:var(--primary);color:#fff;border:none;cursor:pointer;transition:all var(--trans);display:flex;align-items:center;gap:5px}
 .btn-analyze:hover{filter:brightness(1.1)}
 .btn-analyze:disabled{opacity:.5;pointer-events:none}
-
-/* SUSPECTS FORM */
 .suspects-wrap{margin-bottom:0}
 .suspect-form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:14px;margin-bottom:10px;position:relative}
 .suspect-form-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -310,16 +339,12 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .btn-add-item{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px dashed var(--border-md);border-radius:var(--rad);background:transparent;color:var(--text-3);font-family:inherit;font-size:.76rem;font-weight:700;cursor:pointer;width:100%;justify-content:center;transition:all var(--trans);margin-top:4px}
 .btn-add-item:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
 .btn-add-item.violet:hover{border-color:var(--violet);color:var(--violet);background:var(--violet-bg)}
-
-/* EXHIBITS FORM */
 .exhibit-form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:14px;margin-bottom:10px}
 .exhibit-form-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .exhibit-form-num{font-size:.72rem;font-weight:800;color:var(--violet);display:flex;align-items:center;gap:6px}
 .exhibit-form-num span{width:22px;height:22px;border-radius:50%;background:var(--violet);color:#fff;font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center}
 .btn-remove-ex{padding:4px 10px;border-radius:20px;font-family:inherit;font-size:.65rem;font-weight:700;color:var(--danger);border:1px solid var(--danger-border);background:var(--danger-bg);cursor:pointer;transition:all var(--trans)}
 .btn-remove-ex:hover{background:var(--danger);color:#fff}
-
-/* BUTTONS */
 .btn-cancel{padding:7px 16px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:600;color:var(--text-2);border:1px solid var(--border-md);background:var(--surface);cursor:pointer;transition:all var(--trans)}
 .btn-cancel:hover{background:var(--surface-2)}
 .btn-submit{padding:7px 18px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:700;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all var(--trans)}
@@ -328,15 +353,15 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 .btn-submit:hover{filter:brightness(1.08);transform:translateY(-1px)}
 .btn-submit:disabled{opacity:.55;pointer-events:none}
 
-/* FAB */
+/* FAB - mobile only */
 #fab{display:none;position:fixed;bottom:20px;right:20px;z-index:990;background:var(--primary);color:#fff;border:none;padding:11px 18px;border-radius:30px;font-family:inherit;font-size:.8rem;font-weight:700;box-shadow:0 5px 18px rgba(26,92,46,.32);cursor:pointer;align-items:center;gap:6px;transition:all var(--trans)}
 #fab:hover{transform:translateY(-2px)}
 
-/* RESPONSIVE */
-@media(max-width:1100px){:root{--sb:300px}.kpi-row{grid-template-columns:1fr 1fr}}
+/* MOBILE */
+@media(max-width:1100px){:root{--sb:290px}.kpi-row{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
-  :root{--nav:60px}
+  :root{--nav:56px}
   #nav{flex-wrap:wrap;height:auto;padding:8px 12px 0;gap:8px}
   .nav-tabs{order:10;width:calc(100% + 24px);margin:-8px -12px 0;border-radius:0;border-left:0;border-right:0;border-top:0;padding:4px 12px 5px;max-width:none;background:var(--surface-2)}
   .ntab .tab-lbl{display:none}
@@ -345,14 +370,28 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   .btn-add span{display:none}
   .btn-add{padding:8px 12px;border-radius:50%}
   .view-sw .vsw-lbl{display:none}
-  #app{flex-direction:column;padding-top:calc(60px + 40px)}
-  #sidebar{position:fixed;top:calc(60px + 40px);bottom:0;left:0;width:100%;z-index:100;border-right:none}
-  #sidebar.hidden{transform:translateX(-100%)}
-  #map-wrap{width:100%;height:100%}
-  #legend{top:auto;bottom:68px;right:8px;left:8px;min-width:auto}
+  /* Mobile: sidebar เป็น absolute drawer */
+  #app{flex-direction:column;padding-top:calc(56px + 38px)}
+  #sidebar{
+    position:fixed;
+    top:calc(56px + 38px);
+    bottom:0;left:0;
+    width:85%;max-width:320px;
+    z-index:500; /* สูงพอที่จะอยู่บนแผนที่ แต่ต่ำกว่า modal */
+    border-right:1px solid var(--border);
+    box-shadow:4px 0 20px rgba(0,0,0,.12);
+    transform:translateX(-100%); /* ซ่อนโดย default */
+    transition:transform .28s cubic-bezier(.16,1,.3,1);
+  }
+  #sidebar.show{transform:translateX(0)} /* ใช้ .show แทน .hidden */
+  /* Backdrop เมื่อ sidebar เปิด */
+  #sb-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499;display:none}
+  #sb-backdrop.show{display:block}
+  #map-wrap{width:100%;height:100%;position:relative}
+  #legend{top:auto;bottom:68px;right:8px;left:auto;min-width:140px}
   #map-ver{display:none}
   #fab{display:flex}
-  #det-panel{bottom:62px;max-height:75%;padding:14px 14px 18px}
+  #det-panel{max-height:70%;padding:14px 14px 18px}
   .det-grid{grid-template-columns:1fr 1fr;gap:6px}
   .fg-2{grid-template-columns:1fr}.fg-3{grid-template-columns:1fr 1fr 1fr}
   .shp-parts-grid{grid-template-columns:1fr}
@@ -366,12 +405,14 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 </head>
 <body>
 <div id="toast-wrap"></div>
+<!-- Mobile backdrop -->
+<div id="sb-backdrop" onclick="closeMobileSB()"></div>
 
 <!-- NAVBAR -->
 <nav id="nav">
   <div class="nav-logo"><i class="fa-solid fa-tree"></i></div>
   <div class="nav-title-w">
-    <div class="nav-title">Department of National Parks, Wildlife and Plant Conservation ·</div>
+    <div class="nav-title">Department of National Parks, Wildlife and Plant Conservation</div>
     <div class="nav-sub">สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</div>
   </div>
   <div class="nav-sep"></div>
@@ -391,7 +432,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
   </div>
 </nav>
 
-<!-- APP BODY -->
+<!-- APP -->
 <div id="app">
   <aside id="sidebar">
     <div class="sb-head">
@@ -426,6 +467,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="leg-row"><div class="leg-line" style="background:rgba(219,39,119,.25);border:1px solid #db2777"></div>ป่าสงวนฯ</div>
     </div>
     <div id="conn-banner"><i class="fa-solid fa-circle-notch fa-spin"></i><span id="conn-msg">กำลังเชื่อมต่อ...</span></div>
+    <!-- DETAIL PANEL อยู่ใน map-wrap เท่านั้น -->
     <div id="det-panel">
       <div class="det-drag"></div>
       <div class="det-hd">
@@ -453,20 +495,17 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="chart-card"><div class="chart-title"><i class="fa-solid fa-chart-bar"></i>จำนวนคดีแต่ละประเภท</div><div class="chart-box"><canvas id="chart-bar"></canvas></div></div>
     </div>
     <div class="table-card">
-      <div class="table-hd"><i class="fa-solid fa-clock-rotate-left"></i>รายการคดีล่าสุด (ทุกประเภท)</div>
+      <div class="table-hd"><i class="fa-solid fa-clock-rotate-left"></i>รายการคดีล่าสุด</div>
       <div style="overflow-x:auto">
-        <table class="dash-tbl">
-          <thead><tr><th>เลขคดี</th><th>ประเภท</th><th>สถานที่</th><th>วันที่</th><th>ผู้ต้องหา</th><th>สถานะ</th></tr></thead>
-          <tbody id="dash-tbl-body"></tbody>
-        </table>
+        <table class="dash-tbl"><thead><tr><th>เลขคดี</th><th>ประเภท</th><th>สถานที่</th><th>วันที่</th><th>ผู้ต้องหา</th><th>สถานะ</th></tr></thead><tbody id="dash-tbl-body"></tbody></table>
       </div>
     </div>
   </div>
 </div>
 
-<button id="fab" onclick="toggleFab()">
-  <i class="fa-solid fa-map-marked-alt" id="fab-icon"></i>
-  <span id="fab-label">ดูแผนที่</span>
+<button id="fab" onclick="toggleMobileSB()">
+  <i class="fa-solid fa-list-ul" id="fab-icon"></i>
+  <span id="fab-label">รายการคดี</span>
 </button>
 
 <!-- MODAL: บุกรุก / ไม้ -->
@@ -521,15 +560,15 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       </div>
       <div class="fbox green fsec">
         <div class="fbox-hd">
-          <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (47N / 47Q / 48N / 48Q)</div>
+          <div class="fbox-ttl green"><i class="fa-solid fa-location-crosshairs"></i>พิกัด UTM (47N / 48N)</div>
           <button type="button" onclick="convertUTM('main')" class="btn-utm green"><i class="fa-solid fa-arrows-rotate"></i> แปลง</button>
         </div>
         <div class="fg-row fg-3">
-          <div><label class="fl">Zone</label><select id="f-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option><option value="47">47Q</option><option value="48">48Q</option></select></div>
+          <div><label class="fl">Zone</label><select id="f-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
           <div><label class="fl">E (X)</label><input type="number" id="f-utm-e" placeholder="534500" oninput="liveUTM('main')" class="fi"></div>
           <div><label class="fl">N (Y)</label><input type="number" id="f-utm-n" placeholder="2023000" oninput="liveUTM('main')" class="fi"></div>
         </div>
-        <div id="utm-res-main" style="display:none;margin-top:7px;gap:7px;align-items:center;flex-wrap:wrap">
+        <div id="utm-res-main" style="display:none;margin-top:7px;display:none;gap:7px;align-items:center;flex-wrap:wrap">
           <span class="utm-res utm-ok" id="utm-res-main-txt"></span>
           <button type="button" onclick="prevUTM('main')" class="btn-mprev"><i class="fa-solid fa-map-marker-alt"></i> ดูบนแผนที่</button>
         </div>
@@ -541,12 +580,12 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
         <div class="shp-upload-box">
           <div class="shp-upload-title"><i class="fa-solid fa-layer-group"></i>เลือกไฟล์แต่ละส่วนของ Shapefile</div>
           <div class="shp-parts-grid">
-            <div class="shp-part" id="part-shp"><input type="file" accept=".shp" id="f-shp" onchange="handleShpPart('shp',this)"><div class="shp-part-ext ext-shp">.SHP</div><div class="shp-part-info"><div class="shp-part-label">Shapefile <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-shp">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-shp"></i></div>
-            <div class="shp-part" id="part-dbf"><input type="file" accept=".dbf" id="f-dbf" onchange="handleShpPart('dbf',this)"><div class="shp-part-ext ext-dbf">.DBF</div><div class="shp-part-info"><div class="shp-part-label">Database <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-dbf">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-dbf"></i></div>
-            <div class="shp-part" id="part-shx"><input type="file" accept=".shx" id="f-shx" onchange="handleShpPart('shx',this)"><div class="shp-part-ext ext-shx">.SHX</div><div class="shp-part-info"><div class="shp-part-label">Index <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-shx">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-shx"></i></div>
-            <div class="shp-part" id="part-prj"><input type="file" accept=".prj" id="f-prj" onchange="handleShpPart('prj',this)"><div class="shp-part-ext ext-prj">.PRJ</div><div class="shp-part-info"><div class="shp-part-label">Projection <span class="shp-part-opt">แนะนำ</span></div><div class="shp-part-name" id="name-prj">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-prj"></i></div>
-            <div class="shp-part" id="part-cpg"><input type="file" accept=".cpg" id="f-cpg" onchange="handleShpPart('cpg',this)"><div class="shp-part-ext ext-cpg">.CPG</div><div class="shp-part-info"><div class="shp-part-label">Encoding <span class="shp-part-opt">optional</span></div><div class="shp-part-name" id="name-cpg">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-cpg"></i></div>
-            <div class="shp-part" id="part-pdf"><input type="file" accept=".pdf" id="f-pdf" onchange="handleShpPart('pdf',this)"><div class="shp-part-ext ext-opt" style="font-size:.55rem">PDF</div><div class="shp-part-info"><div class="shp-part-label">เอกสาร PDF <span class="shp-part-opt">optional</span></div><div class="shp-part-name" id="name-pdf">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-pdf"></i></div>
+            <div class="shp-part"><input type="file" accept=".shp" id="f-shp" onchange="handleShpPart('shp',this)"><div class="shp-part-ext ext-shp">.SHP</div><div class="shp-part-info"><div class="shp-part-label">Shapefile <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-shp">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-shp"></i></div>
+            <div class="shp-part"><input type="file" accept=".dbf" id="f-dbf" onchange="handleShpPart('dbf',this)"><div class="shp-part-ext ext-dbf">.DBF</div><div class="shp-part-info"><div class="shp-part-label">Database <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-dbf">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-dbf"></i></div>
+            <div class="shp-part"><input type="file" accept=".shx" id="f-shx" onchange="handleShpPart('shx',this)"><div class="shp-part-ext ext-shx">.SHX</div><div class="shp-part-info"><div class="shp-part-label">Index <span class="shp-part-req">* บังคับ</span></div><div class="shp-part-name" id="name-shx">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-shx"></i></div>
+            <div class="shp-part"><input type="file" accept=".prj" id="f-prj" onchange="handleShpPart('prj',this)"><div class="shp-part-ext ext-prj">.PRJ</div><div class="shp-part-info"><div class="shp-part-label">Projection <span class="shp-part-opt">แนะนำ</span></div><div class="shp-part-name" id="name-prj">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-prj"></i></div>
+            <div class="shp-part"><input type="file" accept=".cpg" id="f-cpg" onchange="handleShpPart('cpg',this)"><div class="shp-part-ext ext-cpg">.CPG</div><div class="shp-part-info"><div class="shp-part-label">Encoding <span class="shp-part-opt">optional</span></div><div class="shp-part-name" id="name-cpg">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-cpg"></i></div>
+            <div class="shp-part"><input type="file" accept=".pdf" id="f-pdf" onchange="handleShpPart('pdf',this)"><div class="shp-part-ext ext-opt" style="font-size:.55rem">PDF</div><div class="shp-part-info"><div class="shp-part-label">เอกสาร PDF <span class="shp-part-opt">optional</span></div><div class="shp-part-name" id="name-pdf">คลิกเพื่อเลือกไฟล์</div></div><i class="fa-solid fa-circle-minus shp-part-check" id="chk-pdf"></i></div>
           </div>
           <div class="shp-analyze-bar" id="analyze-bar">
             <i class="fa-solid fa-circle-check analyze-icon" id="analyze-icon"></i>
@@ -558,16 +597,12 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-users"></i>ผู้ต้องหา <span class="badge-new">ใหม่</span></div>
         <div id="suspects-container"></div>
-        <button type="button" class="btn-add-item" id="btn-add-sus" onclick="addSuspect('main')">
-          <i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (รองรับสูงสุด 5 คน)
-        </button>
+        <button type="button" class="btn-add-item" onclick="addSuspect('main')"><i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (สูงสุด 5 คน)</button>
       </div>
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-boxes-stacked"></i>ของกลาง <span class="badge-new">ใหม่</span></div>
         <div id="exhibits-container"></div>
-        <button type="button" class="btn-add-item violet" id="btn-add-ex" onclick="addExhibit('main')">
-          <i class="fa-solid fa-plus"></i> เพิ่มของกลาง (รองรับสูงสุด 10 รายการ)
-        </button>
+        <button type="button" class="btn-add-item violet" onclick="addExhibit('main')"><i class="fa-solid fa-plus"></i> เพิ่มของกลาง (สูงสุด 10 รายการ)</button>
       </div>
     </div>
     <div class="m-ft">
@@ -600,7 +635,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       </div>
       <div class="fg" style="margin-bottom:10px"><label class="fl">สถานที่เกิดเหตุ <span style="color:var(--danger)">*</span></label><input type="text" id="wl-location" placeholder="ตำบล อำเภอ จังหวัด..." class="fi"></div>
       <div class="fg-row fg-2" style="margin-bottom:10px">
-        <div class="fg"><label class="fl">ชนิดสัตว์ป่า / ซาก</label><input type="text" id="wl-wildlife-type" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi"></div>
+        <div class="fg"><label class="fl">ชนิดสัตว์ป่า</label><input type="text" id="wl-wildlife-type" placeholder="นกกางเขนดง, เนื้อเก้ง" class="fi"></div>
         <div class="fg"><label class="fl">อุปกรณ์กระทำผิด</label><input type="text" id="wl-equipment" placeholder="ตาข่ายดักนก, ปืนแก๊ป" class="fi"></div>
       </div>
       <div class="fg-row fg-2" style="margin-bottom:10px">
@@ -614,7 +649,7 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
           <button type="button" onclick="convertUTM('wl')" class="btn-utm violet"><i class="fa-solid fa-arrows-rotate"></i> แปลง UTM</button>
         </div>
         <div class="fg-row fg-3" style="margin-bottom:9px">
-          <div><label class="fl">Zone</label><select id="wl-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option><option value="47">47Q</option><option value="48">48Q</option></select></div>
+          <div><label class="fl">Zone</label><select id="wl-utm-zone" class="fs"><option value="47">47N</option><option value="48">48N</option></select></div>
           <div><label class="fl">E (X)</label><input type="number" id="wl-utm-e" placeholder="534500" oninput="liveUTM('wl')" class="fi"></div>
           <div><label class="fl">N (Y)</label><input type="number" id="wl-utm-n" placeholder="2023000" oninput="liveUTM('wl')" class="fi"></div>
         </div>
@@ -637,12 +672,12 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-users"></i>ผู้ต้องหา <span class="badge-new">ใหม่</span></div>
         <div id="wl-suspects-container"></div>
-        <button type="button" class="btn-add-item" onclick="addSuspect('wl')"><i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (รองรับสูงสุด 5 คน)</button>
+        <button type="button" class="btn-add-item" onclick="addSuspect('wl')"><i class="fa-solid fa-plus"></i> เพิ่มผู้ต้องหา (สูงสุด 5 คน)</button>
       </div>
       <div class="fsec">
         <div class="fsec-ttl"><i class="fa-solid fa-boxes-stacked"></i>ของกลาง <span class="badge-new">ใหม่</span></div>
         <div id="wl-exhibits-container"></div>
-        <button type="button" class="btn-add-item violet" onclick="addExhibit('wl')"><i class="fa-solid fa-plus"></i> เพิ่มของกลาง (รองรับสูงสุด 10 รายการ)</button>
+        <button type="button" class="btn-add-item violet" onclick="addExhibit('wl')"><i class="fa-solid fa-plus"></i> เพิ่มของกลาง (สูงสุด 10 รายการ)</button>
       </div>
     </div>
     <div class="m-ft">
@@ -653,73 +688,78 @@ table.dash-tbl tr:hover td{background:var(--primary-bg)}
 </div>
 
 <script>
-/* ══════════════════════════════════════
-   CONFIG
-══════════════════════════════════════ */
+/* ═══════════════════════════════════
+   CONFIG — แก้ URL นี้ให้ตรงกับ Supabase project ของคุณ
+═══════════════════════════════════ */
 const API = 'https://dnp-lampang-api-2.onrender.com';
-const STORAGE_BASE = 'https://pihngogrcxxeqyvulnwl.supabase.co/storage/v1/object/public/dnp-shapefiles';
 
-/* ══════════════════════════════════════
+// ⚠️ แก้ SUPABASE_PROJECT_ID ให้ตรงกับ project ของคุณ
+// ดูได้จาก Supabase Dashboard → Project Settings → General → Reference ID
+const SUPABASE_PROJECT_ID = 'pihngogrcxxeqyvulnwl';
+const STORAGE_BASE = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public`;
+
+// URL ไฟล์ป่าอนุรักษ์/ป่าสงวน — วางไฟล์เหล่านี้ไว้ใน Supabase Storage bucket "dnp-shapefiles"
+// หรือเปลี่ยนเป็น URL จากแหล่งอื่น (เช่น GitHub Pages)
+const CON_FOREST_URL = `${STORAGE_BASE}/dnp-shapefiles/conservation_forest.geojson`;
+const RES_FOREST_URL = `${STORAGE_BASE}/dnp-shapefiles/reserve_forest.geojson`;
+
+/* ═══════════════════════════════════
    STATE
-══════════════════════════════════════ */
+═══════════════════════════════════ */
 let curTab = 'encroachment', curView = 'map';
 let allData = [], mapInst, prevMarker = null;
 let layerEnc, layerTim, layerWL, layerCon, layerRes;
-let mapReg = {}, detOpen = false, srchTimer = null, fabOpen = false;
+// mapReg: เก็บ reference ของ layer แต่ละคดี
+// key = "tabname_id", value = { leafletLayer, lat, lon }
+let mapReg = {}, detOpen = false, srchTimer = null;
 const PAGE_SIZE = 20;
 let curPage = 1, totalItems = 0;
 let dashCache = { enc: null, tim: null, wl: null };
 let chartDonut = null, chartBar = null;
 
 const shpState = {
-  shp:null, dbf:null, shx:null, prj:null, cpg:null, pdf:null,
-  analyzed:false, lat:0, lon:0, rai:0, ngarn:0, wa:0,
-  utm_zone:47, utm_easting:0, utm_northing:0,
+  shp:null,dbf:null,shx:null,prj:null,cpg:null,pdf:null,
+  analyzed:false,lat:0,lon:0,rai:0,ngarn:0,wa:0,
+  utm_zone:47,utm_easting:0,utm_northing:0,
 };
+const susCount = {main:0, wl:0};
+const exCount  = {main:0, wl:0};
 
-const susCount = { main: 0, wl: 0 };
-const exCount  = { main: 0, wl: 0 };
-
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    CLOCK
-══════════════════════════════════════ */
-function updateClock() {
-  const d = new Date();
-  const el = document.getElementById('navTime');
-  if (el) el.textContent =
-    d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) +
-    ' · ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + ' น.';
+═══════════════════════════════════ */
+function updateClock(){
+  const d=new Date();
+  const el=document.getElementById('navTime');
+  if(el) el.textContent=d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.';
 }
-updateClock(); setInterval(updateClock, 30000);
+updateClock(); setInterval(updateClock,30000);
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    TOAST
-══════════════════════════════════════ */
-function toast(msg, type='success', dur=3500) {
-  const icons = {success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info'};
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i><span>${msg}</span>`;
+═══════════════════════════════════ */
+function toast(msg,type='success',dur=3500){
+  const icons={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info'};
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<i class="fa-solid ${icons[type]||icons.info}"></i><span>${msg}</span>`;
   document.getElementById('toast-wrap').appendChild(el);
-  setTimeout(() => {
-    el.style.cssText = 'opacity:0;transform:translateX(14px);transition:.24s';
-    setTimeout(() => el.remove(), 240);
-  }, dur);
+  setTimeout(()=>{el.style.cssText='opacity:0;transform:translateX(14px);transition:.24s';setTimeout(()=>el.remove(),240);},dur);
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    BANNER
-══════════════════════════════════════ */
-function showBanner(msg) { document.getElementById('conn-msg').textContent=msg; document.getElementById('conn-banner').classList.add('show'); }
-function hideBanner()    { document.getElementById('conn-banner').classList.remove('show'); }
+═══════════════════════════════════ */
+function showBanner(msg){document.getElementById('conn-msg').textContent=msg;document.getElementById('conn-banner').classList.add('show');}
+function hideBanner(){document.getElementById('conn-banner').classList.remove('show');}
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    UTM CONVERTER
-══════════════════════════════════════ */
-function utmToLL(e, n, zone) {
-  const a=6378137, f=1/298.257223563, e2=2*f-f*f, k0=0.9996;
-  const x=e-500000, y=n;
-  const M=y/k0, mu=M/(a*(1-e2/4-3*e2**2/64-5*e2**3/256));
+═══════════════════════════════════ */
+function utmToLL(e,n,zone){
+  const a=6378137,f=1/298.257223563,e2=2*f-f*f,k0=0.9996;
+  const x=e-500000,y=n;
+  const M=y/k0,mu=M/(a*(1-e2/4-3*e2**2/64-5*e2**3/256));
   const e1=(1-Math.sqrt(1-e2))/(1+Math.sqrt(1-e2));
   const p=mu+(3*e1/2-27*e1**3/32)*Math.sin(2*mu)+(21*e1**2/16-55*e1**4/32)*Math.sin(4*mu)+(151*e1**3/96)*Math.sin(6*mu);
   const sp=Math.sin(p),cp=Math.cos(p),tp=sp/cp;
@@ -727,413 +767,499 @@ function utmToLL(e, n, zone) {
   const lat=p-(N1*tp/R1)*(D**2/2-(5+3*T1+10*C1-4*C1**2-9*e2*cp**2/(1-e2))*D**4/24+(61+90*T1+298*C1+45*T1**2-252*e2*cp**2/(1-e2)-3*C1**2)*D**6/720);
   const lon0=(zone-1)*6-180+3;
   const lon=(lon0*Math.PI/180)+(D-(1+2*T1+C1)*D**3/6+(5-2*C1+28*T1-3*C1**2+8*e2*cp**2/(1-e2)+24*T1**2)*D**5/120)/cp;
-  return {lat:lat*180/Math.PI, lon:lon*180/Math.PI};
+  return {lat:lat*180/Math.PI,lon:lon*180/Math.PI};
 }
 
-function getUF(p) {
-  if (p==='main') return {zone:+document.getElementById('f-utm-zone').value,e:+document.getElementById('f-utm-e').value,n:+document.getElementById('f-utm-n').value,rDiv:'utm-res-main',rTxt:'utm-res-main-txt',eDiv:'utm-err-main',latF:'f-lat',lonF:'f-lon'};
+function getUF(p){
+  if(p==='main') return {zone:+document.getElementById('f-utm-zone').value,e:+document.getElementById('f-utm-e').value,n:+document.getElementById('f-utm-n').value,rDiv:'utm-res-main',rTxt:'utm-res-main-txt',eDiv:'utm-err-main',latF:'f-lat',lonF:'f-lon'};
   return {zone:+document.getElementById('wl-utm-zone').value,e:+document.getElementById('wl-utm-e').value,n:+document.getElementById('wl-utm-n').value,rDiv:'utm-res-wl',rTxt:'utm-res-wl-txt',eDiv:'utm-err-wl',latF:'wl-cvt-lat',lonF:'wl-cvt-lon'};
 }
 
-function convertUTM(p) {
+function convertUTM(p){
   const f=getUF(p);
-  const rd=document.getElementById(f.rDiv), ed=document.getElementById(f.eDiv);
-  rd.style.display='none'; ed.style.display='none';
-  if (!f.e||!f.n||isNaN(f.e)||isNaN(f.n)) { ed.textContent='⚠ ระบุ E และ N ให้ครบ'; ed.style.display='inline-flex'; return; }
-  try {
+  const rd=document.getElementById(f.rDiv),ed=document.getElementById(f.eDiv);
+  rd.style.display='none';ed.style.display='none';
+  if(!f.e||!f.n||isNaN(f.e)||isNaN(f.n)){ed.textContent='⚠ ระบุ E และ N ให้ครบ';ed.style.display='inline-flex';return;}
+  try{
     const r=utmToLL(f.e,f.n,f.zone);
-    const ls=r.lat.toFixed(6), lo=r.lon.toFixed(6);
+    const ls=r.lat.toFixed(6),lo=r.lon.toFixed(6);
     document.getElementById(f.latF).value=ls;
     document.getElementById(f.lonF).value=lo;
-    if (p==='wl') { document.getElementById('wl-lat').value=ls; document.getElementById('wl-lon').value=lo; }
+    if(p==='wl'){document.getElementById('wl-lat').value=ls;document.getElementById('wl-lon').value=lo;}
     document.getElementById(f.rTxt).innerHTML=`Lat: <b>${ls}</b>, Lon: <b>${lo}</b>`;
     rd.style.display='flex';
-    if (p==='wl') { const wa=document.getElementById('wl-map-actions'); if(wa) wa.style.display='block'; }
-  } catch { ed.textContent='⚠ ค่าพิกัดไม่ถูกต้อง'; ed.style.display='inline-flex'; }
+    if(p==='wl'){const wa=document.getElementById('wl-map-actions');if(wa)wa.style.display='block';}
+  }catch{ed.textContent='⚠ ค่าพิกัดไม่ถูกต้อง';ed.style.display='inline-flex';}
 }
 
-const _utmDb = {};
-function liveUTM(p) {
+const _utmDb={};
+function liveUTM(p){
   clearTimeout(_utmDb[p]);
-  _utmDb[p]=setTimeout(()=>{ const f=getUF(p); if(f.e&&f.n&&f.e>100000&&f.n>1000000) convertUTM(p); },600);
+  _utmDb[p]=setTimeout(()=>{const f=getUF(p);if(f.e&&f.n&&f.e>100000&&f.n>1000000)convertUTM(p);},600);
 }
 
-function prevUTM(p) {
+function prevUTM(p){
   const f=getUF(p);
-  const lat=+document.getElementById(f.latF).value, lon=+document.getElementById(f.lonF).value;
-  if (!lat||!lon) { convertUTM(p); return; }
-  if (prevMarker) mapInst.removeLayer(prevMarker);
+  const lat=+document.getElementById(f.latF).value,lon=+document.getElementById(f.lonF).value;
+  if(!lat||!lon){convertUTM(p);return;}
+  if(prevMarker)mapInst.removeLayer(prevMarker);
   prevMarker=L.marker([lat,lon]).addTo(mapInst).bindPopup(`<b>📍 จุดพิกัด</b><br>Lat:${lat.toFixed(5)}<br>Lon:${lon.toFixed(5)}`).openPopup();
   mapInst.setView([lat,lon],14);
-  if (window.innerWidth<=768) closeMobileSB();
-}
-
-/* ══════════════════════════════════════
-   MAP SETUP
-══════════════════════════════════════ */
-function setupMap() {
-  mapInst=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
-  L.control.zoom({position:'bottomright'}).addTo(mapInst);
-  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',subdomains:'abc',maxZoom:19}).addTo(mapInst);
-  const sat=L.layerGroup([L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19,opacity:.35})]);
-  layerEnc=L.layerGroup().addTo(mapInst); layerTim=L.layerGroup().addTo(mapInst);
-  layerWL=L.layerGroup().addTo(mapInst); layerCon=L.layerGroup().addTo(mapInst); layerRes=L.layerGroup().addTo(mapInst);
-  L.control.layers({'🗺 แผนที่':osm,'🛰 ดาวเทียม':sat},{'พื้นที่บุกรุก':layerEnc,'ไม้ผิดกฎหมาย':layerTim,'คดีสัตว์ป่า':layerWL,'ป่าอนุรักษ์':layerCon,'ป่าสงวนฯ':layerRes},{collapsed:true,position:'bottomright'}).addTo(mapInst);
-  fetch(STORAGE_BASE+'/conservation_forest.geojson').then(r=>r.ok?r.json():null).then(d=>{if(d) L.geoJSON(d,{style:{color:'#1a5c2e',weight:1,fillColor:'#22c55e',fillOpacity:.12,interactive:false}}).addTo(layerCon);}).catch(()=>{});
-  fetch(STORAGE_BASE+'/reserve_forest.geojson').then(r=>r.ok?r.json():null).then(d=>{if(d) L.geoJSON(d,{style:{color:'#db2777',weight:1,fillColor:'#db2777',fillOpacity:.08,interactive:false}}).addTo(layerRes);}).catch(()=>{});
-}
-
-function clearMapLayers() {
-  layerEnc.clearLayers(); layerTim.clearLayers(); layerWL.clearLayers(); mapReg={};
-  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
-}
-
-/* ══════════════════════════════════════
-   RENDER MAP (แก้ไขหลัก)
-   - แยก fetch → parse → validate เป็น 3 ขั้น
-   - fallback circleMarker ทุก step ที่ล้มเหลว
-   - รองรับ geojson_data เป็น URL / JSON string / object
-   - ใช้ AbortSignal.timeout() ป้องกัน fetch ค้าง
-══════════════════════════════════════ */
-async function renderMap(data) {
-  const tab = curTab;
-  const target = tab === 'encroachment' ? layerEnc
-               : tab === 'timber'       ? layerTim
-               : layerWL;
-
-  /* helper: สร้าง circleMarker fallback */
-  function addFallbackMarker(item, i) {
-    if (!item.coords || !item.coords[0] || !item.coords[1]) {
-      /* ไม่มี coords เลย → ลอง UTM */
-      if (item.utm_easting && item.utm_easting > 0) {
-        try {
-          const ll = utmToLL(item.utm_easting, item.utm_northing, item.utm_zone || 47);
-          if (ll && isFinite(ll.lat) && isFinite(ll.lon)) {
-            item._lat = ll.lat; item._lon = ll.lon;
-          }
-        } catch {}
-      }
-      if (!item._lat) return;
-    }
-    const lat = item._lat || item.coords[0];
-    const lon = item._lon || item.coords[1];
-    const fillColor = tab === 'wildlife' ? '#4a2aa0'
-                    : item.is_finished  ? '#1a5c2e'
-                    : '#c0392b';
-    const m = L.circleMarker([lat, lon], {
-      radius: 8, color: '#fff', weight: 2,
-      fillColor, fillOpacity: 0.9,
-    })
-    .addTo(target)
-    .bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`)
-    .on('click', () => selectCase(i));
-    mapReg[tab + '_' + item.id] = m;
-  }
-
-  /* Wildlife → circleMarker เท่านั้น */
-  if (tab === 'wildlife') {
-    data.forEach((item, i) => addFallbackMarker(item, i));
-    return;
-  }
-
-  /* Encroachment / Timber → พยายาม load GeoJSON, fallback circleMarker */
-  const tasks = data.map(async (item, i) => {
-    let gd = null;
-
-    /* 1. geojson_data เป็น URL → fetch */
-    if (item.geojson_data && typeof item.geojson_data === 'string' && item.geojson_data.startsWith('http')) {
-      try {
-        const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 8000);
-        const res = await fetch(item.geojson_data, { signal: controller.signal });
-        clearTimeout(tid);
-        if (res.ok) {
-          const text = await res.text();
-          try { gd = JSON.parse(text); } catch { gd = null; }
-        }
-      } catch { gd = null; }
-    }
-    /* 2. geojson_data เป็น JSON string ดิบ */
-    else if (item.geojson_data && typeof item.geojson_data === 'string') {
-      try { gd = JSON.parse(item.geojson_data); } catch { gd = null; }
-    }
-    /* 3. geojson_data เป็น object อยู่แล้ว */
-    else if (item.geojson_data && typeof item.geojson_data === 'object') {
-      gd = item.geojson_data;
-    }
-
-    /* ตรวจ valid GeoJSON */
-    const isValid = gd && (
-      gd.type === 'FeatureCollection' ||
-      gd.type === 'Feature' ||
-      gd.geometry
-    );
-    if (!isValid) gd = null;
-
-    return { item, i, gd };
-  });
-
-  const results = await Promise.allSettled(tasks);
-
-  results.forEach(result => {
-    if (result.status !== 'fulfilled') return;
-    const { item, i, gd } = result.value;
-
-    if (gd) {
-      try {
-        const ml = L.geoJSON(gd, {
-          style: {
-            color:       item.is_finished ? '#1a5c2e' : '#c0392b',
-            weight:      2,
-            fillColor:   item.is_finished ? '#22c55e' : '#ef4444',
-            fillOpacity: item.is_finished ? 0.2       : 0.42,
-          },
-          onEachFeature: (f, l) => {
-            l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location || ''}`);
-            l.on('click', () => selectCase(i));
-          },
-        }).addTo(target);
-        mapReg[tab + '_' + item.id] = ml;
-      } catch {
-        /* GeoJSON structure แปลก → fallback */
-        addFallbackMarker(item, i);
-      }
-    } else {
-      /* ไม่มี GeoJSON → ใช้ coords */
-      addFallbackMarker(item, i);
-    }
-  });
-}
-
-/* ══════════════════════════════════════
-   SELECT CASE (แก้ไขหลัก)
-   - แยกเช็ค CircleMarker vs GeoJSON LayerGroup
-   - fallback 3 ชั้น: layer → coords → UTM
-   - bounds.isValid() ก่อน fitBounds
-══════════════════════════════════════ */
-function selectCase(i) {
-  document.querySelectorAll('.case-row').forEach(r => r.classList.remove('active'));
-  document.getElementById(`crow-${i}`)?.classList.add('active');
-
-  const item = allData[i];
-  if (!item) return;
-
-  const layer = mapReg[curTab + '_' + item.id];
-
-  if (layer) {
-    try {
-      if (typeof layer.getLatLng === 'function') {
-        /* CircleMarker / Marker */
-        mapInst.setView(layer.getLatLng(), 15);
-        layer.openPopup();
-      } else if (typeof layer.getBounds === 'function') {
-        /* GeoJSON LayerGroup */
-        const bounds = layer.getBounds();
-        if (bounds && bounds.isValid()) {
-          mapInst.fitBounds(bounds, { maxZoom: 16, padding: [28, 28] });
-        } else if (item.coords?.[0]) {
-          mapInst.setView([item.coords[0], item.coords[1]], 15);
-        }
-        /* เปิด popup feature แรก */
-        let opened = false;
-        layer.eachLayer(l => {
-          if (!opened && l.openPopup) { l.openPopup(); opened = true; }
-        });
-      }
-    } catch {
-      /* layer มีปัญหา → fallback coords */
-      if (item.coords?.[0]) mapInst.setView([item.coords[0], item.coords[1]], 15);
-    }
-  } else if (item.coords?.[0] && item.coords?.[1]) {
-    /* ไม่มี layer → zoom coords */
-    mapInst.setView([item.coords[0], item.coords[1]], 15);
-  } else if (item.utm_easting && item.utm_easting > 0) {
-    /* fallback UTM */
-    try {
-      const ll = utmToLL(item.utm_easting, item.utm_northing, item.utm_zone || 47);
-      if (ll && isFinite(ll.lat)) mapInst.setView([ll.lat, ll.lon], 15);
-    } catch {}
-  } else {
-    /* 🆕 ไม่มีพิกัดเลย — แจ้งผู้ใช้ตรงๆ แทนการเงียบ */
-    toast('คดีนี้ไม่มีพิกัดผูกอยู่ จึงไม่สามารถแสดงตำแหน่งบนแผนที่ได้', 'error');
-  }
-
-  showDetail(item, i);
   closeMobileSB();
 }
 
-/* ══════════════════════════════════════
-   VIEW / TAB / SEARCH / MOBILE
-══════════════════════════════════════ */
-function switchView(v) {
+/* ═══════════════════════════════════
+   MAP SETUP
+═══════════════════════════════════ */
+function setupMap(){
+  mapInst=L.map('map',{zoomControl:false}).setView([18.29,99.50],9);
+  L.control.zoom({position:'bottomright'}).addTo(mapInst);
+
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap',subdomains:'abc',maxZoom:19
+  }).addTo(mapInst);
+
+  const sat=L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:'abc',maxZoom:19,opacity:.3}),
+  ]);
+
+  // สร้าง layer groups
+  layerEnc=L.layerGroup().addTo(mapInst);
+  layerTim=L.layerGroup().addTo(mapInst);
+  layerWL=L.layerGroup().addTo(mapInst);
+  layerCon=L.layerGroup().addTo(mapInst);
+  layerRes=L.layerGroup().addTo(mapInst);
+
+  L.control.layers(
+    {'🗺 แผนที่':osm,'🛰 ดาวเทียม':sat},
+    {'พื้นที่บุกรุก':layerEnc,'ไม้ผิดกฎหมาย':layerTim,'คดีสัตว์ป่า':layerWL,'ป่าอนุรักษ์':layerCon,'ป่าสงวนฯ':layerRes},
+    {collapsed:true,position:'bottomright'}
+  ).addTo(mapInst);
+
+  // โหลดชั้นป่า
+  loadForestLayers();
+
+  // Invalidate map size หลัง layout เสร็จ (แก้ tile ไม่เต็มหน้าจอ)
+  setTimeout(()=>mapInst.invalidateSize(),300);
+}
+
+/* ═══════════════════════════════════
+   FOREST LAYERS — แก้หลัก: fetch พร้อม error handling และ CORS proxy fallback
+═══════════════════════════════════ */
+async function loadForestLayers(){
+  await Promise.allSettled([
+    loadGeoJSONLayer(CON_FOREST_URL, layerCon, {
+      color:'#1a5c2e',weight:1.5,
+      fillColor:'#22c55e',fillOpacity:.15,
+      interactive:false,
+    }),
+    loadGeoJSONLayer(RES_FOREST_URL, layerRes, {
+      color:'#db2777',weight:1.5,
+      fillColor:'#db2777',fillOpacity:.1,
+      interactive:false,
+    }),
+  ]);
+}
+
+async function loadGeoJSONLayer(url, targetLayer, style){
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(url,{signal:ctrl.signal});
+    clearTimeout(tid);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const geojson=await res.json();
+    if(geojson && (geojson.type==='FeatureCollection'||geojson.features)){
+      L.geoJSON(geojson,{style:()=>style,interactive:false}).addTo(targetLayer);
+      console.log(`[Forest] loaded: ${url}`);
+    }
+  }catch(err){
+    // ไม่โชว์ error ถ้าไฟล์ยังไม่มี — เป็น optional layer
+    console.warn(`[Forest] ไม่สามารถโหลด ${url}: ${err.message}`);
+  }
+}
+
+/* ═══════════════════════════════════
+   CLEAR MAP
+═══════════════════════════════════ */
+function clearMapLayers(){
+  layerEnc.clearLayers();
+  layerTim.clearLayers();
+  layerWL.clearLayers();
+  mapReg={};
+  if(prevMarker){mapInst.removeLayer(prevMarker);prevMarker=null;}
+}
+
+/* ═══════════════════════════════════
+   RENDER MAP — แก้หลัก
+   1. รองรับ geojson_data เป็น URL, JSON string, หรือ object
+   2. เก็บ fallback lat/lon ไว้ใน mapReg เสมอ
+   3. ใช้ Promise.allSettled เพื่อไม่ให้ 1 คดีล้มแล้ว block ทั้งหมด
+═══════════════════════════════════ */
+async function renderMap(data){
+  const tab=curTab;
+  const target=tab==='encroachment'?layerEnc:tab==='timber'?layerTim:layerWL;
+
+  // Helper: สร้าง CircleMarker fallback
+  function makeFallbackMarker(item,i,lat,lon){
+    const fillColor=tab==='wildlife'?'#4a2aa0':item.is_finished?'#1a5c2e':'#c0392b';
+    const m=L.circleMarker([lat,lon],{
+      radius:9,color:'#fff',weight:2,
+      fillColor,fillOpacity:.88,
+    }).bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location||''}`)
+      .on('click',()=>selectCase(i));
+    m.addTo(target);
+    // เก็บ marker + พิกัด fallback
+    mapReg[tab+'_'+item.id]={layer:m,lat,lon,isMarker:true};
+  }
+
+  // Helper: แปลง UTM → lat/lon ถ้ามี
+  function getLatLon(item){
+    if(item.coords&&item.coords[0]&&item.coords[1]&&
+       item.coords[0]!==0&&item.coords[1]!==0){
+      return {lat:item.coords[0],lon:item.coords[1]};
+    }
+    if(item.utm_easting&&item.utm_easting>100000){
+      try{
+        const ll=utmToLL(item.utm_easting,item.utm_northing,item.utm_zone||47);
+        if(isFinite(ll.lat)&&isFinite(ll.lon)&&ll.lat>5&&ll.lat<21) return ll;
+      }catch{}
+    }
+    return null;
+  }
+
+  // Wildlife → circleMarker เท่านั้น (ไม่มี shapefile)
+  if(tab==='wildlife'){
+    data.forEach((item,i)=>{
+      const ll=getLatLon(item);
+      if(ll) makeFallbackMarker(item,i,ll.lat,ll.lon);
+    });
+    return;
+  }
+
+  // Encroachment / Timber → พยายาม load GeoJSON ก่อน, fallback circleMarker
+  const tasks=data.map(async(item,i)=>{
+    const ll=getLatLon(item);
+    let gd=null;
+
+    // 1. geojson_data เป็น URL
+    if(item.geojson_data&&typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')){
+      try{
+        const ctrl=new AbortController();
+        const tid=setTimeout(()=>ctrl.abort(),8000);
+        const res=await fetch(item.geojson_data,{signal:ctrl.signal});
+        clearTimeout(tid);
+        if(res.ok){
+          const text=await res.text();
+          try{gd=JSON.parse(text);}catch{gd=null;}
+        }
+      }catch{gd=null;}
+    }
+    // 2. geojson_data เป็น JSON string
+    else if(item.geojson_data&&typeof item.geojson_data==='string'){
+      try{gd=JSON.parse(item.geojson_data);}catch{gd=null;}
+    }
+    // 3. geojson_data เป็น object
+    else if(item.geojson_data&&typeof item.geojson_data==='object'){
+      gd=item.geojson_data;
+    }
+
+    // ตรวจ valid GeoJSON
+    const isValid=gd&&(gd.type==='FeatureCollection'||gd.type==='Feature'||gd.geometry);
+    if(!isValid) gd=null;
+
+    return {item,i,gd,ll};
+  });
+
+  const results=await Promise.allSettled(tasks);
+
+  results.forEach(result=>{
+    if(result.status!=='fulfilled') return;
+    const {item,i,gd,ll}=result.value;
+
+    if(gd){
+      try{
+        const fillColor=item.is_finished?'#22c55e':'#ef4444';
+        const strokeColor=item.is_finished?'#1a5c2e':'#c0392b';
+        const ml=L.geoJSON(gd,{
+          style:{color:strokeColor,weight:2,fillColor,fillOpacity:item.is_finished?.2:.4},
+          onEachFeature:(f,l)=>{
+            l.bindPopup(`<b>${getCaseLabel(item)}</b><br>${item.location||''}`);
+            l.on('click',()=>selectCase(i));
+          },
+        }).addTo(target);
+        // คำนวณ centroid จาก bounds ของ GeoJSON layer
+        const bounds=ml.getBounds();
+        const center=bounds.isValid()?bounds.getCenter():(ll?{lat:ll.lat,lng:ll.lon}:null);
+        mapReg[tab+'_'+item.id]={
+          layer:ml,
+          lat:center?center.lat:(ll?.lat||0),
+          lon:center?center.lng:(ll?.lon||0),
+          isGeoJSON:true,
+        };
+      }catch(err){
+        // GeoJSON มีปัญหา → fallback marker
+        console.warn(`[Map] GeoJSON error for ${item.id}:`,err);
+        if(ll) makeFallbackMarker(item,i,ll.lat,ll.lon);
+      }
+    }else{
+      // ไม่มี GeoJSON → ใช้ coords
+      if(ll) makeFallbackMarker(item,i,ll.lat,ll.lon);
+    }
+  });
+}
+
+/* ═══════════════════════════════════
+   SELECT CASE — แก้หลัก
+   ใช้ข้อมูลจาก mapReg ที่เตรียมไว้แล้ว
+═══════════════════════════════════ */
+function selectCase(i){
+  // highlight sidebar
+  document.querySelectorAll('.case-row').forEach(r=>r.classList.remove('active'));
+  const row=document.getElementById(`crow-${i}`);
+  if(row) row.classList.add('active');
+
+  const item=allData[i];
+  if(!item) return;
+
+  const reg=mapReg[curTab+'_'+item.id];
+
+  if(reg){
+    try{
+      if(reg.isGeoJSON&&reg.layer&&typeof reg.layer.getBounds==='function'){
+        const bounds=reg.layer.getBounds();
+        if(bounds&&bounds.isValid()){
+          mapInst.fitBounds(bounds,{maxZoom:16,padding:[30,30]});
+        }else if(reg.lat&&reg.lon){
+          mapInst.setView([reg.lat,reg.lon],15);
+        }
+        // เปิด popup feature แรก
+        reg.layer.eachLayer(l=>{
+          if(l.openPopup) l.openPopup();
+          return false; // เปิดแค่อันแรก
+        });
+      }else if(reg.isMarker&&reg.layer){
+        mapInst.setView([reg.lat,reg.lon],15);
+        if(reg.layer.openPopup) reg.layer.openPopup();
+      }else if(reg.lat&&reg.lon){
+        mapInst.setView([reg.lat,reg.lon],15);
+      }
+    }catch(err){
+      console.warn('[selectCase] error:',err);
+      if(reg.lat&&reg.lon) mapInst.setView([reg.lat,reg.lon],15);
+    }
+  }else{
+    // ไม่มีใน mapReg → ลอง coords โดยตรง
+    const ll=getLatLonFromItem(item);
+    if(ll){
+      mapInst.setView([ll.lat,ll.lon],15);
+    }else{
+      toast('คดีนี้ไม่มีพิกัดผูกอยู่ ไม่สามารถแสดงตำแหน่งได้','error');
+    }
+  }
+
+  showDetail(item,i);
+
+  // Mobile: ปิด sidebar หลังเลือกคดี แล้วไปดูแผนที่
+  if(window.innerWidth<=768) closeMobileSB();
+}
+
+// Helper แยก getLatLon จาก item โดยตรง
+function getLatLonFromItem(item){
+  if(item.coords&&item.coords[0]&&item.coords[0]!==0)
+    return {lat:item.coords[0],lon:item.coords[1]};
+  if(item.utm_easting&&item.utm_easting>100000){
+    try{
+      const ll=utmToLL(item.utm_easting,item.utm_northing,item.utm_zone||47);
+      if(isFinite(ll.lat)&&ll.lat>5&&ll.lat<21) return ll;
+    }catch{}
+  }
+  return null;
+}
+
+/* ═══════════════════════════════════
+   VIEW / TAB / MOBILE
+═══════════════════════════════════ */
+function switchView(v){
   curView=v;
   document.getElementById('vsw-map').classList.toggle('active',v==='map');
   document.getElementById('vsw-dash').classList.toggle('active',v==='dashboard');
   document.getElementById('map-wrap').style.display=v==='map'?'':'none';
   document.getElementById('dash-wrap').style.display=v==='dashboard'?'block':'none';
-  if (v==='dashboard') renderDashboard();
+  if(v==='map') setTimeout(()=>mapInst&&mapInst.invalidateSize(),100);
+  if(v==='dashboard') renderDashboard();
 }
 
-function closeMobileSB() {
-  if (window.innerWidth<=768) {
-    document.getElementById('sidebar').classList.add('hidden');
-    document.getElementById('fab-icon').className='fa-solid fa-map-marked-alt';
-    document.getElementById('fab-label').textContent='ดูแผนที่';
-    fabOpen=false;
+/* Mobile sidebar: ใช้ .show class แทน .hidden */
+let sbOpen=false;
+function toggleMobileSB(){
+  sbOpen=!sbOpen;
+  document.getElementById('sidebar').classList.toggle('show',sbOpen);
+  document.getElementById('sb-backdrop').classList.toggle('show',sbOpen);
+  document.getElementById('fab-icon').className=sbOpen?'fa-solid fa-map-marked-alt':'fa-solid fa-list-ul';
+  document.getElementById('fab-label').textContent=sbOpen?'ดูแผนที่':'รายการคดี';
+}
+
+function closeMobileSB(){
+  if(window.innerWidth>768) return;
+  sbOpen=false;
+  document.getElementById('sidebar').classList.remove('show');
+  document.getElementById('sb-backdrop').classList.remove('show');
+  document.getElementById('fab-icon').className='fa-solid fa-list-ul';
+  document.getElementById('fab-label').textContent='รายการคดี';
+}
+
+function checkDevice(){
+  const mob=window.innerWidth<=768;
+  if(!mob){
+    // Desktop: ตรวจสอบว่า sidebar ไม่ติด .show ค้าง
+    document.getElementById('sidebar').classList.remove('show');
+    document.getElementById('sb-backdrop').classList.remove('show');
+    document.getElementById('fab').style.display='none';
+    sbOpen=false;
+  }else{
+    document.getElementById('fab').style.display='flex';
+    if(mapInst) setTimeout(()=>mapInst.invalidateSize(),200);
   }
 }
 
-function toggleFab() {
-  fabOpen=!fabOpen;
-  document.getElementById('sidebar').classList.toggle('hidden',!fabOpen);
-  document.getElementById('fab-icon').className=fabOpen?'fa-solid fa-list-ul':'fa-solid fa-map-marked-alt';
-  document.getElementById('fab-label').textContent=fabOpen?'รายการคดี':'ดูแผนที่';
-}
-
-function checkDevice() {
-  const mob=window.innerWidth<=768;
-  document.getElementById('sidebar').classList.toggle('hidden',mob);
-  document.getElementById('fab').style.display=mob?'flex':'none';
-  if (mob) fabOpen=false;
-}
-
-function switchTab(mode,btn) {
-  curTab=mode; curPage=1;
-  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active')); btn.classList.add('active');
+function switchTab(mode,btn){
+  curTab=mode;curPage=1;
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
   const labels={encroachment:'สารบบคดีบุกรุกพื้นที่ป่า',timber:'สารบบคดีไม้ผิดกฎหมาย',wildlife:'สารบบคดีสัตว์ป่า'};
   document.getElementById('sb-label').textContent=labels[mode];
-  if (detOpen) closeDetail();
-  clearSearch(); loadData();
+  if(detOpen) closeDetail();
+  clearSearch();
+  loadData();
 }
 
 document.getElementById('srch-inp').addEventListener('input',function(){
   const q=this.value;
   document.getElementById('srch-clear').classList.toggle('show',q.length>0);
-  clearTimeout(srchTimer); srchTimer=setTimeout(()=>{curPage=1;filterAndRender(q);},220);
+  clearTimeout(srchTimer);srchTimer=setTimeout(()=>{curPage=1;filterAndRender(q);},220);
 });
 
-function clearSearch() {
+function clearSearch(){
   document.getElementById('srch-inp').value='';
   document.getElementById('srch-clear').classList.remove('show');
-  renderSidebar(allData); renderPager(allData.length);
+  renderSidebar(allData);renderPager(allData.length);
 }
 
-function filterAndRender(q) {
-  if (!q) { renderSidebar(allData); renderPager(allData.length); return; }
+function filterAndRender(q){
+  if(!q){renderSidebar(allData);renderPager(allData.length);return;}
   const lq=q.toLowerCase();
   const f=allData.filter(i=>[i.case_no,i.complaint_no,i.criminal_no,i.location,i.agency].some(v=>v&&v.toLowerCase().includes(lq)));
-  renderSidebar(f); renderPager(f.length,q);
+  renderSidebar(f);renderPager(f.length,q);
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    LOAD DATA
-══════════════════════════════════════ */
-async function loadData(retries=3) {
-  showSkeleton(); clearMapLayers(); showBanner('กำลังโหลดข้อมูล...');
-  for (let i=0;i<retries;i++) {
-    try {
-      const ctrl=new AbortController(); const tid=setTimeout(()=>ctrl.abort(),15000);
+═══════════════════════════════════ */
+async function loadData(retries=3){
+  showSkeleton();clearMapLayers();showBanner('กำลังโหลดข้อมูล...');
+  for(let i=0;i<retries;i++){
+    try{
+      const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),15000);
       const res=await fetch(`${API}/get-cases/${curTab}?limit=200`,{signal:ctrl.signal});
       clearTimeout(tid);
-      if (!res.ok) throw new Error('HTTP '+res.status);
+      if(!res.ok) throw new Error('HTTP '+res.status);
       const json=await res.json();
       allData=Array.isArray(json)?json:(Array.isArray(json.data)?json.data:[]);
       totalItems=allData.length;
       hideBanner();
-      renderSidebar(allData); renderPager(totalItems); renderMap(allData);
-      updateStats(allData); updateTabCnt(curTab,totalItems);
+      renderSidebar(allData);renderPager(totalItems);
+      await renderMap(allData); // รอ render map เสร็จก่อน
+      updateStats(allData);updateTabCnt(curTab,totalItems);
       dashCache[curTab==='encroachment'?'enc':curTab==='timber'?'tim':'wl']=allData;
       return;
-    } catch(err) {
-      if (i<retries-1) { showBanner(`เชื่อมต่อไม่ได้ ลองอีก (${i+2}/${retries})...`); await new Promise(r=>setTimeout(r,3000)); }
-      else { hideBanner(); showError(err); }
+    }catch(err){
+      if(i<retries-1){showBanner(`เชื่อมต่อไม่ได้ ลองอีก (${i+2}/${retries})...`);await new Promise(r=>setTimeout(r,3000));}
+      else{hideBanner();showError(err);}
     }
   }
 }
 
-function showSkeleton() {
+function showSkeleton(){
   document.getElementById('sb-list').innerHTML=`<div style="padding:6px 0">${Array(5).fill('').map(()=>`<div class="sk-row"><div class="sk sk-d"></div><div class="sk-ln"><div class="sk sk-h"></div><div class="sk sk-p"></div><div class="sk sk-s"></div></div></div>`).join('')}</div>`;
   document.getElementById('pager').style.display='none';
 }
 
-function showError(err) {
+function showError(err){
   document.getElementById('sb-list').innerHTML=`<div class="state-box"><div class="state-icon"><i class="fa-solid fa-wifi-slash" style="color:var(--danger)"></i></div><div class="state-title">เชื่อมต่อ API ไม่ได้</div><div class="state-desc">Render free tier อาจกำลัง wake up<br>รอ 30–60 วิ แล้วลองใหม่<br><span style="font-size:.68rem;color:var(--text-3)">${err?.message||''}</span></div><button class="btn-retry" onclick="loadData()"><i class="fa-solid fa-arrows-rotate"></i> ลองอีกครั้ง</button></div>`;
   document.getElementById('pager').style.display='none';
 }
 
-function updateStats(data) {
-  if (!Array.isArray(data)) return;
+function updateStats(data){
+  if(!Array.isArray(data)) return;
   document.getElementById('s-total').textContent=data.length;
   document.getElementById('s-pend').textContent=data.filter(d=>!d.is_finished).length;
   document.getElementById('s-done').textContent=data.filter(d=>d.is_finished).length;
   document.getElementById('s-susp').textContent=data.reduce((s,d)=>s+(+d.suspects_count||0),0);
 }
 
-function updateTabCnt(tab,n) {
+function updateTabCnt(tab,n){
   const ids={encroachment:'cnt-enc',timber:'cnt-timber',wildlife:'cnt-wildlife'};
-  const el=document.getElementById(ids[tab]); if(el) el.textContent=n;
+  const el=document.getElementById(ids[tab]);if(el) el.textContent=n;
 }
 
-function getCaseLabel(item) {
+function getCaseLabel(item){
   const parts=[];
-  if (item.complaint_no) parts.push(`แจ้ง: ${item.complaint_no}`);
-  if (item.criminal_no)  parts.push(`อาญา: ${item.criminal_no}`);
+  if(item.complaint_no) parts.push(`แจ้ง: ${item.complaint_no}`);
+  if(item.criminal_no)  parts.push(`อาญา: ${item.criminal_no}`);
   return parts.length?parts.join(' · '):(item.case_no||'–');
 }
 
-/* ══════════════════════════════════════
-   COORDS HELPER (🆕 ตรวจคดีที่ไม่มีพิกัดจริง)
-══════════════════════════════════════ */
-function hasNoCoords(item) {
-  const hasLatLon = !!(item.coords && item.coords[0] && item.coords[1]);
-  const hasUTM    = !!(item.utm_easting && item.utm_easting > 0);
-  return !hasLatLon && !hasUTM;
+function hasNoCoords(item){
+  const hasLL=!!(item.coords&&item.coords[0]&&item.coords[0]!==0);
+  const hasUTM=!!(item.utm_easting&&item.utm_easting>100000);
+  return !hasLL&&!hasUTM;
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    PAGINATION
-══════════════════════════════════════ */
-function getPage(data,page) { return data.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE); }
+═══════════════════════════════════ */
+function getPage(data,page){return data.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);}
 
-function renderPager(total,q='') {
-  const pages=Math.ceil(total/PAGE_SIZE), pager=document.getElementById('pager');
-  if (total===0||pages<=1) { pager.style.display='none'; return; }
+function renderPager(total,q=''){
+  const pages=Math.ceil(total/PAGE_SIZE),pager=document.getElementById('pager');
+  if(total===0||pages<=1){pager.style.display='none';return;}
   pager.style.display='flex';
-  const start=(curPage-1)*PAGE_SIZE+1, end=Math.min(curPage*PAGE_SIZE,total);
+  const start=(curPage-1)*PAGE_SIZE+1,end=Math.min(curPage*PAGE_SIZE,total);
   document.getElementById('pager-info').textContent=`${start}–${end} จาก ${total}`;
   const btns=document.getElementById('pager-btns');
   let html=`<button class="pager-btn" onclick="goPage(${curPage-1},'${q}')" ${curPage<=1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;
   const range=[];
-  for(let p=1;p<=pages;p++){if(p===1||p===pages||Math.abs(p-curPage)<=1) range.push(p); else if(range[range.length-1]!=='…') range.push('…');}
-  range.forEach(p=>{ if(p==='…') html+=`<button class="pager-btn" disabled>…</button>`; else html+=`<button class="pager-btn${p===curPage?' active':''}" onclick="goPage(${p},'${q}')">${p}</button>`; });
+  for(let p=1;p<=pages;p++){if(p===1||p===pages||Math.abs(p-curPage)<=1)range.push(p);else if(range[range.length-1]!=='…')range.push('…');}
+  range.forEach(p=>{if(p==='…')html+=`<button class="pager-btn" disabled>…</button>`;else html+=`<button class="pager-btn${p===curPage?' active':''}" onclick="goPage(${p},'${q}')">${p}</button>`;});
   html+=`<button class="pager-btn" onclick="goPage(${curPage+1},'${q}')" ${curPage>=pages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>`;
   btns.innerHTML=html;
 }
 
-function goPage(p,q='') {
+function goPage(p,q=''){
   const data=q?allData.filter(i=>[i.case_no,i.complaint_no,i.criminal_no,i.location].some(v=>v&&v.toLowerCase().includes(q.toLowerCase()))):allData;
   const pages=Math.ceil(data.length/PAGE_SIZE);
-  if(p<1||p>pages) return;
-  curPage=p; renderSidebar(data); renderPager(data.length,q);
+  if(p<1||p>pages)return;
+  curPage=p;renderSidebar(data);renderPager(data.length,q);
   document.getElementById('sb-list').scrollTop=0;
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    RENDER SIDEBAR
-══════════════════════════════════════ */
-function renderSidebar(data) {
-  if (!Array.isArray(data)||!data.length) {
+═══════════════════════════════════ */
+function renderSidebar(data){
+  if(!Array.isArray(data)||!data.length){
     document.getElementById('sb-list').innerHTML=`<div class="state-box"><div class="state-icon"><i class="fa-solid fa-folder-open"></i></div><div class="state-title">ไม่พบข้อมูลคดี</div><div class="state-desc">ยังไม่มีการบันทึกคดีในหมวดนี้</div></div>`;
     return;
   }
-  const pageData=getPage(data,curPage), tab=curTab;
+  const pageData=getPage(data,curPage),tab=curTab;
   const dotMap={encroachment:'d-enc',timber:'d-tim',wildlife:'d-wl'};
   const globalOffset=(curPage-1)*PAGE_SIZE;
   const html=pageData.map((item,pi)=>{
     const i=globalOffset+pi;
     const dot=item.is_finished?'d-done':dotMap[tab];
     const badge=item.is_finished?'<span class="badge badge-ok">สิ้นสุดแล้ว</span>':'<span class="badge badge-pend">ดำเนินการ</span>';
-    const noCoordsBadge=hasNoCoords(item)?'<span class="badge badge-nocoord" title="ไม่พบพิกัดผูกกับคดีนี้"><i class="fa-solid fa-triangle-exclamation"></i> ไม่มีพิกัด</span>':'';
+    const noC=hasNoCoords(item)?'<span class="badge badge-nocoord" title="ไม่มีพิกัด"><i class="fa-solid fa-triangle-exclamation"></i> ไม่มีพิกัด</span>':'';
     const lbl=getCaseLabel(item);
     const delKey=item.case_no||item.complaint_no||item.id;
     return `<div class="case-row" onclick="selectCase(${i})" id="crow-${i}">
@@ -1141,7 +1267,7 @@ function renderSidebar(data) {
       <div class="cinfo">
         <div class="cno">${lbl}</div>
         <div class="cloc">${item.location||'–'}</div>
-        <div class="cmeta">${item.case_date?`<span>${item.case_date}</span><span>·</span>`:''}<span>ผู้ต้องหา ${item.suspects_count||0} ราย</span><span>·</span>${badge}${noCoordsBadge}</div>
+        <div class="cmeta">${item.case_date?`<span>${item.case_date}</span><span>·</span>`:''}<span>ผู้ต้องหา ${item.suspects_count||0} ราย</span><span>·</span>${badge}${noC}</div>
       </div>
       <button onclick="event.stopPropagation();deleteCase('${delKey}')" class="row-del" title="ลบ"><i class="fa-solid fa-trash-can"></i></button>
     </div>`;
@@ -1149,10 +1275,10 @@ function renderSidebar(data) {
   document.getElementById('sb-list').innerHTML=html;
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    DETAIL PANEL
-══════════════════════════════════════ */
-async function showDetail(item, idx) {
+═══════════════════════════════════ */
+async function showDetail(item,idx){
   detOpen=true;
   document.getElementById('det-title').textContent=getCaseLabel(item)+' · '+(item.location||'');
   const ds=document.getElementById('det-st');
@@ -1163,76 +1289,72 @@ async function showDetail(item, idx) {
   cells+=`<div class="det-cell"><label>เลขคำแจ้ง</label><span>${item.complaint_no||'–'}</span></div>`;
   cells+=`<div class="det-cell"><label>เลขคดีอาญา</label><span>${item.criminal_no||'–'}</span></div>`;
   cells+=`<div class="det-cell"><label>ยึดทรัพย์ที่</label><span>${item.seizure_no||'–'}</span></div>`;
-  if (curTab!=='encroachment') cells+=`<div class="det-cell"><label>เลขคดีที่</label><span>${item.case_no||'–'}</span></div>`;
+  if(curTab!=='encroachment') cells+=`<div class="det-cell"><label>เลขคดีที่</label><span>${item.case_no||'–'}</span></div>`;
   cells+=`<div class="det-cell"><label>วันที่เกิดเหตุ</label><span>${item.case_date||'–'}</span></div>`;
   cells+=`<div class="det-cell"><label>หน่วยงาน</label><span>${item.agency||'–'}</span></div>`;
   cells+=`<div class="det-cell"><label>ผู้ต้องหา</label><span>${item.suspects_count||0} ราย</span></div>`;
-  if (curTab==='encroachment') cells+=`<div class="det-cell"><label>พื้นที่บุกรุก</label><span>${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
-  else if (curTab==='timber'&&item.timber_type) cells+=`<div class="det-cell"><label>ชนิดไม้</label><span>${item.timber_type}</span></div><div class="det-cell"><label>ท่อน/แปรรูป</label><span>${item.vol_logs||0}/${item.vol_processed||0} ลบ.ม.</span></div>`;
-  else if (curTab==='wildlife') cells+=`<div class="det-cell"><label>ชนิดสัตว์ป่า</label><span>${item.wildlife_type||'–'}</span></div><div class="det-cell"><label>อุปกรณ์</label><span>${item.equipment||'–'}</span></div>`;
+  if(curTab==='encroachment') cells+=`<div class="det-cell"><label>พื้นที่บุกรุก</label><span>${item.rai||0} ไร่ ${item.ngarn||0} งาน ${item.wa||0} ตร.ว.</span></div>`;
+  else if(curTab==='timber'&&item.timber_type) cells+=`<div class="det-cell"><label>ชนิดไม้</label><span>${item.timber_type}</span></div><div class="det-cell"><label>ท่อน/แปรรูป</label><span>${item.vol_logs||0}/${item.vol_processed||0} ลบ.ม.</span></div>`;
+  else if(curTab==='wildlife') cells+=`<div class="det-cell"><label>ชนิดสัตว์ป่า</label><span>${item.wildlife_type||'–'}</span></div><div class="det-cell"><label>อุปกรณ์</label><span>${item.equipment||'–'}</span></div>`;
   cells+=`<div class="det-cell det-full"><label>บันทึกความคืบหน้า</label><span style="white-space:pre-wrap;line-height:1.7">${item.case_status||'–'}</span></div>`;
   document.getElementById('det-grid').innerHTML=cells;
 
   let acts='';
-  if (curTab!=='wildlife'&&item.geojson_data) acts+=`<button class="det-btn" onclick="dlGeoJSON(${idx})"><i class="fa-solid fa-download"></i>GeoJSON</button>`;
-  if (item.shapefile_url) acts+=`<a href="${item.shapefile_url}" target="_blank" rel="noopener" class="det-btn"><i class="fa-solid fa-file-code"></i>Shapefile (.shp)</a>`;
-  if (item.pdf_url) acts+=`<a href="${item.pdf_url}" target="_blank" rel="noopener" class="det-btn pdf"><i class="fa-solid fa-file-pdf"></i>PDF</a>`;
+  if(curTab!=='wildlife'&&item.geojson_data) acts+=`<button class="det-btn" onclick="dlGeoJSON(${idx})"><i class="fa-solid fa-download"></i>GeoJSON</button>`;
+  if(item.shapefile_url) acts+=`<a href="${item.shapefile_url}" target="_blank" rel="noopener" class="det-btn"><i class="fa-solid fa-file-code"></i>Shapefile</a>`;
+  if(item.pdf_url) acts+=`<a href="${item.pdf_url}" target="_blank" rel="noopener" class="det-btn pdf"><i class="fa-solid fa-file-pdf"></i>PDF</a>`;
   document.getElementById('det-actions').innerHTML=acts;
 
-  document.getElementById('det-suspects-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดผู้ต้องหา...</div>';
-  document.getElementById('det-exhibits-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดของกลาง...</div>';
+  document.getElementById('det-suspects-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> โหลดผู้ต้องหา...</div>';
+  document.getElementById('det-exhibits-wrap').innerHTML='<div style="text-align:center;padding:8px;font-size:.75rem;color:var(--text-3)"><i class="fa-solid fa-spinner fa-spin"></i> โหลดของกลาง...</div>';
   document.getElementById('det-panel').classList.add('open');
 
-  if (item.id) {
-    const [susRes, exRes] = await Promise.allSettled([
+  if(item.id){
+    const [susRes,exRes]=await Promise.allSettled([
       fetch(`${API}/get-suspects/${curTab}/${item.id}`).then(r=>r.json()),
       fetch(`${API}/get-exhibits/${curTab}/${item.id}`).then(r=>r.json()),
     ]);
-    renderDetSuspects(susRes.status==='fulfilled'?susRes.value.data||[]:[], item.id);
-    renderDetExhibits(exRes.status==='fulfilled'?exRes.value.data||[]:[], item.id);
-  } else {
+    renderDetSuspects(susRes.status==='fulfilled'?susRes.value.data||[]:[]);
+    renderDetExhibits(exRes.status==='fulfilled'?exRes.value.data||[]:[]);
+  }else{
     document.getElementById('det-suspects-wrap').innerHTML='';
     document.getElementById('det-exhibits-wrap').innerHTML='';
   }
 }
 
-function renderDetSuspects(suspects, caseId) {
-  const wrap = document.getElementById('det-suspects-wrap');
-  if (!suspects.length) { wrap.innerHTML=''; return; }
+function renderDetSuspects(suspects){
+  const wrap=document.getElementById('det-suspects-wrap');
+  if(!suspects.length){wrap.innerHTML='';return;}
   let html=`<div class="det-section"><div class="det-sec-title"><i class="fa-solid fa-users"></i>ผู้ต้องหา (${suspects.length} คน)</div>`;
   suspects.forEach(s=>{
     const fullName=`${s.title||''} ${s.first_name||''} ${s.last_name||''}`.trim()||'–';
     const photoHtml=s.photo_url
       ?`<img src="${s.photo_url}" class="suspect-photo" alt="รูปผู้ต้องหา" onerror="this.style.display='none'">`
       :`<div class="suspect-photo-placeholder"><i class="fa-solid fa-user"></i></div>`;
-    html+=`<div class="suspect-card">
-      ${photoHtml}
-      <div class="suspect-info">
-        <div class="suspect-name">${s.seq}. ${fullName}</div>
-        <div class="suspect-meta">
-          ${s.id_card?`🪪 ${s.id_card}<br>`:''}
-          ${s.age?`อายุ ${s.age} ปี · `:''}${s.phone?`📞 ${s.phone}`:''}
-          ${s.address?`<br>📍 ${s.address}`:''}
-          ${s.charge?`<br><span class="suspect-badge"><i class="fa-solid fa-gavel"></i> ${s.charge}</span>`:''}
-          ${s.note?`<br><span style="font-size:.69rem;color:var(--text-3)">${s.note}</span>`:''}
-        </div>
+    html+=`<div class="suspect-card">${photoHtml}<div class="suspect-info">
+      <div class="suspect-name">${s.seq}. ${fullName}</div>
+      <div class="suspect-meta">
+        ${s.id_card?`🪪 ${s.id_card}<br>`:''}
+        ${s.age?`อายุ ${s.age} ปี · `:''}${s.phone?`📞 ${s.phone}`:''}
+        ${s.address?`<br>📍 ${s.address}`:''}
+        ${s.charge?`<br><span class="suspect-badge"><i class="fa-solid fa-gavel"></i> ${s.charge}</span>`:''}
+        ${s.note?`<br><span style="font-size:.69rem;color:var(--text-3)">${s.note}</span>`:''}
       </div>
-    </div>`;
+    </div></div>`;
   });
   html+='</div>';
   wrap.innerHTML=html;
 }
 
-function renderDetExhibits(exhibits, caseId) {
+function renderDetExhibits(exhibits){
   const wrap=document.getElementById('det-exhibits-wrap');
-  if (!exhibits.length) { wrap.innerHTML=''; return; }
+  if(!exhibits.length){wrap.innerHTML='';return;}
   let html=`<div class="det-section"><div class="det-sec-title"><i class="fa-solid fa-boxes-stacked"></i>ของกลาง (${exhibits.length} รายการ)</div>`;
   exhibits.forEach(ex=>{
     const val=ex.value_thb?`${Number(ex.value_thb).toLocaleString('th-TH')} บาท`:'–';
     html+=`<div class="exhibit-row">
       <div class="exhibit-seq">${ex.seq}</div>
-      <div class="exhibit-desc">
-        <strong>${ex.exhibit_type||'–'}</strong>
+      <div class="exhibit-desc"><strong>${ex.exhibit_type||'–'}</strong>
         <span>${ex.description||''} ${ex.quantity?`จำนวน ${ex.quantity} ${ex.unit||''}`:''} ${ex.size_vol?`| ${ex.size_vol}`:''}</span>
         ${ex.storage_loc?`<span>📦 ${ex.storage_loc}</span>`:''}
         ${ex.note?`<span style="color:var(--text-3)">${ex.note}</span>`:''}
@@ -1244,47 +1366,47 @@ function renderDetExhibits(exhibits, caseId) {
   wrap.innerHTML=html;
 }
 
-function closeDetail() {
+function closeDetail(){
   detOpen=false;
   document.getElementById('det-panel').classList.remove('open');
   document.querySelectorAll('.case-row').forEach(r=>r.classList.remove('active'));
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    DOWNLOAD GEOJSON
-══════════════════════════════════════ */
-async function dlGeoJSON(idx) {
+═══════════════════════════════════ */
+async function dlGeoJSON(idx){
   const item=allData[idx];
-  if (!item?.geojson_data) { toast('ไม่พบข้อมูลพิกัด','error'); return; }
+  if(!item?.geojson_data){toast('ไม่พบข้อมูลพิกัด','error');return;}
   const safe=(item.complaint_no||item.criminal_no||item.case_no||'case').replace(/\//g,'-');
-  try {
+  try{
     let gd=typeof item.geojson_data==='string'&&item.geojson_data.startsWith('http')
       ?await fetch(item.geojson_data).then(r=>r.json())
       :(typeof item.geojson_data==='string'?JSON.parse(item.geojson_data):item.geojson_data);
     const a=document.createElement('a');
     a.href='data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(gd));
     a.download=`DNP_สบอ13_${safe}.json`;
-    document.body.appendChild(a); a.click(); a.remove();
+    document.body.appendChild(a);a.click();a.remove();
     toast('ดาวน์โหลด GeoJSON สำเร็จ');
-  } catch(e) { toast('ดาวน์โหลดล้มเหลว: '+e.message,'error'); }
+  }catch(e){toast('ดาวน์โหลดล้มเหลว: '+e.message,'error');}
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    DASHBOARD
-══════════════════════════════════════ */
-async function renderDashboard() {
+═══════════════════════════════════ */
+async function renderDashboard(){
   const apiMap={enc:'encroachment',tim:'timber',wl:'wildlife'};
   toast('กำลังโหลดข้อมูล Dashboard...','info',2000);
   await Promise.allSettled(['enc','tim','wl'].map(async t=>{
-    if (dashCache[t]) return;
-    try {
+    if(dashCache[t]) return;
+    try{
       const res=await fetch(`${API}/get-cases/${apiMap[t]}?limit=200&page=1`);
-      if (!res.ok) return;
+      if(!res.ok) return;
       const json=await res.json();
       dashCache[t]=Array.isArray(json)?json:(json.data??[]);
-    } catch {}
+    }catch{}
   }));
-  const enc=dashCache.enc||[], tim=dashCache.tim||[], wl=dashCache.wl||[];
+  const enc=dashCache.enc||[],tim=dashCache.tim||[],wl=dashCache.wl||[];
   const all=[...enc.map(i=>({...i,_type:'บุกรุกป่า'})),...tim.map(i=>({...i,_type:'ไม้ผิดกฎหมาย'})),...wl.map(i=>({...i,_type:'สัตว์ป่า'}))];
   document.getElementById('kpi-enc').textContent=enc.length;
   document.getElementById('kpi-enc-sub').textContent=`ระหว่างคดี ${enc.filter(i=>!i.is_finished).length} · สิ้นสุด ${enc.filter(i=>i.is_finished).length}`;
@@ -1293,29 +1415,29 @@ async function renderDashboard() {
   document.getElementById('kpi-wl').textContent=wl.length;
   document.getElementById('kpi-wl-sub').textContent=`ระหว่างคดี ${wl.filter(i=>!i.is_finished).length} · สิ้นสุด ${wl.filter(i=>i.is_finished).length}`;
   document.getElementById('kpi-susp').textContent=all.reduce((s,i)=>s+(+i.suspects_count||0),0);
-  const totalPend=all.filter(i=>!i.is_finished).length, totalDone=all.filter(i=>i.is_finished).length;
-  if (chartDonut) chartDonut.destroy();
+  const totalPend=all.filter(i=>!i.is_finished).length,totalDone=all.filter(i=>i.is_finished).length;
+  if(chartDonut) chartDonut.destroy();
   chartDonut=new Chart(document.getElementById('chart-donut'),{type:'doughnut',data:{labels:['อยู่ระหว่างคดี','สิ้นสุดแล้ว'],datasets:[{data:[totalPend,totalDone],backgroundColor:['#e8a020','#1a5c2e'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{font:{family:'Sarabun',size:12},padding:16}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed} คดี`}}}}});
-  if (chartBar) chartBar.destroy();
+  if(chartBar) chartBar.destroy();
   chartBar=new Chart(document.getElementById('chart-bar'),{type:'bar',data:{labels:['บุกรุกป่า','ไม้ผิดกฎหมาย','สัตว์ป่า'],datasets:[{label:'ระหว่างคดี',data:[enc.filter(i=>!i.is_finished).length,tim.filter(i=>!i.is_finished).length,wl.filter(i=>!i.is_finished).length],backgroundColor:'#e8a020',borderRadius:4},{label:'สิ้นสุดแล้ว',data:[enc.filter(i=>i.is_finished).length,tim.filter(i=>i.is_finished).length,wl.filter(i=>i.is_finished).length],backgroundColor:'#1a5c2e',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Sarabun',size:12},padding:16}}},scales:{x:{stacked:false,grid:{display:false},ticks:{font:{family:'Sarabun',size:12}}},y:{beginAtZero:true,ticks:{font:{family:'Sarabun',size:11},precision:0}}}}});
   const recent=all.sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||'')).slice(0,10);
   const typeBadge={'บุกรุกป่า':'<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">บุกรุกป่า</span>','ไม้ผิดกฎหมาย':'<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ไม้ผิดกฎหมาย</span>','สัตว์ป่า':'<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--violet-bg);color:var(--violet);font-weight:700">สัตว์ป่า</span>'};
   document.getElementById('dash-tbl-body').innerHTML=recent.map(i=>`<tr><td style="font-weight:600">${i.complaint_no||i.case_no||'–'}</td><td>${typeBadge[i._type]||i._type}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.location||'–'}</td><td>${i.case_date||'–'}</td><td style="text-align:center">${i.suspects_count||0}</td><td>${i.is_finished?'<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--primary-pale);color:var(--primary);font-weight:700">สิ้นสุด</span>':'<span style="font-size:.65rem;padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold);font-weight:700">ดำเนินการ</span>'}</td></tr>`).join('');
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    SUSPECTS FORM
-══════════════════════════════════════ */
-function addSuspect(modal) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const containerId = modal==='main' ? 'suspects-container' : 'wl-suspects-container';
+═══════════════════════════════════ */
+function addSuspect(modal){
+  const prefix=modal==='main'?'':'wl-';
+  const containerId=modal==='main'?'suspects-container':'wl-suspects-container';
   susCount[modal]++;
-  const n = susCount[modal];
-  if (n > 5) { susCount[modal]--; toast('รองรับผู้ต้องหาสูงสุด 5 คน','info'); return; }
-  const div = document.createElement('div');
-  div.id = `${prefix}suspect-card-${n}`;
-  div.className = 'suspect-form-card';
-  div.innerHTML = `
+  const n=susCount[modal];
+  if(n>5){susCount[modal]--;toast('รองรับผู้ต้องหาสูงสุด 5 คน','info');return;}
+  const div=document.createElement('div');
+  div.id=`${prefix}suspect-card-${n}`;
+  div.className='suspect-form-card';
+  div.innerHTML=`
     <div class="suspect-form-hd">
       <div class="suspect-form-num"><span>${n}</span>ผู้ต้องหาคนที่ ${n}</div>
       ${n>1?`<button type="button" class="btn-remove-sus" onclick="removeSuspect('${modal}',${n})"><i class="fa-solid fa-trash"></i> ลบ</button>`:''}
@@ -1348,61 +1470,54 @@ function addSuspect(modal) {
   document.getElementById(containerId).appendChild(div);
 }
 
-function removeSuspect(modal, n) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const el = document.getElementById(`${prefix}suspect-card-${n}`);
-  if (el) el.remove();
-  susCount[modal] = Math.max(0, susCount[modal] - 1);
+function removeSuspect(modal,n){
+  const prefix=modal==='main'?'':'wl-';
+  const el=document.getElementById(`${prefix}suspect-card-${n}`);
+  if(el) el.remove();
+  susCount[modal]=Math.max(0,susCount[modal]-1);
 }
 
-function previewPhoto(modal, n, input) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const file = input.files[0];
-  if (!file) return;
-  const prev = document.getElementById(`${prefix}photo-prev-${n}`);
-  const reader = new FileReader();
-  reader.onload = e => { prev.innerHTML=`<img src="${e.target.result}" alt="preview">`; };
+function previewPhoto(modal,n,input){
+  const prefix=modal==='main'?'':'wl-';
+  const file=input.files[0];if(!file)return;
+  const prev=document.getElementById(`${prefix}photo-prev-${n}`);
+  const reader=new FileReader();
+  reader.onload=e=>{prev.innerHTML=`<img src="${e.target.result}" alt="preview">`;};
   reader.readAsDataURL(file);
 }
 
-function collectSuspects(modal) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const suspects = [];
-  for (let n=1; n<=5; n++) {
-    const card = document.getElementById(`${prefix}suspect-card-${n}`);
-    if (!card) continue;
-    const first = document.getElementById(`${prefix}sus-first-${n}`)?.value.trim();
-    if (!first) continue;
+function collectSuspects(modal){
+  const prefix=modal==='main'?'':'wl-';
+  const suspects=[];
+  for(let n=1;n<=5;n++){
+    const card=document.getElementById(`${prefix}suspect-card-${n}`);
+    if(!card) continue;
+    const first=document.getElementById(`${prefix}sus-first-${n}`)?.value.trim();
+    if(!first) continue;
     suspects.push({
-      title:      document.getElementById(`${prefix}sus-title-${n}`)?.value||'',
-      first_name: first,
-      last_name:  document.getElementById(`${prefix}sus-last-${n}`)?.value.trim()||'',
-      id_card:    document.getElementById(`${prefix}sus-id-${n}`)?.value.trim()||'',
-      age:        +document.getElementById(`${prefix}sus-age-${n}`)?.value||null,
-      phone:      document.getElementById(`${prefix}sus-phone-${n}`)?.value.trim()||'',
-      address:    document.getElementById(`${prefix}sus-addr-${n}`)?.value.trim()||'',
-      charge:     document.getElementById(`${prefix}sus-charge-${n}`)?.value.trim()||'',
-      note:       document.getElementById(`${prefix}sus-note-${n}`)?.value.trim()||'',
-      _photoFile: document.getElementById(`${prefix}suspect-photo-${n}`)?.files[0]||null,
+      title:     document.getElementById(`${prefix}sus-title-${n}`)?.value||'',
+      first_name:first,
+      last_name: document.getElementById(`${prefix}sus-last-${n}`)?.value.trim()||'',
+      id_card:   document.getElementById(`${prefix}sus-id-${n}`)?.value.trim()||'',
+      age:       +document.getElementById(`${prefix}sus-age-${n}`)?.value||null,
+      phone:     document.getElementById(`${prefix}sus-phone-${n}`)?.value.trim()||'',
+      address:   document.getElementById(`${prefix}sus-addr-${n}`)?.value.trim()||'',
+      charge:    document.getElementById(`${prefix}sus-charge-${n}`)?.value.trim()||'',
+      note:      document.getElementById(`${prefix}sus-note-${n}`)?.value.trim()||'',
+      _photoFile:document.getElementById(`${prefix}suspect-photo-${n}`)?.files[0]||null,
     });
   }
   return suspects;
 }
 
-async function uploadSuspectPhotos(suspects, caseRefId, modal) {
-  const updated = [];
-  for (let i=0; i<suspects.length; i++) {
-    const s = {...suspects[i]};
-    if (s._photoFile) {
-      const fd = new FormData();
-      fd.append('photo', s._photoFile);
-      fd.append('case_ref_id', caseRefId);
-      fd.append('seq', i+1);
-      try {
-        const res = await fetch(`${API}/upload-suspect-photo/`,{method:'POST',body:fd});
-        const r = await res.json();
-        if (r.success) s.photo_url = r.photo_url;
-      } catch {}
+async function uploadSuspectPhotos(suspects,caseRefId){
+  const updated=[];
+  for(let i=0;i<suspects.length;i++){
+    const s={...suspects[i]};
+    if(s._photoFile){
+      const fd=new FormData();
+      fd.append('photo',s._photoFile);fd.append('case_ref_id',caseRefId);fd.append('seq',i+1);
+      try{const res=await fetch(`${API}/upload-suspect-photo/`,{method:'POST',body:fd});const r=await res.json();if(r.success) s.photo_url=r.photo_url;}catch{}
     }
     delete s._photoFile;
     updated.push(s);
@@ -1410,75 +1525,75 @@ async function uploadSuspectPhotos(suspects, caseRefId, modal) {
   return updated;
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    EXHIBITS FORM
-══════════════════════════════════════ */
-function addExhibit(modal) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const containerId = modal==='main' ? 'exhibits-container' : 'wl-exhibits-container';
+═══════════════════════════════════ */
+function addExhibit(modal){
+  const prefix=modal==='main'?'':'wl-';
+  const containerId=modal==='main'?'exhibits-container':'wl-exhibits-container';
   exCount[modal]++;
-  const n = exCount[modal];
-  if (n > 10) { exCount[modal]--; toast('รองรับของกลางสูงสุด 10 รายการ','info'); return; }
-  const div = document.createElement('div');
-  div.id = `${prefix}exhibit-card-${n}`;
-  div.className = 'exhibit-form-card';
-  div.innerHTML = `
+  const n=exCount[modal];
+  if(n>10){exCount[modal]--;toast('รองรับของกลางสูงสุด 10 รายการ','info');return;}
+  const div=document.createElement('div');
+  div.id=`${prefix}exhibit-card-${n}`;
+  div.className='exhibit-form-card';
+  div.innerHTML=`
     <div class="exhibit-form-hd">
       <div class="exhibit-form-num"><span>${n}</span>ของกลางรายการที่ ${n}</div>
       ${n>1?`<button type="button" class="btn-remove-ex" onclick="removeExhibit('${modal}',${n})"><i class="fa-solid fa-trash"></i> ลบ</button>`:''}
     </div>
     <div class="fg-row fg-2" style="margin-bottom:9px">
-      <div><label class="fl">ประเภทของกลาง</label><input type="text" id="${prefix}ex-type-${n}" placeholder="ไม้สัก, ปืน, ยาเสพติด, ซากสัตว์..." class="fi"></div>
-      <div><label class="fl">รายละเอียดของกลาง</label><input type="text" id="${prefix}ex-desc-${n}" placeholder="ไม้สักแปรรูป ขนาด 1x4 นิ้ว..." class="fi"></div>
+      <div><label class="fl">ประเภทของกลาง</label><input type="text" id="${prefix}ex-type-${n}" placeholder="ไม้สัก, ปืน, ซากสัตว์..." class="fi"></div>
+      <div><label class="fl">รายละเอียด</label><input type="text" id="${prefix}ex-desc-${n}" placeholder="ไม้สักแปรรูป ขนาด 1x4 นิ้ว..." class="fi"></div>
     </div>
     <div class="fg-row fg-3" style="margin-bottom:9px">
       <div><label class="fl">จำนวน</label><input type="number" id="${prefix}ex-qty-${n}" min="0" step="any" value="0" class="fi"></div>
-      <div><label class="fl">หน่วย</label><input type="text" id="${prefix}ex-unit-${n}" placeholder="ท่อน, ชิ้น, กก., ลบ.ม." class="fi"></div>
-      <div><label class="fl">ขนาด / ปริมาตร</label><input type="text" id="${prefix}ex-size-${n}" placeholder="10x20 ซม., 2.5 ลบ.ม." class="fi"></div>
+      <div><label class="fl">หน่วย</label><input type="text" id="${prefix}ex-unit-${n}" placeholder="ท่อน, ชิ้น, กก." class="fi"></div>
+      <div><label class="fl">ขนาด / ปริมาตร</label><input type="text" id="${prefix}ex-size-${n}" placeholder="10x20 ซม." class="fi"></div>
     </div>
     <div class="fg-row fg-2" style="margin-bottom:9px">
       <div><label class="fl">มูลค่าโดยประมาณ (บาท)</label><input type="number" id="${prefix}ex-val-${n}" min="0" step="any" value="0" class="fi"></div>
-      <div><label class="fl">สถานที่เก็บของกลาง</label><input type="text" id="${prefix}ex-loc-${n}" placeholder="คลังของกลาง สบอ.13 / ที่ทำการ..." class="fi"></div>
+      <div><label class="fl">สถานที่เก็บของกลาง</label><input type="text" id="${prefix}ex-loc-${n}" placeholder="คลังของกลาง สบอ.13..." class="fi"></div>
     </div>
     <div class="fg"><label class="fl">หมายเหตุ</label><input type="text" id="${prefix}ex-note-${n}" placeholder="หมายเหตุเพิ่มเติม" class="fi"></div>
   `;
   document.getElementById(containerId).appendChild(div);
 }
 
-function removeExhibit(modal, n) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const el = document.getElementById(`${prefix}exhibit-card-${n}`);
-  if (el) el.remove();
-  exCount[modal] = Math.max(0, exCount[modal] - 1);
+function removeExhibit(modal,n){
+  const prefix=modal==='main'?'':'wl-';
+  const el=document.getElementById(`${prefix}exhibit-card-${n}`);
+  if(el) el.remove();
+  exCount[modal]=Math.max(0,exCount[modal]-1);
 }
 
-function collectExhibits(modal) {
-  const prefix = modal==='main' ? '' : 'wl-';
-  const exhibits = [];
-  for (let n=1; n<=10; n++) {
-    const card = document.getElementById(`${prefix}exhibit-card-${n}`);
-    if (!card) continue;
-    const type = document.getElementById(`${prefix}ex-type-${n}`)?.value.trim();
-    if (!type) continue;
+function collectExhibits(modal){
+  const prefix=modal==='main'?'':'wl-';
+  const exhibits=[];
+  for(let n=1;n<=10;n++){
+    const card=document.getElementById(`${prefix}exhibit-card-${n}`);
+    if(!card) continue;
+    const type=document.getElementById(`${prefix}ex-type-${n}`)?.value.trim();
+    if(!type) continue;
     exhibits.push({
-      exhibit_type: type,
-      description:  document.getElementById(`${prefix}ex-desc-${n}`)?.value.trim()||'',
-      quantity:     +document.getElementById(`${prefix}ex-qty-${n}`)?.value||0,
-      unit:         document.getElementById(`${prefix}ex-unit-${n}`)?.value.trim()||'',
-      size_vol:     document.getElementById(`${prefix}ex-size-${n}`)?.value.trim()||'',
-      value_thb:    +document.getElementById(`${prefix}ex-val-${n}`)?.value||0,
-      storage_loc:  document.getElementById(`${prefix}ex-loc-${n}`)?.value.trim()||'',
-      note:         document.getElementById(`${prefix}ex-note-${n}`)?.value.trim()||'',
+      exhibit_type:type,
+      description: document.getElementById(`${prefix}ex-desc-${n}`)?.value.trim()||'',
+      quantity:    +document.getElementById(`${prefix}ex-qty-${n}`)?.value||0,
+      unit:        document.getElementById(`${prefix}ex-unit-${n}`)?.value.trim()||'',
+      size_vol:    document.getElementById(`${prefix}ex-size-${n}`)?.value.trim()||'',
+      value_thb:   +document.getElementById(`${prefix}ex-val-${n}`)?.value||0,
+      storage_loc: document.getElementById(`${prefix}ex-loc-${n}`)?.value.trim()||'',
+      note:        document.getElementById(`${prefix}ex-note-${n}`)?.value.trim()||'',
     });
   }
   return exhibits;
 }
 
-/* ══════════════════════════════════════
-   MODAL OPEN / CLOSE
-══════════════════════════════════════ */
-function openAdd() {
-  if (curTab==='wildlife') { document.getElementById('modal-wl').classList.add('open'); return; }
+/* ═══════════════════════════════════
+   MODAL OPEN/CLOSE
+═══════════════════════════════════ */
+function openAdd(){
+  if(curTab==='wildlife'){document.getElementById('modal-wl').classList.add('open');return;}
   const isTim=curTab==='timber';
   document.getElementById('m-title').textContent=isTim?'บันทึกคดีไม้ผิดกฎหมาย':'บันทึกคดีบุกรุกพื้นที่ป่า';
   const ic=document.getElementById('m-icon');
@@ -1489,312 +1604,293 @@ function openAdd() {
   document.getElementById('modal-form').classList.add('open');
 }
 
-function resetInputs(id) {
+function resetInputs(id){
   document.querySelectorAll(`#${id} input[type=text],#${id} input[type=number],#${id} textarea`).forEach(el=>el.value=el.type==='number'?'0':'');
   document.querySelectorAll(`#${id} select`).forEach(el=>el.selectedIndex=0);
   document.querySelectorAll(`#${id} input[type=file]`).forEach(el=>el.value='');
 }
 
-function resetShpState() {
+function resetShpState(){
   Object.assign(shpState,{shp:null,dbf:null,shx:null,prj:null,cpg:null,pdf:null,analyzed:false,lat:0,lon:0,rai:0,ngarn:0,wa:0,utm_zone:47,utm_easting:0,utm_northing:0});
   ['shp','dbf','shx','prj','cpg','pdf'].forEach(ext=>{
-    const nameEl=document.getElementById(`name-${ext}`), chkEl=document.getElementById(`chk-${ext}`);
+    const nameEl=document.getElementById(`name-${ext}`),chkEl=document.getElementById(`chk-${ext}`);
     if(nameEl){nameEl.textContent='คลิกเพื่อเลือกไฟล์';nameEl.className='shp-part-name';}
     if(chkEl) chkEl.className='fa-solid fa-circle-minus shp-part-check';
   });
-  const bar=document.getElementById('analyze-bar'); if(bar) bar.classList.remove('show','ok','err');
-  const btn=document.getElementById('btn-analyze'); if(btn) btn.disabled=true;
+  const bar=document.getElementById('analyze-bar');if(bar) bar.classList.remove('show','ok','err');
+  const btn=document.getElementById('btn-analyze');if(btn) btn.disabled=true;
 }
 
-function resetSuspects(modal) {
+function resetSuspects(modal){
   const containerId=modal==='main'?'suspects-container':'wl-suspects-container';
-  document.getElementById(containerId).innerHTML='';
-  susCount[modal]=0;
+  document.getElementById(containerId).innerHTML='';susCount[modal]=0;
 }
 
-function resetExhibits(modal) {
+function resetExhibits(modal){
   const containerId=modal==='main'?'exhibits-container':'wl-exhibits-container';
-  document.getElementById(containerId).innerHTML='';
-  exCount[modal]=0;
+  document.getElementById(containerId).innerHTML='';exCount[modal]=0;
 }
 
-function closeForm() {
+function closeForm(){
   document.getElementById('modal-form').classList.remove('open');
-  resetInputs('modal-form'); resetShpState(); resetSuspects('main'); resetExhibits('main');
+  resetInputs('modal-form');resetShpState();resetSuspects('main');resetExhibits('main');
   document.getElementById('utm-res-main').style.display='none';
   document.getElementById('utm-err-main').style.display='none';
-  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
+  if(prevMarker){mapInst.removeLayer(prevMarker);prevMarker=null;}
 }
 
-function closeWL() {
+function closeWL(){
   document.getElementById('modal-wl').classList.remove('open');
-  resetInputs('modal-wl'); resetSuspects('wl'); resetExhibits('wl');
+  resetInputs('modal-wl');resetSuspects('wl');resetExhibits('wl');
   document.getElementById('utm-res-wl').style.display='none';
   document.getElementById('utm-err-wl').style.display='none';
-  const wa=document.getElementById('wl-map-actions'); if(wa) wa.style.display='none';
-  if (prevMarker) { mapInst.removeLayer(prevMarker); prevMarker=null; }
+  const wa=document.getElementById('wl-map-actions');if(wa) wa.style.display='none';
+  if(prevMarker){mapInst.removeLayer(prevMarker);prevMarker=null;}
 }
 
 ['modal-form','modal-wl'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){ if(e.target===this) id==='modal-form'?closeForm():closeWL(); });
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this) id==='modal-form'?closeForm():closeWL();
+  });
 });
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    SHAPEFILE PARTS
-══════════════════════════════════════ */
-function handleShpPart(ext, input) {
+═══════════════════════════════════ */
+function handleShpPart(ext,input){
   const file=input.files[0];
-  const nameEl=document.getElementById(`name-${ext}`), chkEl=document.getElementById(`chk-${ext}`);
-  if (!file) {
-    shpState[ext]=null; nameEl.textContent='คลิกเพื่อเลือกไฟล์'; nameEl.className='shp-part-name'; chkEl.className='fa-solid fa-circle-minus shp-part-check';
-  } else {
+  const nameEl=document.getElementById(`name-${ext}`),chkEl=document.getElementById(`chk-${ext}`);
+  if(!file){
+    shpState[ext]=null;nameEl.textContent='คลิกเพื่อเลือกไฟล์';nameEl.className='shp-part-name';chkEl.className='fa-solid fa-circle-minus shp-part-check';
+  }else{
     const expectedExt=ext==='pdf'?'.pdf':`.${ext}`;
-    if (!file.name.toLowerCase().endsWith(expectedExt)) {
-      nameEl.textContent=`⚠ ต้องเป็นไฟล์ ${expectedExt}`; nameEl.className='shp-part-name err'; chkEl.className='fa-solid fa-circle-xmark shp-part-check err'; input.value=''; shpState[ext]=null;
-    } else {
-      shpState[ext]=file; nameEl.textContent=file.name; nameEl.className='shp-part-name ok'; chkEl.className='fa-solid fa-circle-check shp-part-check ok';
+    if(!file.name.toLowerCase().endsWith(expectedExt)){
+      nameEl.textContent=`⚠ ต้องเป็นไฟล์ ${expectedExt}`;nameEl.className='shp-part-name err';chkEl.className='fa-solid fa-circle-xmark shp-part-check err';input.value='';shpState[ext]=null;
+    }else{
+      shpState[ext]=file;nameEl.textContent=file.name;nameEl.className='shp-part-name ok';chkEl.className='fa-solid fa-circle-check shp-part-check ok';
     }
   }
-  shpState.analyzed=false; updateAnalyzeBar();
+  shpState.analyzed=false;updateAnalyzeBar();
 }
 
-function updateAnalyzeBar() {
+function updateAnalyzeBar(){
   const required=shpState.shp&&shpState.dbf&&shpState.shx;
-  const btn=document.getElementById('btn-analyze'), bar=document.getElementById('analyze-bar');
-  bar.classList.add('show'); bar.classList.remove('ok','err');
-  if (!required) {
+  const btn=document.getElementById('btn-analyze'),bar=document.getElementById('analyze-bar');
+  bar.classList.add('show');bar.classList.remove('ok','err');
+  if(!required){
     document.getElementById('analyze-icon').className='fa-solid fa-circle-info analyze-icon';
     document.getElementById('analyze-text').textContent='กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อนวิเคราะห์';
     btn.disabled=true;
-  } else if (!shpState.analyzed) {
+  }else if(!shpState.analyzed){
     document.getElementById('analyze-icon').className='fa-solid fa-map-location-dot analyze-icon';
     document.getElementById('analyze-text').textContent='ไฟล์ครบแล้ว — คลิก "วิเคราะห์พิกัด" เพื่อดูพื้นที่';
     btn.disabled=false;
   }
 }
 
-async function analyzeShpParts() {
-  if (!shpState.shp||!shpState.dbf||!shpState.shx) { toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อน','error'); return; }
-  const btn=document.getElementById('btn-analyze'), bar=document.getElementById('analyze-bar');
-  const icon=document.getElementById('analyze-icon'), txt=document.getElementById('analyze-text');
-  btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์...';
-  bar.classList.remove('ok','err'); txt.textContent='กำลังส่งไฟล์ไปวิเคราะห์...';
+async function analyzeShpParts(){
+  if(!shpState.shp||!shpState.dbf||!shpState.shx){toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบก่อน','error');return;}
+  const btn=document.getElementById('btn-analyze'),bar=document.getElementById('analyze-bar');
+  const icon=document.getElementById('analyze-icon'),txt=document.getElementById('analyze-text');
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์...';
+  bar.classList.remove('ok','err');txt.textContent='กำลังส่งไฟล์ไปวิเคราะห์...';
   const fd=new FormData();
-  fd.append('shp_file',shpState.shp); fd.append('dbf_file',shpState.dbf); fd.append('shx_file',shpState.shx);
-  if (shpState.prj) fd.append('prj_file',shpState.prj);
-  if (shpState.cpg) fd.append('cpg_file',shpState.cpg);
-  try {
+  fd.append('shp_file',shpState.shp);fd.append('dbf_file',shpState.dbf);fd.append('shx_file',shpState.shx);
+  if(shpState.prj) fd.append('prj_file',shpState.prj);
+  if(shpState.cpg) fd.append('cpg_file',shpState.cpg);
+  try{
     const res=await fetch(`${API}/analyze-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
-    if (res.ok&&r.success&&r.geometry_ok!==false) {
-      shpState.analyzed=true; shpState.lat=r.lat; shpState.lon=r.lon; shpState.rai=r.rai; shpState.ngarn=r.ngarn; shpState.wa=r.wa; shpState.utm_zone=r.utm_zone; shpState.utm_easting=r.utm_easting; shpState.utm_northing=r.utm_northing;
-      if (curTab==='encroachment') { document.getElementById('f-rai').value=Math.floor(r.rai)||0; document.getElementById('f-ngarn').value=Math.floor(r.ngarn)||0; document.getElementById('f-wa').value=r.wa?.toFixed(1)||0; }
-      document.getElementById('f-lat').value=r.lat; document.getElementById('f-lon').value=r.lon;
-      if (prevMarker) mapInst.removeLayer(prevMarker);
+    if(res.ok&&r.success&&r.geometry_ok!==false){
+      shpState.analyzed=true;shpState.lat=r.lat;shpState.lon=r.lon;shpState.rai=r.rai;shpState.ngarn=r.ngarn;shpState.wa=r.wa;shpState.utm_zone=r.utm_zone;shpState.utm_easting=r.utm_easting;shpState.utm_northing=r.utm_northing;
+      if(curTab==='encroachment'){document.getElementById('f-rai').value=Math.floor(r.rai)||0;document.getElementById('f-ngarn').value=Math.floor(r.ngarn)||0;document.getElementById('f-wa').value=r.wa?.toFixed(1)||0;}
+      document.getElementById('f-lat').value=r.lat;document.getElementById('f-lon').value=r.lon;
+      if(prevMarker) mapInst.removeLayer(prevMarker);
       prevMarker=L.marker([r.lat,r.lon]).addTo(mapInst).bindPopup('<b>📍 จุดศูนย์กลางแปลง</b>').openPopup();
       mapInst.setView([r.lat,r.lon],14);
-      bar.classList.add('ok'); icon.className='fa-solid fa-circle-check analyze-icon';
+      bar.classList.add('ok');icon.className='fa-solid fa-circle-check analyze-icon';
       txt.textContent=`✓ พื้นที่ ${r.rai} ไร่ ${r.ngarn} งาน ${Math.round(r.wa||0)} ตร.ว. · Lat ${r.lat.toFixed(5)}, Lon ${r.lon.toFixed(5)}`;
       toast('วิเคราะห์ Shapefile สำเร็จ');
-    } else if (res.ok&&r.success&&r.geometry_ok===false) {
-      /* 🆕 API ตอบสำเร็จ แต่คำนวณตำแหน่งจริงไม่ได้ (geometry ผิดรูป/ว่างเปล่า) — ห้ามใช้พิกัด placeholder */
-      shpState.analyzed=false;
-      bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon';
+    }else if(res.ok&&r.success&&r.geometry_ok===false){
+      shpState.analyzed=false;bar.classList.add('err');icon.className='fa-solid fa-circle-xmark analyze-icon';
       txt.textContent='✗ ไม่สามารถคำนวณตำแหน่งจริงจากไฟล์นี้ได้ (geometry ผิดรูป/ว่างเปล่า)';
-      toast('Shapefile นี้ไม่มีพิกัดที่ใช้งานได้จริง กรุณาตรวจสอบไฟล์','error');
-    } else { bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon'; txt.textContent='✗ '+(r.detail||r.error||'ไฟล์ไม่รองรับ'); toast('วิเคราะห์ล้มเหลว: '+(r.detail||r.error||''),'error'); }
-  } catch(e) { bar.classList.add('err'); icon.className='fa-solid fa-circle-xmark analyze-icon'; txt.textContent='✗ เชื่อมต่อไม่ได้: '+e.message; toast('เชื่อมต่อ API ไม่ได้','error'); }
-  finally { btn.innerHTML='<i class="fa-solid fa-magnifying-glass-location"></i> วิเคราะห์พิกัด'; btn.disabled=false; }
+      toast('Shapefile ไม่มีพิกัดที่ใช้งานได้ กรุณาตรวจสอบไฟล์','error');
+    }else{
+      bar.classList.add('err');icon.className='fa-solid fa-circle-xmark analyze-icon';
+      txt.textContent='✗ '+(r.detail||r.error||'ไฟล์ไม่รองรับ');
+      toast('วิเคราะห์ล้มเหลว: '+(r.detail||r.error||''),'error');
+    }
+  }catch(e){bar.classList.add('err');icon.className='fa-solid fa-circle-xmark analyze-icon';txt.textContent='✗ เชื่อมต่อไม่ได้: '+e.message;toast('เชื่อมต่อ API ไม่ได้','error');}
+  finally{btn.innerHTML='<i class="fa-solid fa-magnifying-glass-location"></i> วิเคราะห์พิกัด';btn.disabled=false;}
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    SAVE SUSPECTS & EXHIBITS
-══════════════════════════════════════ */
-async function saveSuspectsAndExhibits(caseId, caseType, modal) {
-  const suspects = collectSuspects(modal);
-  const exhibits = collectExhibits(modal);
-
-  if (suspects.length > 0) {
-    const suspectsWithPhotos = await uploadSuspectPhotos(suspects, caseId, modal);
-    const fd = new FormData();
-    fd.append('case_type', caseType);
-    fd.append('case_ref_id', caseId);
-    fd.append('suspects_json', JSON.stringify(suspectsWithPhotos));
-    try { await fetch(`${API}/save-suspects/`, {method:'POST', body:fd}); } catch {}
+═══════════════════════════════════ */
+async function saveSuspectsAndExhibits(caseId,caseType,modal){
+  const suspects=collectSuspects(modal);
+  const exhibits=collectExhibits(modal);
+  if(suspects.length>0){
+    const suspectsWithPhotos=await uploadSuspectPhotos(suspects,caseId);
+    const fd=new FormData();
+    fd.append('case_type',caseType);fd.append('case_ref_id',caseId);fd.append('suspects_json',JSON.stringify(suspectsWithPhotos));
+    try{await fetch(`${API}/save-suspects/`,{method:'POST',body:fd});}catch{}
   }
-
-  if (exhibits.length > 0) {
-    const fd = new FormData();
-    fd.append('case_type', caseType);
-    fd.append('case_ref_id', caseId);
-    fd.append('exhibits_json', JSON.stringify(exhibits));
-    try { await fetch(`${API}/save-exhibits/`, {method:'POST', body:fd}); } catch {}
+  if(exhibits.length>0){
+    const fd=new FormData();
+    fd.append('case_type',caseType);fd.append('case_ref_id',caseId);fd.append('exhibits_json',JSON.stringify(exhibits));
+    try{await fetch(`${API}/save-exhibits/`,{method:'POST',body:fd});}catch{}
   }
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    SUBMIT: บุกรุก / ไม้
-══════════════════════════════════════ */
-async function submitForm() {
+═══════════════════════════════════ */
+async function submitForm(){
   const complaint=document.getElementById('f-complaint').value.trim();
   const criminal =document.getElementById('f-criminal').value.trim();
-  if (!complaint&&!criminal) { toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา','error'); return; }
-  if (!shpState.shp||!shpState.dbf||!shpState.shx) { toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบ','error'); return; }
-  if (!shpState.analyzed) {
-    toast('กรุณากด "วิเคราะห์พิกัด" ให้สำเร็จก่อนบันทึก เพื่อยืนยันว่า Shapefile มีพิกัดถูกต้อง','error');
-    document.getElementById('analyze-bar')?.scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
-  if (!document.getElementById('f-date').value) { toast('กรุณาระบุวันที่เกิดเหตุ','error'); return; }
-  if (!document.getElementById('f-location').value) { toast('กรุณาระบุสถานที่','error'); return; }
+  if(!complaint&&!criminal){toast('กรุณาระบุเลขคำแจ้งความ หรือเลขคดีอาญา','error');return;}
+  if(!shpState.shp||!shpState.dbf||!shpState.shx){toast('กรุณาเลือกไฟล์ .shp .dbf .shx ให้ครบ','error');return;}
+  if(!shpState.analyzed){toast('กรุณากด "วิเคราะห์พิกัด" ให้สำเร็จก่อนบันทึก','error');document.getElementById('analyze-bar')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(!document.getElementById('f-date').value){toast('กรุณาระบุวันที่เกิดเหตุ','error');return;}
+  if(!document.getElementById('f-location').value){toast('กรุณาระบุสถานที่','error');return;}
 
   const btn=document.getElementById('btn-submit');
-  btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
 
   const fd=new FormData();
-  fd.append('shp_file',shpState.shp); fd.append('dbf_file',shpState.dbf); fd.append('shx_file',shpState.shx);
-  if (shpState.prj) fd.append('prj_file',shpState.prj);
-  if (shpState.cpg) fd.append('cpg_file',shpState.cpg);
-  if (shpState.pdf) fd.append('pdf_file',shpState.pdf);
-  fd.append('case_type',      curTab);
-  fd.append('complaint_no',   complaint);
-  fd.append('criminal_no',    criminal);
-  fd.append('seizure_no',     document.getElementById('f-seizure').value||'');
-  fd.append('case_date',      document.getElementById('f-date').value||'');
-  fd.append('location',       document.getElementById('f-location').value||'');
-  fd.append('status',         document.getElementById('f-status').value||'อยู่ระหว่างคดี');
-  fd.append('case_status',    document.getElementById('f-case-status').value||'');
-  fd.append('agency',         document.getElementById('f-agency').value||'');
-  fd.append('suspects_count', susCount.main || 0);
-  /* ใช้ค่า UTM จากกล่องสีเขียว ถ้าผู้ใช้กรอกมือ (ไม่เท่ากับ 0)
-     ไม่งั้น fallback เป็นค่าที่ได้จากการวิเคราะห์ Shapefile (shpState) แทน
-     — เดิมจุดนี้ถ้าผู้ใช้ไม่กรอกกล่องสีเขียว ค่าจะหลุดไปเป็น 0,0 เสมอ */
-  const manualE = parseFloat(document.getElementById('f-utm-e').value);
-  const manualN = parseFloat(document.getElementById('f-utm-n').value);
-  const fUtmZone = (manualE || manualN) ? (document.getElementById('f-utm-zone').value||'47') : (shpState.utm_zone||47);
-  const fUtmE    = manualE || shpState.utm_easting  || 0;
-  const fUtmN    = manualN || shpState.utm_northing || 0;
-  fd.append('utm_zone',       fUtmZone);
-  fd.append('utm_easting',    fUtmE);
-  fd.append('utm_northing',   fUtmN);
-  if (curTab==='encroachment') {
-    fd.append('rai',   document.getElementById('f-rai').value||'0');
-    fd.append('ngarn', document.getElementById('f-ngarn').value||'0');
-    fd.append('wa',    document.getElementById('f-wa').value||'0');
-  } else if (curTab==='timber') {
-    fd.append('timber_type', document.getElementById('f-timber-type').value||'');
-    fd.append('width',       document.getElementById('f-width').value||'0');
-    fd.append('length',      document.getElementById('f-length').value||'0');
-    fd.append('size',        document.getElementById('f-size').value||'0');
-    fd.append('vol1',        document.getElementById('f-vol1').value||'0');
-    fd.append('vol2',        document.getElementById('f-vol2').value||'0');
+  fd.append('shp_file',shpState.shp);fd.append('dbf_file',shpState.dbf);fd.append('shx_file',shpState.shx);
+  if(shpState.prj) fd.append('prj_file',shpState.prj);
+  if(shpState.cpg) fd.append('cpg_file',shpState.cpg);
+  if(shpState.pdf) fd.append('pdf_file',shpState.pdf);
+  fd.append('case_type',    curTab);
+  fd.append('complaint_no', complaint);
+  fd.append('criminal_no',  criminal);
+  fd.append('seizure_no',   document.getElementById('f-seizure').value||'');
+  fd.append('case_date',    document.getElementById('f-date').value||'');
+  fd.append('location',     document.getElementById('f-location').value||'');
+  fd.append('status',       document.getElementById('f-status').value||'อยู่ระหว่างคดี');
+  fd.append('case_status',  document.getElementById('f-case-status').value||'');
+  fd.append('agency',       document.getElementById('f-agency').value||'');
+  fd.append('suspects_count',susCount.main||0);
+
+  // UTM: ใช้ค่าที่กรอกมือ ถ้าไม่กรอก ใช้จาก Shapefile analysis
+  const manualE=parseFloat(document.getElementById('f-utm-e').value);
+  const manualN=parseFloat(document.getElementById('f-utm-n').value);
+  fd.append('utm_zone',    (manualE||manualN)?(document.getElementById('f-utm-zone').value||'47'):(shpState.utm_zone||47));
+  fd.append('utm_easting', manualE||shpState.utm_easting||0);
+  fd.append('utm_northing',manualN||shpState.utm_northing||0);
+
+  if(curTab==='encroachment'){
+    fd.append('rai',  document.getElementById('f-rai').value||'0');
+    fd.append('ngarn',document.getElementById('f-ngarn').value||'0');
+    fd.append('wa',   document.getElementById('f-wa').value||'0');
+  }else if(curTab==='timber'){
+    fd.append('timber_type',document.getElementById('f-timber-type').value||'');
+    fd.append('width',      document.getElementById('f-width').value||'0');
+    fd.append('length',     document.getElementById('f-length').value||'0');
+    fd.append('size',       document.getElementById('f-size').value||'0');
+    fd.append('vol1',       document.getElementById('f-vol1').value||'0');
+    fd.append('vol2',       document.getElementById('f-vol2').value||'0');
   }
 
-  try {
+  try{
     const res=await fetch(`${API}/process-shapefile/`,{method:'POST',body:fd});
     const r=await res.json();
-    if (r.success) {
-      if (r.case_id) {
-        btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> บันทึกผู้ต้องหา...';
-        await saveSuspectsAndExhibits(r.case_id, curTab, 'main');
-      }
-      toast('บันทึกคดีสำเร็จ');
-      closeForm();
-      dashCache={enc:null,tim:null,wl:null}; loadData();
-    } else { toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error'); }
-  } catch(e) { toast('เชื่อมต่อไม่ได้: '+e.message,'error'); }
-  finally { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์'; }
+    if(r.success){
+      if(r.case_id){btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> บันทึกผู้ต้องหา...';await saveSuspectsAndExhibits(r.case_id,curTab,'main');}
+      toast('บันทึกคดีสำเร็จ');closeForm();
+      dashCache={enc:null,tim:null,wl:null};loadData();
+    }else{toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error');}
+  }catch(e){toast('เชื่อมต่อไม่ได้: '+e.message,'error');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i>บันทึกขึ้นคลาวด์';}
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    SUBMIT: สัตว์ป่า
-══════════════════════════════════════ */
-async function submitWL() {
-  if (!document.getElementById('wl-case-no').value.trim()) { toast('กรุณาระบุเลขคดีที่','error'); return; }
-  if (!document.getElementById('wl-location').value.trim()) { toast('กรุณาระบุสถานที่','error'); return; }
-  if (!document.getElementById('wl-agency').value.trim()) { toast('กรุณาระบุหน่วยงาน','error'); return; }
+═══════════════════════════════════ */
+async function submitWL(){
+  if(!document.getElementById('wl-case-no').value.trim()){toast('กรุณาระบุเลขคดีที่','error');return;}
+  if(!document.getElementById('wl-location').value.trim()){toast('กรุณาระบุสถานที่','error');return;}
+  if(!document.getElementById('wl-agency').value.trim()){toast('กรุณาระบุหน่วยงาน','error');return;}
 
   const wlLat=parseFloat(document.getElementById('wl-lat').value)||0;
   const wlLon=parseFloat(document.getElementById('wl-lon').value)||0;
   const wlE  =parseFloat(document.getElementById('wl-utm-e').value)||0;
   const wlN  =parseFloat(document.getElementById('wl-utm-n').value)||0;
-  if (!(wlLat||wlLon) && !(wlE||wlN)) {
-    toast('กรุณาระบุพิกัด Lat/Lon หรือ UTM E/N อย่างน้อยทางใดทางหนึ่ง','error');
-    return;
-  }
+  if(!(wlLat||wlLon)&&!(wlE||wlN)){toast('กรุณาระบุพิกัด Lat/Lon หรือ UTM E/N อย่างน้อยทางใดทางหนึ่ง','error');return;}
 
   const btn=document.getElementById('wl-submit');
-  btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
 
   const fd=new FormData();
-  fd.append('case_no',        document.getElementById('wl-case-no').value.trim());
-  fd.append('complaint_no',   document.getElementById('wl-complaint').value.trim());
-  fd.append('criminal_no',    document.getElementById('wl-criminal').value.trim());
-  fd.append('seizure_no',     document.getElementById('wl-seizure').value.trim());
-  fd.append('case_date',      document.getElementById('wl-date').value||'');
-  fd.append('location',       document.getElementById('wl-location').value.trim());
-  fd.append('status',         document.getElementById('wl-status').value||'อยู่ระหว่างคดี');
-  fd.append('case_status',    document.getElementById('wl-case-status').value||'');
-  fd.append('agency',         document.getElementById('wl-agency').value.trim());
-  fd.append('suspects_count', susCount.wl || 0);
-  fd.append('wildlife_type',  document.getElementById('wl-wildlife-type').value||'');
-  fd.append('equipment',      document.getElementById('wl-equipment').value||'');
-  fd.append('coords_lat',     document.getElementById('wl-lat').value||'0');
-  fd.append('coords_lon',     document.getElementById('wl-lon').value||'0');
-  fd.append('utm_zone',       document.getElementById('wl-utm-zone').value||'47');
-  fd.append('utm_easting',    document.getElementById('wl-utm-e').value||'0');
-  fd.append('utm_northing',   document.getElementById('wl-utm-n').value||'0');
+  fd.append('case_no',       document.getElementById('wl-case-no').value.trim());
+  fd.append('complaint_no',  document.getElementById('wl-complaint').value.trim());
+  fd.append('criminal_no',   document.getElementById('wl-criminal').value.trim());
+  fd.append('seizure_no',    document.getElementById('wl-seizure').value.trim());
+  fd.append('case_date',     document.getElementById('wl-date').value||'');
+  fd.append('location',      document.getElementById('wl-location').value.trim());
+  fd.append('status',        document.getElementById('wl-status').value||'อยู่ระหว่างคดี');
+  fd.append('case_status',   document.getElementById('wl-case-status').value||'');
+  fd.append('agency',        document.getElementById('wl-agency').value.trim());
+  fd.append('suspects_count',susCount.wl||0);
+  fd.append('wildlife_type', document.getElementById('wl-wildlife-type').value||'');
+  fd.append('equipment',     document.getElementById('wl-equipment').value||'');
+  fd.append('coords_lat',    document.getElementById('wl-lat').value||'0');
+  fd.append('coords_lon',    document.getElementById('wl-lon').value||'0');
+  fd.append('utm_zone',      document.getElementById('wl-utm-zone').value||'47');
+  fd.append('utm_easting',   document.getElementById('wl-utm-e').value||'0');
+  fd.append('utm_northing',  document.getElementById('wl-utm-n').value||'0');
   const pdfF=document.getElementById('wl-pdf').files[0];
-  if (pdfF) fd.append('pdf_file',pdfF);
+  if(pdfF) fd.append('pdf_file',pdfF);
 
-  try {
+  try{
     const res=await fetch(`${API}/process-wildlife/`,{method:'POST',body:fd});
     const r=await res.json();
-    if (r.success) {
-      if (r.case_id) {
-        btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> บันทึกผู้ต้องหา...';
-        await saveSuspectsAndExhibits(r.case_id, 'wildlife', 'wl');
-      }
-      toast('บันทึกคดีสัตว์ป่าสำเร็จ');
-      closeWL();
-      dashCache={enc:null,tim:null,wl:null}; loadData();
-    } else { toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error'); }
-  } catch(e) { toast('เชื่อมต่อไม่ได้: '+e.message,'error'); }
-  finally { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล'; }
+    if(r.success){
+      if(r.case_id){btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> บันทึกผู้ต้องหา...';await saveSuspectsAndExhibits(r.case_id,'wildlife','wl');}
+      toast('บันทึกคดีสัตว์ป่าสำเร็จ');closeWL();
+      dashCache={enc:null,tim:null,wl:null};loadData();
+    }else{toast('บันทึกล้มเหลว: '+(r.error||r.detail||''),'error');}
+  }catch(e){toast('เชื่อมต่อไม่ได้: '+e.message,'error');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i>บันทึกข้อมูล';}
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    DELETE
-══════════════════════════════════════ */
-async function deleteCase(cNo) {
-  if (!confirm(`⚠️ ลบคดีหมายเลข ${cNo} ?\nข้อมูลผู้ต้องหาและของกลางจะถูกลบถาวร`)) return;
-  try {
+═══════════════════════════════════ */
+async function deleteCase(cNo){
+  if(!confirm(`⚠️ ลบคดีหมายเลข ${cNo} ?\nข้อมูลผู้ต้องหาและของกลางจะถูกลบถาวร`)) return;
+  try{
     const res=await fetch(`${API}/delete-case/${curTab}/${encodeURIComponent(cNo)}`,{method:'DELETE'});
-    if (res.ok) { toast('ลบข้อมูลคดีเรียบร้อย'); if(detOpen) closeDetail(); dashCache={enc:null,tim:null,wl:null}; loadData(); }
+    if(res.ok){toast('ลบข้อมูลคดีเรียบร้อย');if(detOpen) closeDetail();dashCache={enc:null,tim:null,wl:null};loadData();}
     else toast('ลบไม่สำเร็จ','error');
-  } catch { toast('เชื่อมต่อไม่ได้','error'); }
+  }catch{toast('เชื่อมต่อไม่ได้','error');}
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    KEYBOARD
-══════════════════════════════════════ */
+═══════════════════════════════════ */
 document.addEventListener('keydown',e=>{
-  if (e.key==='Escape') {
-    if (document.getElementById('modal-form').classList.contains('open')) closeForm();
-    else if (document.getElementById('modal-wl').classList.contains('open')) closeWL();
-    else if (detOpen) closeDetail();
+  if(e.key==='Escape'){
+    if(document.getElementById('modal-form').classList.contains('open')) closeForm();
+    else if(document.getElementById('modal-wl').classList.contains('open')) closeWL();
+    else if(detOpen) closeDetail();
   }
 });
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════
    INIT
-══════════════════════════════════════ */
+═══════════════════════════════════ */
 window.onload=()=>{
   setupMap();
   checkDevice();
-  switchTab('encroachment', document.getElementById('tab-enc'));
+  switchTab('encroachment',document.getElementById('tab-enc'));
 };
-window.onresize=checkDevice;
+window.onresize=()=>{
+  checkDevice();
+  if(mapInst) mapInst.invalidateSize();
+};
 </script>
 </body>
 </html>
